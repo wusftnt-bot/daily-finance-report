@@ -26,25 +26,19 @@ jobs:
         with:
           path: site
 
-      - name: Checkout JT-PM generator
-        uses: actions/checkout@v4
-        with:
-          repository: wusftnt-bot/JT-PM
-          path: jt-pm
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Generate daily finance report HTML
-        working-directory: jt-pm
+        working-directory: site
         env:
           TELEGRAM_CHAT_ID: placeholder
           TELEGRAM_FINANCE_BOT_TOKEN: placeholder
           TELEGRAM_FOXCONN_BOT_TOKEN: placeholder
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          DAILY_FINANCE_REPORT_DIR: ../site
+          DAILY_FINANCE_REPORT_DIR: .
         run: python scripts/publish_daily_finance_report.py
 
       - name: Commit and push report site

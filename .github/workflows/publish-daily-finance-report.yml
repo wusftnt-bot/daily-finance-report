@@ -1,0 +1,63 @@
+name: Publish Daily Finance Report
+
+on:
+  schedule:
+    # GitHub Actions schedule is UTC. Taipei is UTC+8.
+    # 22:30/22:45/22:58 UTC = 06:30/06:45/06:58 Taipei.
+    - cron: "30 22 * * *"
+    - cron: "45 22 * * *"
+    - cron: "58 22 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-daily-finance-report
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout daily finance report site
+        uses: actions/checkout@v4
+        with:
+          path: site
+
+      - name: Checkout JT-PM generator
+        uses: actions/checkout@v4
+        with:
+          repository: wusftnt-bot/JT-PM
+          path: jt-pm
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate daily finance report HTML
+        working-directory: jt-pm
+        env:
+          TELEGRAM_CHAT_ID: placeholder
+          TELEGRAM_FINANCE_BOT_TOKEN: placeholder
+          TELEGRAM_FOXCONN_BOT_TOKEN: placeholder
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DAILY_FINANCE_REPORT_DIR: ../site
+        run: python scripts/publish_daily_finance_report.py
+
+      - name: Commit and push report site
+        working-directory: site
+        shell: bash
+        run: |
+          today="$(TZ=Asia/Taipei date +%F)"
+          if git diff --quiet -- index.html; then
+            echo "No daily finance report changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Update daily finance report $today"
+          git push

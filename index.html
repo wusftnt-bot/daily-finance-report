@@ -3,16 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daily Finance Report - 2026-06-14</title>
+  <title>Daily Finance Report - 2026-06-15</title>
   <style>
     :root {
-      --ink: #17202a;
-      --muted: #607080;
-      --line: #d8e0e8;
-      --bg: #f5f7fa;
+      --ink: #18222d;
+      --muted: #667789;
+      --line: #d9e1e8;
+      --bg: #f4f7f8;
       --panel: #ffffff;
-      --blue: #1f5fbf;
+      --navy: #10263d;
+      --blue: #235fb7;
       --teal: #087f8c;
+      --amber: #a76b12;
     }
     * { box-sizing: border-box; }
     body {
@@ -20,138 +22,421 @@
       background: var(--bg);
       color: var(--ink);
       font-family: "Segoe UI", "Noto Sans TC", Arial, sans-serif;
-      line-height: 1.72;
+      line-height: 1.65;
     }
     a { color: var(--blue); text-decoration: none; overflow-wrap: anywhere; }
     a:hover { text-decoration: underline; }
     header {
       background:
-        linear-gradient(120deg, rgba(10,31,52,.88), rgba(4,84,96,.72)),
+        linear-gradient(120deg, rgba(10,31,52,.9), rgba(4,84,96,.7)),
         url("assets/finance-newsroom-hero.png") center/cover;
       color: #fff;
     }
-    .hero, main { width: min(1120px, 92vw); margin: 0 auto; }
-    .hero { min-height: 320px; display: flex; flex-direction: column; justify-content: flex-end; padding: 44px 0; }
-    .kicker { font-size: 14px; color: #d9e6f2; }
-    h1 { font-size: clamp(30px, 4.5vw, 52px); line-height: 1.1; margin: 12px 0 0; letter-spacing: 0; }
+    .hero, main { width: min(1160px, 92vw); margin: 0 auto; }
+    .hero { min-height: 320px; display: grid; align-content: end; padding: 42px 0; }
+    .kicker { font-size: 14px; color: #dbe7f0; }
+    h1 { max-width: 820px; margin: 12px 0 0; font-size: clamp(30px, 4.2vw, 54px); line-height: 1.08; letter-spacing: 0; }
+    .hero p { max-width: 760px; margin: 16px 0 0; color: #edf5f8; font-size: 18px; }
     .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-    .pill { border: 1px solid rgba(255,255,255,.26); background: rgba(255,255,255,.12); border-radius: 999px; padding: 6px 12px; font-size: 14px; }
-    main { padding: 28px 0 52px; }
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 22px; }
-    .report { white-space: pre-wrap; overflow-wrap: break-word; font-size: 16px; }
+    .pill { border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.13); border-radius: 999px; padding: 6px 12px; font-size: 14px; }
+    main { padding: 28px 0 54px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .metric, .panel, .theme-card, .news-row { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+    .metric { padding: 16px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; font-size: 24px; }
+    .section-title { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 26px 0 12px; }
+    .section-title h2 { margin: 0; font-size: 22px; }
+    .section-title p { margin: 0; color: var(--muted); font-size: 14px; }
+    .themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .theme-card { padding: 18px; }
+    .theme-topline { display: flex; align-items: center; justify-content: space-between; color: var(--teal); font-weight: 700; }
+    .theme-topline strong { color: var(--ink); font-size: 24px; }
+    .theme-card p { margin: 12px 0; color: #334454; }
+    .theme-card ul { margin: 0; padding-left: 18px; }
+    .news-list { display: grid; gap: 12px; }
+    .news-row { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; padding: 16px; }
+    .rank { width: 38px; height: 38px; border-radius: 999px; display: grid; place-items: center; background: #e8f0f2; color: var(--navy); font-weight: 800; }
+    .news-meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
+    .news-meta span { border-right: 1px solid var(--line); padding-right: 8px; }
+    .news-meta span:last-child { border-right: 0; padding-right: 0; }
+    h3 { margin: 6px 0 6px; font-size: 18px; line-height: 1.38; }
+    .news-row p { margin: 0; color: #415161; }
+    .panel { padding: 18px; }
+    .watch-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .watch-grid div { border-left: 3px solid var(--amber); padding-left: 12px; }
+    .watch-grid h3 { margin-top: 0; }
+    .sources { display: flex; flex-wrap: wrap; gap: 8px; }
+    .source-pill { background: #eef3f5; border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; color: #34485a; }
     .footer { color: var(--muted); font-size: 13px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }
-    @media (max-width: 720px) {
+    .empty { color: var(--muted); padding: 16px; }
+    @media (max-width: 820px) {
       .hero { min-height: 360px; }
-      .panel { padding: 16px; }
+      .metrics, .themes, .watch-grid { grid-template-columns: 1fr; }
+      .news-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="hero">
-      <div class="kicker">Daily Finance Report | 2026-06-14 18:39:20 Asia/Taipei</div>
-      <h1>【週末財經重大新聞回顧20則｜2026-06-14】</h1>
+      <div class="kicker">Daily Finance Report | 2026-06-15 14:36:47 Asia/Taipei</div>
+      <h1>2026-06-15 投資儀表版</h1>
+      <p>整理今日全球財經新聞、利率與能源脈動、AI/半導體題材，以及台股開盤前後應觀察的資金與風險訊號。</p>
       <div class="meta">
-        <span class="pill">Date: 2026-06-14</span>
+        <span class="pill">Date: 2026-06-15</span>
         <span class="pill">Source: GitHub Actions</span>
-        <span class="pill">Status: current daily report generated</span>
+        <span class="pill">Mode: dashboard report</span>
       </div>
     </div>
   </header>
   <main>
-    <section class="panel report">【週末財經重大新聞回顧20則｜2026-06-14】
+    <section class="metrics" aria-label="Report metrics">
+      <div class="metric"><span>整理新聞</span><strong>18</strong></div>
+      <div class="metric"><span>新聞來源</span><strong>12</strong></div>
+      <div class="metric"><span>今日主軸</span><strong>利率與估值</strong></div>
+      <div class="metric"><span>更新狀態</span><strong>Current</strong></div>
+    </section>
 
-完整圖文網頁已更新：<a href="https://wusftnt-bot.github.io/daily-finance-report/">https://wusftnt-bot.github.io/daily-finance-report/</a>
+    <div class="section-title">
+      <h2>市場主題</h2>
+      <p>依新聞權重歸納今日環境，作為投資儀表版摘要。</p>
+    </div>
+    <section class="themes">
+            <article class="theme-card">
+              <div class="theme-topline">
+                <span>利率與估值</span>
+                <strong>7</strong>
+              </div>
+              <p>長天期利率、美元與通膨預期仍是估值壓力的主軸；成長股反彈若缺乏殖利率配合，容易出現震盪。</p>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxPaVE3c1I4bnM1RzhLbHhHQmI1QjZCY2RQQXVQajN0RTZvU19QT29hdHJfU1hvNXltLWxTRFhXeU4tX3owVmJST2RkanFrV2FXbVg2X3dQQWNyYnRqS201Z0dKTjNPeTM0QjB6bE1CWWNMZDA5NXVLR2ZLLWM3RjJBOVJldXFtZ1pRR0l3YWg5SHdKUEFVSFhKRVlNNExEN2ZWUkEybDlZV255dWhBeDRKUl91bw?oc=5">伊朗協議後，交易員削減聯準會升息押注，國債上漲</a></li><li><a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxNQVYtaHpzN0llTjZWZjRUQmRZTU1IMDFOSlBzRGpTSDFjXzViVEhPTC1mVU9UZXN3VkFzQXlzVnZMVXJnYnQxT1lBTVpQRzQtZFpLbTJBVXlXMzh6MWtocFFiU2xOWDVKcWxsSGF4QWp4Ynp2SUdoYkNWV0VWRzdVTVNUZ3hERGQyaGlHUGUxUy0wUjBwOHFmcFBIR1llT1BfaVFEVG53?oc=5">Lombard Odier：石油衝擊的快速解決可能會推動聯準會明年放鬆貨幣政策</a></li></ul>
+            </article>
+            
 
-固定來源定義：WSJ、Financial Times、The Economist、Bloomberg、Reuters；Investing.com、TradingView、CNBC；Seeking Alpha、Yahoo Finance 討論區、Reddit WallStreetBets；MacroMicro、鉅亨網。投資主軸為台股與美股；非上述來源、中國/港股相關股票新聞與香港財經網站一律排除。
+            <article class="theme-card">
+              <div class="theme-topline">
+                <span>能源與地緣風險</span>
+                <strong>7</strong>
+              </div>
+              <p>能源與地緣新聞會直接影響通膨預期、航運成本與避險情緒，短線需留意油價與美元同步變化。</p>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxQekFXV000NkZNcENYOUdVVmtPaUhVUWxmbF80U3R2VkQ0UWt2RFJIc2hDUkhZVjc3bGs2WU05WnJueVFWUEt3akdNTWVrakVPb3lMQ1NrcjI2Q3Q5NDZlaFFaZzdCWE80Q0RDaDJKemRWSkxFcFJKRTg3NVAzT01LZGQtVkphVEprcEtZWTNQWk1Qbms3aFB4c0ZSTi1PaExv?oc=5">查看市場歡呼伊朗協議，等待石油開始流動</a></li><li><a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxOaDRtalAwc2sxak1fSXdYekZmczhHYkl0a0dmMzdLTFVTV2hxUEFZUzZBOTgzUGNtM0VrQlNVUnlQVzdfNWUzN3hWRkttV21GQzdpa3dlYzR4aTBuU0ZyQk54c0RqTGxlSngtUmR0NWZmWHhPbk1yV0lpS0pVaUhPU3ZtcmxQOXBzZlFLdWgxNzdidmVWWkJnNWRHMTNueDlodThhNg?oc=5">美伊和平協議提振市場情緒，股市上漲，油價下跌</a></li></ul>
+            </article>
+            
 
-來源分布：Reuters 2則、Bloomberg 2則、CNBC 2則、Yahoo Finance 2則、Seeking Alpha 2則、Investing.com 2則、WSJ 2則、Financial Times 1則、The Economist 1則、鉅亨網 1則、MacroMicro 1則、TradingView 1則、Reddit WallStreetBets 1則
+            <article class="theme-card">
+              <div class="theme-topline">
+                <span>AI 與半導體</span>
+                <strong>2</strong>
+              </div>
+              <p>AI 與半導體仍是資金風險偏好的核心題材，但估值與財報展望的容錯空間正在變小。</p>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE4xQlpfYjdfVVpSalB4V2RCejI4SGZfX3FnTktNcHhrUEstUGRHVXNwdFVNekVzR05ISXFPRWd1ZE9obkhINkR5WkE2RTBuY3dBXzRLOWYxTkZvRlF3cDYwZndSd1BtNVk?oc=5">Nasdaq US Benchmark Railroads E (^NQUSB50206020EURT) 圖表、數據和新聞</a></li><li><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxPLTVXQmJyVkQzSHMydFNyMFAzaFdCbkNLT21LVGNoYVlIc2VIcDVJNjVUSFB5RDlIM3NmRC1DR0x1Q2k0S2twUVdzci1DR2ZITmlhdHgwU2tRNGlUbmJZODg2RjkzUU5pTU5IWUlqSWxDN0dUemRhLWhncDVPR1lzMzNLdzZoNldQeGVEUzVmRDlpWG82Snh3MUs5MGlUY3pGajRIa29tTHk?oc=5">唐納德·特朗普切斷了對世界上最好的人工智能模型的訪問</a></li></ul>
+            </article>
+            
 
-篩選規則：固定來源、台股/美股主軸；程式先依指定來源做分散配額，每個來源原則最多 3 則，再由 Gemini 逐則整理與補充觀察。只使用今天或最近 24-36 小時內美股/歐美時區新聞。Telegram 會自動分段，避免新聞被截斷。
+            <article class="theme-card">
+              <div class="theme-topline">
+                <span>台股與亞洲市場</span>
+                <strong>0</strong>
+              </div>
+              <p>今日此主題新聞權重較低，暫列為背景變數，等待後續數據或市場價格確認。</p>
+              <ul><li>目前沒有高權重新聞，保留追蹤。</li></ul>
+            </article>
+            </section>
 
-1. 賽恩.L
-來源：Reuters｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMiuAFBVV95cUxPUVJpLUUwTEVfby1xTDNhNVlLWU1jNlhCMUdpVzJPWEhDa3RUbWhYbmtiNWRKdm1RMzhKNFpXaTJnUmh0dDhmWnNyc25kcENVLXc2WnVXZWZnQWhTSHozNXM2TmVLNlZGN1JKbkpWeGk5VVZieGkyeDRuWGRYU3BuQzh1ejFPamIyOUhIa1JIMDlpODZGbHRXWUhjMk1FdmNvbFZLLU05VVBuNUhDVHV5ZnVZOTNLQl92?oc=5">https://news.google.com/rss/articles/CBMiuAFBVV95cUxPUVJpLUUwTEVfby1xTDNhNVlLWU1jNlhCMUdpVzJPWEhDa3RUbWhYbmtiNWRKdm1RMzhKNFpXaTJnUmh0dDhmWnNyc25kcENVLXc2WnVXZWZnQWhTSHozNXM2TmVLNlZGN1JKbkpWeGk5VVZieGkyeDRuWGRYU3BuQzh1ejFPamIyOUhIa1JIMDlpODZGbHRXWUhjMk1FdmNvbFZLLU05VVBuNUhDVHV5ZnVZOTNLQl92?oc=5</a>
+    <div class="section-title">
+      <h2>重點新聞</h2>
+      <p>保留來源連結，避免只留下 Telegram 摘要文字。</p>
+    </div>
+    <section class="news-list">
+            <article class="news-row">
+              <div class="rank">01</div>
+              <div>
+                <div class="news-meta">
+                  <span>能源與地緣風險</span>
+                  <span>Reuters</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxQekFXV000NkZNcENYOUdVVmtPaUhVUWxmbF80U3R2VkQ0UWt2RFJIc2hDUkhZVjc3bGs2WU05WnJueVFWUEt3akdNTWVrakVPb3lMQ1NrcjI2Q3Q5NDZlaFFaZzdCWE80Q0RDaDJKemRWSkxFcFJKRTg3NVAzT01LZGQtVkphVEprcEtZWTNQWk1Qbms3aFB4c0ZSTi1PaExv?oc=5">查看市場歡呼伊朗協議，等待石油開始流動</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-2. 伊朗戰爭100天後聯準會和英國央行保持警惕
-來源：Bloomberg｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxPTWp5bW4zM0pqSHZJaHliWVlKRlFEczZPNjN2WGFld2VmUjQ5amEtVjlyeTFBZmlUVnc3ZlJLZWtrdEl1eFJkMmFEeHV6dUdWZTZLUTFxb0t2RG44aEtmdlBpdUIxSmdCQ3l2NVpndTJheHJ3Qk9EYWpUYW44eEJsZ2syam5MUnlIZlNmUGdsdXZjbEczbWJYaXlicUk1VXJrT0NMNUFn?oc=5">https://news.google.com/rss/articles/CBMipgFBVV95cUxPTWp5bW4zM0pqSHZJaHliWVlKRlFEczZPNjN2WGFld2VmUjQ5amEtVjlyeTFBZmlUVnc3ZlJLZWtrdEl1eFJkMmFEeHV6dUdWZTZLUTFxb0t2RG44aEtmdlBpdUIxSmdCQ3l2NVpndTJheHJ3Qk9EYWpUYW44eEJsZ2syam5MUnlIZlNmUGdsdXZjbEczbWJYaXlicUk1VXJrT0NMNUFn?oc=5</a>
+            <article class="news-row">
+              <div class="rank">02</div>
+              <div>
+                <div class="news-meta">
+                  <span>利率與估值</span>
+                  <span>Bloomberg</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxPaVE3c1I4bnM1RzhLbHhHQmI1QjZCY2RQQXVQajN0RTZvU19QT29hdHJfU1hvNXltLWxTRFhXeU4tX3owVmJST2RkanFrV2FXbVg2X3dQQWNyYnRqS201Z0dKTjNPeTM0QjB6bE1CWWNMZDA5NXVLR2ZLLWM3RjJBOVJldXFtZ1pRR0l3YWg5SHdKUEFVSFhKRVlNNExEN2ZWUkEybDlZV255dWhBeDRKUl91bw?oc=5">伊朗協議後，交易員削減聯準會升息押注，國債上漲</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-3. 川普表示和平協議將於週日簽署，此前伊朗表示對時機仍持謹慎態度
-來源：CNBC｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMieEFVX3lxTFA5Nm5rWUNqT1dVanpmV3VrY2RLVVNqcll6b1lBVjN2eG95cTJFbVhLWWdrNjJiZUNuQk9wemI5YThMdDMxNE5GSHJqQXJfWFliVzZsVWpvNEJqc0djNzZCQktPNm1MUGZxdU9oNjB1cmxienM2N0Y4YdIBfkFVX3lxTE1WeU42NUw1eUkwcVRZMWZxSllSZXFEcWp4RGdhSUFpVDRKcENhdzZybzdGd2JsS3RhNTZUQnhiUndsTWhrVkNiOGFfVVNmX1F4NW1YSXJPem0zZ3NIdDJrZFFDQXRJVjB5X09SSm1ERm84M1c2cUZwMnROZDhaUQ?oc=5">https://news.google.com/rss/articles/CBMieEFVX3lxTFA5Nm5rWUNqT1dVanpmV3VrY2RLVVNqcll6b1lBVjN2eG95cTJFbVhLWWdrNjJiZUNuQk9wemI5YThMdDMxNE5GSHJqQXJfWFliVzZsVWpvNEJqc0djNzZCQktPNm1MUGZxdU9oNjB1cmxienM2N0Y4YdIBfkFVX3lxTE1WeU42NUw1eUkwcVRZMWZxSllSZXFEcWp4RGdhSUFpVDRKcENhdzZybzdGd2JsS3RhNTZUQnhiUndsTWhrVkNiOGFfVVNmX1F4NW1YSXJPem0zZ3NIdDJrZFFDQXRJVjB5X09SSm1ERm84M1c2cUZwMnROZDhaUQ?oc=5</a>
+            <article class="news-row">
+              <div class="rank">03</div>
+              <div>
+                <div class="news-meta">
+                  <span>利率與估值</span>
+                  <span>CNBC</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxNQVYtaHpzN0llTjZWZjRUQmRZTU1IMDFOSlBzRGpTSDFjXzViVEhPTC1mVU9UZXN3VkFzQXlzVnZMVXJnYnQxT1lBTVpQRzQtZFpLbTJBVXlXMzh6MWtocFFiU2xOWDVKcWxsSGF4QWp4Ynp2SUdoYkNWV0VWRzdVTVNUZ3hERGQyaGlHUGUxUy0wUjBwOHFmcFBIR1llT1BfaVFEVG53?oc=5">Lombard Odier：石油衝擊的快速解決可能會推動聯準會明年放鬆貨幣政策</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-4. AMD Meta AI 晶片協議聚焦資料中心成長與估值
-來源：Yahoo Finance｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMijwFBVV95cUxNVmpjek5CR3dXVGRhSFBtYmRiOTYxV0JNeXpyWUVKTmpWcjBBTzQyN1poSi0wYjRBTV8xNHJYV2VMTUViSl9WTjgzNlZnZTJIZVNQYUdQNTQ4OWR3NXFiVzQ4YW93bWFpRnJfSDNLODVma09HTUpfQ2YzMFZNU1BRS1ppa3l1ZHo0NjdBMEJlUQ?oc=5">https://news.google.com/rss/articles/CBMijwFBVV95cUxNVmpjek5CR3dXVGRhSFBtYmRiOTYxV0JNeXpyWUVKTmpWcjBBTzQyN1poSi0wYjRBTV8xNHJYV2VMTUViSl9WTjgzNlZnZTJIZVNQYUdQNTQ4OWR3NXFiVzQ4YW93bWFpRnJfSDNLODVma09HTUpfQ2YzMFZNU1BRS1ppa3l1ZHo0NjdBMEJlUQ?oc=5</a>
+            <article class="news-row">
+              <div class="rank">04</div>
+              <div>
+                <div class="news-meta">
+                  <span>AI 與半導體</span>
+                  <span>Yahoo Finance</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE4xQlpfYjdfVVpSalB4V2RCejI4SGZfX3FnTktNcHhrUEstUGRHVXNwdFVNekVzR05ISXFPRWd1ZE9obkhINkR5WkE2RTBuY3dBXzRLOWYxTkZvRlF3cDYwZndSd1BtNVk?oc=5">Nasdaq US Benchmark Railroads E (^NQUSB50206020EURT) 圖表、數據和新聞</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-5. SpaceX：華爾街 2260 億美元的假設是脆弱的（納斯達克股票代碼：SPCX）
-來源：Seeking Alpha｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxPZ29VZlNkRFVnOG9PTV8tcXBxSWI4eC1qbmNCaFY3OFVrM3M5clFMOXQ4R1ptNnBIQkJXUUJEa2Y4NDJCMThLcS01VzFsN3FxZlBydUVkM0tIR0pJdXFwendnNWJ5LXAycS1YNl9tclc2NjFPa3E3dW9DeFBkclZwREZEcWVGRW02bk9ndlJyODVOR1d0RDZj?oc=5">https://news.google.com/rss/articles/CBMilwFBVV95cUxPZ29VZlNkRFVnOG9PTV8tcXBxSWI4eC1qbmNCaFY3OFVrM3M5clFMOXQ4R1ptNnBIQkJXUUJEa2Y4NDJCMThLcS01VzFsN3FxZlBydUVkM0tIR0pJdXFwendnNWJ5LXAycS1YNl9tclc2NjFPa3E3dW9DeFBkclZwREZEcWVGRW02bk9ndlJyODVOR1d0RDZj?oc=5</a>
+            <article class="news-row">
+              <div class="rank">05</div>
+              <div>
+                <div class="news-meta">
+                  <span>能源與地緣風險</span>
+                  <span>Seeking Alpha</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxOaDRtalAwc2sxak1fSXdYekZmczhHYkl0a0dmMzdLTFVTV2hxUEFZUzZBOTgzUGNtM0VrQlNVUnlQVzdfNWUzN3hWRkttV21GQzdpa3dlYzR4aTBuU0ZyQk54c0RqTGxlSngtUmR0NWZmWHhPbk1yV0lpS0pVaUhPU3ZtcmxQOXBzZlFLdWgxNzdidmVWWkJnNWRHMTNueDlodThhNg?oc=5">美伊和平協議提振市場情緒，股市上漲，油價下跌</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-6. 股市可能下跌：前聯準會主席鮑威爾發出的兩項緊急警告解釋了原因。
-來源：Investing.com｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMi0wJBVV95cUxOZUtjZ0tzcUhmSWZSZFBFbWZoVmJPNU9Sei1Ba2FtVXlEZ0NHQkEtcUI3OG14c194bmRRUk50RFg0NkNJb1BhYUNuVEJkYWcwb0hYS2R5SnZpUDNRLUtSSHRIM0JncDZjV1FaSU5ZcGhMNV84cmpkN19DalI3clplRkM2ZktTRTJmcFJoUjlPcHRpaTZwcW15REdBc0M5VTVMMWx1YUlJS3FQS0F0WXpuVGxMVUd1NUhyZ2FhLVlfSDlxc1lrejBPVFJqbkV6NkU5eEdxXzlvZnlPZzlCOUQwMnV2UVBCN2RSRElvNnJVa0VwbjJxRkFPbjJMVi1icHQ1Mi1TQllfTjdhc05MOFBCNzM1cDZSNUxrbUtMVnYyM0VLS1gwbm5kbVVnY0hzZHdGSWpCRTFfUlY2Qmo0dVhlQkJUczNOSW5udGNkZkUtRjZJWTg?oc=5">https://news.google.com/rss/articles/CBMi0wJBVV95cUxOZUtjZ0tzcUhmSWZSZFBFbWZoVmJPNU9Sei1Ba2FtVXlEZ0NHQkEtcUI3OG14c194bmRRUk50RFg0NkNJb1BhYUNuVEJkYWcwb0hYS2R5SnZpUDNRLUtSSHRIM0JncDZjV1FaSU5ZcGhMNV84cmpkN19DalI3clplRkM2ZktTRTJmcFJoUjlPcHRpaTZwcW15REdBc0M5VTVMMWx1YUlJS3FQS0F0WXpuVGxMVUd1NUhyZ2FhLVlfSDlxc1lrejBPVFJqbkV6NkU5eEdxXzlvZnlPZzlCOUQwMnV2UVBCN2RSRElvNnJVa0VwbjJxRkFPbjJMVi1icHQ1Mi1TQllfTjdhc05MOFBCNzM1cDZSNUxrbUtMVnYyM0VLS1gwbm5kbVVnY0hzZHdGSWpCRTFfUlY2Qmo0dVhlQkJUczNOSW5udGNkZkUtRjZJWTg?oc=5</a>
+            <article class="news-row">
+              <div class="rank">06</div>
+              <div>
+                <div class="news-meta">
+                  <span>能源與地緣風險</span>
+                  <span>Investing.com</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxOZTdabUctSEEzZm1MZ3JhRU1NS2xrRmtMM0dSYVFtLVh6SWYtOE9vc1A4U1BFdjYwajFsNWdURDgtbkJkaGxGWGt0TEh2TWFWY3BBcFVZdGRkR1FyZ0tnb1I1eXg1TjM2SlBGYXlHTE1YNW5uMGFhaUp2em5tZDh5RmxmUnd6N2s2YXFlLUM0Qm9lQm95NG56NXdBQmkwOXFhVXlFYUcwQWZMNjRC?oc=5">市場歡呼伊朗協議，等待石油開始流動 路透社</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-7. 美國和伊朗如何從戰火重燃轉向和平的邊緣
-來源：WSJ｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxOTFJlX2lWaDg2bUZBR0Z4ZzlhUlA4VG5La2tEdzIwd21rSlpmaHhxN1NHNmpmWC1hUDdjb1A2V0xRdXFBUlFma0doWVZJdjRRZERQZkRZRnI5Y09HRzYzb2Nyb1VsVTZDTFp0bXJ5VmFiTTRBNHFhVk1ZbWt3OE1PZTIzS2lYOER6?oc=5">https://news.google.com/rss/articles/CBMiiAFBVV95cUxOTFJlX2lWaDg2bUZBR0Z4ZzlhUlA4VG5La2tEdzIwd21rSlpmaHhxN1NHNmpmWC1hUDdjb1A2V0xRdXFBUlFma0doWVZJdjRRZERQZkRZRnI5Y09HRzYzb2Nyb1VsVTZDTFp0bXJ5VmFiTTRBNHFhVk1ZbWt3OE1PZTIzS2lYOER6?oc=5</a>
+            <article class="news-row">
+              <div class="rank">07</div>
+              <div>
+                <div class="news-meta">
+                  <span>利率與估值</span>
+                  <span>WSJ</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxNS0lIVVA5ZXhXaVBWa2FBTFRELVY2MDF2aGZ2clREM2dha2hqRnNXU2hCMDJQY1Y3cC1DWFVTOWJlQkhJdG1zX0xFT29mVmphNVNrT1drLWFDYXRTOFVRS3hzNzVrSTBuMFhWY2RfNHgwbmdtLTVLVnBaMEN2RkFxT3NLQ1VxdVZkenc?oc=5">凱文沃什希望聯準會停止解釋一切</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-8. 隨著人工智慧競賽的加劇，華爾街消化了創紀錄的募款金額
-來源：Financial Times｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxNbVpHVTNkSGhjRGs1eXA1VVB1MTNDR1hocU8zQzNqZEVRMUhSLTNtd29LSDJad1JQNEtPaDVleWM1anBRUXJLMHFYZm9jdVNmM25lTUtfcGJHbk85S1lxSGNnVzZWYU1fbFprTHE4TDRxeVdhOGZsRVJQYWVhMEhrcUU4RlE?oc=5">https://news.google.com/rss/articles/CBMihAFBVV95cUxNbVpHVTNkSGhjRGs1eXA1VVB1MTNDR1hocU8zQzNqZEVRMUhSLTNtd29LSDJad1JQNEtPaDVleWM1anBRUXJLMHFYZm9jdVNmM25lTUtfcGJHbk85S1lxSGNnVzZWYU1fbFprTHE4TDRxeVdhOGZsRVJQYWVhMEhrcUU4RlE?oc=5</a>
+            <article class="news-row">
+              <div class="rank">08</div>
+              <div>
+                <div class="news-meta">
+                  <span>能源與地緣風險</span>
+                  <span>Financial Times</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxOLWdrY2Z3YmJ0VlVpWmdhMzloMDhzM0Q2ZEJTRlFxTEFVc0JjbWdmUFFObndGMFV2bnpJQUtjOTBROXM2d0JqRHl0RThsQldDanNmSDROaHNINkItY1YxMkdZc2ZOOENfclRUaU9ubmRlNldyTWJKakpLVFY1MTFmSnY5WGM?oc=5">美伊協議導致油價下跌，但霍爾木茲積壓可能持續數週</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-9. 世界盃悖論
-來源：The Economist｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE1qUnJsY3FrMHFfWUk0bEptdE9mblF2YWZRSGtCVU1fNDRJdUxhcl9takp6SjJYSXBLaWlPbVVTRjNfN2FHNC0zRlNUNG05Wm1FWE9oazRnWXRoT2NUNTZr?oc=5">https://news.google.com/rss/articles/CBMiX0FVX3lxTE1qUnJsY3FrMHFfWUk0bEptdE9mblF2YWZRSGtCVU1fNDRJdUxhcl9takp6SjJYSXBLaWlPbVVTRjNfN2FHNC0zRlNUNG05Wm1FWE9oazRnWXRoT2NUNTZr?oc=5</a>
+            <article class="news-row">
+              <div class="rank">09</div>
+              <div>
+                <div class="news-meta">
+                  <span>AI 與半導體</span>
+                  <span>The Economist</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxPLTVXQmJyVkQzSHMydFNyMFAzaFdCbkNLT21LVGNoYVlIc2VIcDVJNjVUSFB5RDlIM3NmRC1DR0x1Q2k0S2twUVdzci1DR2ZITmlhdHgwU2tRNGlUbmJZODg2RjkzUU5pTU5IWUlqSWxDN0dUemRhLWhncDVPR1lzMzNLdzZoNldQeGVEUzVmRDlpWG82Snh3MUs5MGlUY3pGajRIa29tTHk?oc=5">唐納德·特朗普切斷了對世界上最好的人工智能模型的訪問</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-10. AI算力飆升催動「晶片升級紅利」！ASIC、PMIC雙強聯手
-來源：鉅亨網｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE1mT3JOZS1yOVJlRnlEYWFOcWN2UXl0YkJnTGdOYjJGbGN5TVZCVE01UEN5Mjk2R0lRRm9RM2IyUHRxZU9wdEJkZGF4SzMxc0k?oc=5">https://news.google.com/rss/articles/CBMiT0FVX3lxTE1mT3JOZS1yOVJlRnlEYWFOcWN2UXl0YkJnTGdOYjJGbGN5TVZCVE01UEN5Mjk2R0lRRm9RM2IyUHRxZU9wdEJkZGF4SzMxc0k?oc=5</a>
+            <article class="news-row">
+              <div class="rank">10</div>
+              <div>
+                <div class="news-meta">
+                  <span>利率與估值</span>
+                  <span>鉅亨網</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE5CamM0VUhraGdJa2Jxb1FmOTUtT0VIS2NNeUZMUGZudlR6Zy1vbVJrLVRVSGUzSVQtVENJMFVTOWxIVmhfOEZFTThCRzFCTzA?oc=5">高盛警告美股最大風險！10年期美債殖利率升破5% AI牛市恐面臨估值重擊</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-11. 【MM Podcast】財女珍妮聯合特輯｜通膨修估值，還是 SpaceX 救估值
-來源：MacroMicro｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMi3wFBVV95cUxNWk4zcmJRMUx5WHBxMGx6ejhNeTdJaXk5eVlYRWZZQ1hqVzREREdnNkgtMmV6emV3MWNEeFVqTWVYdnBEMUdiX2xEVXpoWkxOcmNJRF9XbDU4T19NLUd0dWF3Z0RMcTNydFRTYkN0RHVsMm41M3UwRlRSSGd0c2pmZVhvNFhrcXd5NWhPeTgzZUkybXNnRkRDSGd2UlVxNzg4SUNwNkZlRDZvbV84SjdTSDVuQ2hpS001MHluOW9OUGdpRjNuTFRoQjRjRGhBVnBOOGVLckdETGI5eVU0bE9J?oc=5">https://news.google.com/rss/articles/CBMi3wFBVV95cUxNWk4zcmJRMUx5WHBxMGx6ejhNeTdJaXk5eVlYRWZZQ1hqVzREREdnNkgtMmV6emV3MWNEeFVqTWVYdnBEMUdiX2xEVXpoWkxOcmNJRF9XbDU4T19NLUd0dWF3Z0RMcTNydFRTYkN0RHVsMm41M3UwRlRSSGd0c2pmZVhvNFhrcXd5NWhPeTgzZUkybXNnRkRDSGd2UlVxNzg4SUNwNkZlRDZvbV84SjdTSDVuQ2hpS001MHluOW9OUGdpRjNuTFRoQjRjRGhBVnBOOGVLckdETGI5eVU0bE9J?oc=5</a>
+            <article class="news-row">
+              <div class="rank">11</div>
+              <div>
+                <div class="news-meta">
+                  <span>利率與估值</span>
+                  <span>MacroMicro</span>
+                  <span>2026-06-14</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiywFBVV95cUxQZW9CaS00TlZkZnRQaFZrbU93UWdLd3hWQmU3VU5FaHd5b2hMVXdSU3BZVnJOR2pScEU1MlJ2cGs1dlFhellUWW9xbXlQaTZpLTZFQjNJcFI0R2FEWUJZLTliSm54cnV6aE9HYUg4cWJYRUpibVFINERXRXdIWHotZFZUSVBjTExXR1VjZWFwOTNrUlNVeUdwWU5venNTNl95QlZLVTh6R3ctajlmbWo2V3hqc2hsTWZXMm54dG1MMktfajJWYndCSEpRNA?oc=5">【MM一週盤前】本週聯準會會議重磅登場，密切關注三大重點！</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-12. 比特幣以 6.4 萬美元的價格衝擊 SpaceX IPO，交易員警告關鍵的 BTC 價格支撐可能崩潰
-來源：TradingView｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMigwNBVV95cUxNS0FUVGxSYlJqamhtbWFnMklzNGNvZS1IQ2ExX2lvTEt2TS1UM2QzVUFMYnF1Y1lCZnVBRldXNm9zOXhyZHNIQ09qV2d2OEdjb3dqQXRPSUdTVUVDV2Y0RlI5Q095cGw2eExNRmNwSXI1VTJyZ2lrdnB4N29Ta1ZuSlBKRGo3T1M4bHJDYmNndzJKVzFqd0YwV2F2ekFUVTJBZkNlN0RyMzBTWlJySlVqLXpGSkVCMHl2YloyQ2VxVG9KV1ppckU4WV9UWVQzek9uakl4RDZ3SkVPbEVmLXpjMEY4TlFNaGstQ0FVT18yaWh3R0tLaWRKNURpay1vUk85RWRYSnhqS2ZoLVJOUDBGT1JLQzVtbzcyZzY3YUZXRVR6dFFsMEt4LXQ4Z19idmlQUktUeXcyNGY3STRZMFFUazZtdF9NNWIxZDJkOHRvODhDT3o5OEFSMHJndE82YUVnNzhLb25nbEZraVBTdmlVZVVBRjNMY3FxU3BlRmJ1T1ZMenc?oc=5">https://news.google.com/rss/articles/CBMigwNBVV95cUxNS0FUVGxSYlJqamhtbWFnMklzNGNvZS1IQ2ExX2lvTEt2TS1UM2QzVUFMYnF1Y1lCZnVBRldXNm9zOXhyZHNIQ09qV2d2OEdjb3dqQXRPSUdTVUVDV2Y0RlI5Q095cGw2eExNRmNwSXI1VTJyZ2lrdnB4N29Ta1ZuSlBKRGo3T1M4bHJDYmNndzJKVzFqd0YwV2F2ekFUVTJBZkNlN0RyMzBTWlJySlVqLXpGSkVCMHl2YloyQ2VxVG9KV1ppckU4WV9UWVQzek9uakl4RDZ3SkVPbEVmLXpjMEY4TlFNaGstQ0FVT18yaWh3R0tLaWRKNURpay1vUk85RWRYSnhqS2ZoLVJOUDBGT1JLQzVtbzcyZzY3YUZXRVR6dFFsMEt4LXQ4Z19idmlQUktUeXcyNGY3STRZMFFUazZtdF9NNWIxZDJkOHRvODhDT3o5OEFSMHJndE82YUVnNzhLb25nbEZraVBTdmlVZVVBRjNMY3FxU3BlRmJ1T1ZMenc?oc=5</a>
+            <article class="news-row">
+              <div class="rank">12</div>
+              <div>
+                <div class="news-meta">
+                  <span>全球市場</span>
+                  <span>TradingView</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxOSWNVdkdwQXp1cm5rQ3lQQ1BPWkJpenRmVkpXN2FrV3BfX1c1R2hrcVNPOUlIWG9RanVPSk9qZUlxbmJjaEthdDZBM2JjZW5sRE1vNzljcmM0WmttSlp1N1JDaHpoOHkwYU0yV1JidmxJQ3k0T3hHQ1BEOXVxR2FKanJrV1N6VEJPR1FMWUZoV3l2XzVKbWNFZzd4M3hQOEdOVUkycTVwZ0ZJQXNidGl2dldIY3d4OTDSAcMBQVVfeXFMTnNqS2FPNUdhaEJpWjBsM1V1T3NUYVpGXzA2MVRpTWM2YjdhckhEVjMzbDJnekdQN2U0a094WkZWbVh5akNfQmNhbTBQdnFjTkRRQXNoRW1CenJJeHdJb05nUk9LRUwxODJOd1pYb2JPTWhlVW5GMkZmYXVfRHBGa0xwbl8xY3dncnJjeXhBLUpPNVA5ZkZxcHNNaWdKMzRSZi1rYWVMWWpCT1N2RF9EbVNxb2lFQUIzMTM2YzVXd1hERFRJ?oc=5">國際財經新聞：Nasdaq 100 Leads Wall Street Rebound as Middle East Peace Boosts Risk</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-13. 認識下一個 NVDA
-來源：Reddit WallStreetBets｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPMmVWaDhjakNMZjRnd2gyNDQxdFVfeTJDeFllQzhnWGVRVlBuM0hZajM4QVduVkVsdW50MFhTWTJqekJ2aGpnSUpYc09OVFRqb29lTFd1QWRFcWdWNTJScE5qTWYySXZkcEY0Y2JZOG53V1dIOGFnLWtBNzdFTmJ2a2JR?oc=5">https://news.google.com/rss/articles/CBMiggFBVV95cUxPMmVWaDhjakNMZjRnd2gyNDQxdFVfeTJDeFllQzhnWGVRVlBuM0hZajM4QVduVkVsdW50MFhTWTJqekJ2aGpnSUpYc09OVFRqb29lTFd1QWRFcWdWNTJScE5qTWYySXZkcEY0Y2JZOG53V1dIOGFnLWtBNzdFTmJ2a2JR?oc=5</a>
+            <article class="news-row">
+              <div class="rank">13</div>
+              <div>
+                <div class="news-meta">
+                  <span>能源與地緣風險</span>
+                  <span>Reuters</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxOaURsWHU4cTY1V3lSa05EUnNCbFNkNE1MWkozUHVDTlhPN29oTFc3Z2h3OWpCWFZrS1FSeGRmcDdpVjJRWkZBZG1UcVYwVzczQ0hEb21tZ3J0VzlrbWFoYllSTElHWGN4Qnh0V25DUDc0ZjNFT1hKN1ZHZDFkTDIyVDNpVk5jS3ZtaW9YTEh2bTFiTzItWENFYVkwY0ZFVUY0NmI3SnlpRGdESjVxbDhvbXRXVUJHTS1tMTZjdA?oc=5">亞洲股市歡呼伊朗協議，等待石油開始流動；海指上漲 1.3%</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-14. 消息人士稱，亞馬遜在美國政府鎮壓之前表達了對人擇人工智慧模式的擔憂
-來源：Reuters｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMi4wFBVV95cUxPNVUyWTdHTmhPci1TTEU3ckVwUUpOX2lXMS1jSjVmenYzS0N6MVVTYzhVRWFEN19wQlk0bnJHTHRfLVBfLWZJU0Y1Z2hfdUdNS2tESHVtc09nQWhMcXpvNUl2dTkxMmpuTkl0R1BsSXRkcWNyR2lWVDlKSHg2VmlBY05zYVNfcEpMQ0ZDSkE3UGl3NVM4Y3k0LXdMNWhzUDZvb252VmRHUWplWHc2akFFVlNlRF9IN3dzUnJUNjdEMXFQeXlGZGlWbm9XR2syQTdYdldXTURFWC1ySkZqMDVhRVdTNA?oc=5">https://news.google.com/rss/articles/CBMi4wFBVV95cUxPNVUyWTdHTmhPci1TTEU3ckVwUUpOX2lXMS1jSjVmenYzS0N6MVVTYzhVRWFEN19wQlk0bnJHTHRfLVBfLWZJU0Y1Z2hfdUdNS2tESHVtc09nQWhMcXpvNUl2dTkxMmpuTkl0R1BsSXRkcWNyR2lWVDlKSHg2VmlBY05zYVNfcEpMQ0ZDSkE3UGl3NVM4Y3k0LXdMNWhzUDZvb252VmRHUWplWHc2akFFVlNlRF9IN3dzUnJUNjdEMXFQeXlGZGlWbm9XR2syQTdYdldXTURFWC1ySkZqMDVhRVdTNA?oc=5</a>
+            <article class="news-row">
+              <div class="rank">14</div>
+              <div>
+                <div class="news-meta">
+                  <span>利率與估值</span>
+                  <span>Bloomberg</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMisgFBVV95cUxQamJBT1JXcG5uSFpLMWlMVjdUbDhNSFZHV1JRNE51RjdwdXNMVmdPOUN4NE5Ebkxib1J5UUFiVUNWRllhdnVZZkV4c0ZpUld0cUtKZjlHcXBic3J0R2JsUzg1WGpoRnZVSS1jaG1ZTi1SanRLVDNvcWloUG5STFluT21PZmRFRnVxdU1OWU5DemZuQUpVVmQybWkzRmYzY0poUzhKLS1NZUUwR2J0cVJoOUVn?oc=5">聯準會：股市從 SpaceX 轉向關注伊朗交易</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-15. 全球資本主義將全部賭注押在人工智慧的未來上，這引起了選民的警惕
-來源：Bloomberg｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMisgFBVV95cUxNc0JBRDVqSFhZcV82ZnVNaF9qX1ZaWkZucEhwWnFlR0wyeFU0VFhxQWhvUFVVYTN3VEQ4VHhxS2ZtanE4TVlGM3pkVGU5MVBVbHNyYXFqMkVyZ2RqeWZhVjJZX1FHMlF6RUNMN2VCNF9SaHFyQy1uUkxsd3RvUWQtRlAxd25ZaF96OVc0LUNvSDJkUjdNUi1iU3dNNDg5OUNxTkFNaElEVnBPOFF0NzhJSDlR?oc=5">https://news.google.com/rss/articles/CBMisgFBVV95cUxNc0JBRDVqSFhZcV82ZnVNaF9qX1ZaWkZucEhwWnFlR0wyeFU0VFhxQWhvUFVVYTN3VEQ4VHhxS2ZtanE4TVlGM3pkVGU5MVBVbHNyYXFqMkVyZ2RqeWZhVjJZX1FHMlF6RUNMN2VCNF9SaHFyQy1uUkxsd3RvUWQtRlAxd25ZaF96OVc0LUNvSDJkUjdNUi1iU3dNNDg5OUNxTkFNaElEVnBPOFF0NzhJSDlR?oc=5</a>
+            <article class="news-row">
+              <div class="rank">15</div>
+              <div>
+                <div class="news-meta">
+                  <span>利率與估值</span>
+                  <span>CNBC</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiekFVX3lxTE9Lejg4cEIwVHNEcVM2ZFRBQ1BSdFVuOFBnT001M28ySHZLXzVYMncwNEV6T1RUUG9ObkFFM1VrNDlIYUdrRHBWdUxNaks0TnhoR2ItLW92Um1VM3MxZWhySS1KcW4yZy1yUHJpLTM0SzM2UU5HT0t0OTVB?oc=5">未來一周美國股市：沃什首次聯邦公開市場委員會會議和伊朗是焦點</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-16. 英國軍隊登上受制裁的俄羅斯影子艦隊油輪
-來源：CNBC｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxPWUxDTmlidDZybUxCNlJRVE95cHpyTmpvTHVmLXM4YldmM28zdnpEc3luTUpQcEF4T3hZeGgtZDFhNHdHTFZudWh2ajZhWWhGN0FfbnhVTTI2b1M4QXdzTXoxbEhLQnB2VzRuZHM3WlpySFVYdnNTYURTdlFyeTd4OFhvV0VHaEtCZlJ0U0dYOC13eFh3d01PUnZYb9IBoAFBVV95cUxOR3l3cWk5YzU1WnlaOFgzazY4N3pVWk1KbG5pWTIzYXRFUm1YRERGV2dOZmZ3N2RraDFWVmNFVC1MUVdDUHVzX29hZm1aYkJVdWhPWWNMQjIzUHV4M21fSWhEcjl0bzJjcnEycEsxR1lNOEZVSDFVRENhNGg4NExwX3l0QW5RNHZrUHhhbkEwajlOWW5OeTVRaTNQX2VMSTdj?oc=5">https://news.google.com/rss/articles/CBMimwFBVV95cUxPWUxDTmlidDZybUxCNlJRVE95cHpyTmpvTHVmLXM4YldmM28zdnpEc3luTUpQcEF4T3hZeGgtZDFhNHdHTFZudWh2ajZhWWhGN0FfbnhVTTI2b1M4QXdzTXoxbEhLQnB2VzRuZHM3WlpySFVYdnNTYURTdlFyeTd4OFhvV0VHaEtCZlJ0U0dYOC13eFh3d01PUnZYb9IBoAFBVV95cUxOR3l3cWk5YzU1WnlaOFgzazY4N3pVWk1KbG5pWTIzYXRFUm1YRERGV2dOZmZ3N2RraDFWVmNFVC1MUVdDUHVzX29hZm1aYkJVdWhPWWNMQjIzUHV4M21fSWhEcjl0bzJjcnEycEsxR1lNOEZVSDFVRENhNGg4NExwX3l0QW5RNHZrUHhhbkEwajlOWW5OeTVRaTNQX2VMSTdj?oc=5</a>
+            <article class="news-row">
+              <div class="rank">16</div>
+              <div>
+                <div class="news-meta">
+                  <span>能源與地緣風險</span>
+                  <span>Yahoo Finance</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMizgFBVV95cUxQNU5MWWh6SHZxblFPS3MxX0t6OUx5SWxuejMyM1BwalVKTFhIcTNhNjNFb3o0SFJpaFRzQ0pfa2xkSnRNaFBBajQ3d3I5ZGZDd0pUclVRTHZDamxsZWRwd19LNWNWb1FGY0trY1FyMHN2WXdxV3JBUk8tT05xcWlIT1RhZDJOOWlobVgzUmJmRzRBaS1fZk1VNjNOa1owemVHWENjZEJLRzN0Z29CSjF5NUJBTkNwR0lSX1MzdDgxbGo4czB2OHdSN2Z1WlJGZw?oc=5">美國和伊朗同意停火，導致股指期貨走高，油價走低</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-17. Nasdaq US Diversified Industria (^NQUS50203000LMGBPT) 圖表、數據和新聞
-來源：Yahoo Finance｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE8xb3RIeEd6OUFwaUVaSmJlV3M4TUZhajZVbk1yQWtIX2U4NE9ucDU3UXFCWFJqQmNHVXktZjA2NE9WSkxnRld5MmhtaGtyMFBkU1hqTUFPNlo2VUZqSm10S2ZuUUotbzJJ?oc=5">https://news.google.com/rss/articles/CBMiaEFVX3lxTE8xb3RIeEd6OUFwaUVaSmJlV3M4TUZhajZVbk1yQWtIX2U4NE9ucDU3UXFCWFJqQmNHVXktZjA2NE9WSkxnRld5MmhtaGtyMFBkU1hqTUFPNlo2VUZqSm10S2ZuUUotbzJJ?oc=5</a>
+            <article class="news-row">
+              <div class="rank">17</div>
+              <div>
+                <div class="news-meta">
+                  <span>全球市場</span>
+                  <span>Seeking Alpha</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiiwFBVV95cUxPRTg4ZjFJMDlzSjZVMVR0bXY1RlVyTnNwWWFDd2pKSFVfU0RNRGFtVnFJUlhpZENucnBrby1mN3RIQUhSek55SEpMRUg5U3J1cTBsUXJuUGRmYlpWMjVxeGdPMFEyMVNZR08wVDdfX2VNME5wcDBoNjZhNlNNYnlHODBXZF84M3RWUzJN?oc=5">Meta：估值差距難以忽視（納斯達克股票代碼：META）</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            
 
-18. 安森美半導體：成長正在復甦，利潤率擴大
-來源：Seeking Alpha｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxPdUxIZEhKN3FVMnMtU0dWSENMTHlPT2NBRkxnQy1VRDBsNlRwTjVzQXM0MGxib0RSRERNS1gwR2lYQ09VQ0x0OUtySHc1aEd0aXNxLXpIbmh0NEdTUGRiNlhkbVJ2LWVfN1R5a3U2M3NRQ3BWTThvNHAwOFRBaWRLNHNhVHlGeS1adEpTMWJCVUE1bXBYSWN1V0d0T0ZCYzhKSk5oaENLbw?oc=5">https://news.google.com/rss/articles/CBMipwFBVV95cUxPdUxIZEhKN3FVMnMtU0dWSENMTHlPT2NBRkxnQy1VRDBsNlRwTjVzQXM0MGxib0RSRERNS1gwR2lYQ09VQ0x0OUtySHc1aEd0aXNxLXpIbmh0NEdTUGRiNlhkbVJ2LWVfN1R5a3U2M3NRQ3BWTThvNHAwOFRBaWRLNHNhVHlGeS1adEpTMWJCVUE1bXBYSWN1V0d0T0ZCYzhKSk5oaENLbw?oc=5</a>
+            <article class="news-row">
+              <div class="rank">18</div>
+              <div>
+                <div class="news-meta">
+                  <span>能源與地緣風險</span>
+                  <span>Investing.com</span>
+                  <span>2026-06-15</span>
+                </div>
+                <h3><a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxPOXFEOTJNV1JLT3VidE0tS0tPd3ZidWJtRGhVN1dhVFZQMXA4QzhjXzB2Z1ItTzFhcV9KemRSaHhNdko4Q1pCSm8taFl0QmpYcHdSVlZGVkE2LWhOUVdqZUlWYnlFUVQ4SmlCWG5MZnV3ZzRab3hlQnBBZjFlWkNjTGJFbDlnMzE3LXItWGxodVFSNXBicVMtV2JzUmFPVTl2ZWdDODRwODZtOFgxeTVzTUltT2NwZW9yQUE?oc=5">美國與伊朗達成和平協議；川普稱霍爾木茲海峽將重新開放</a></h3>
+                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+              </div>
+            </article>
+            </section>
 
-19. 高盛研究人工智慧資本支出熱潮對標準普爾 500 指數股本報酬率的影響
-來源：Investing.com｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMizAFBVV95cUxNUlNINnp2RUg1amljMERPMDlmRmlnenhCMXFOR3FITk0wb1BueUNOUHdtTkxVaXY5anJDVlMtenhNQWZZbTh0Sm9kTklzNGhCMFoxVTg5SjZ1bE8xa2JZTHBzM3hOSVRaM1ExS2NEUlpSMkZoZld0cVo1WmlUZVhWcjVkMUluc043VTNNY1FaWm9IeTUwOFdXc2pLM2IwRlpxbzdDTWctYTdKNFVmSW10U0RJNmpxbm01VTFrVUlWXzBLMnNoUXIyQUNVMTU?oc=5">https://news.google.com/rss/articles/CBMizAFBVV95cUxNUlNINnp2RUg1amljMERPMDlmRmlnenhCMXFOR3FITk0wb1BueUNOUHdtTkxVaXY5anJDVlMtenhNQWZZbTh0Sm9kTklzNGhCMFoxVTg5SjZ1bE8xa2JZTHBzM3hOSVRaM1ExS2NEUlpSMkZoZld0cVo1WmlUZVhWcjVkMUluc043VTNNY1FaWm9IeTUwOFdXc2pLM2IwRlpxbzdDTWctYTdKNFVmSW10U0RJNmpxbm01VTFrVUlWXzBLMnNoUXIyQUNVMTU?oc=5</a>
+    <div class="section-title">
+      <h2>台股觀察與風險</h2>
+      <p>把新聞轉成明天/今日盤中可追蹤的檢查項。</p>
+    </div>
+    <section class="panel watch-grid">
+      <div>
+        <h3>權值與族群</h3>
+        <p>先看台積電、AI 伺服器、半導體設備與金融權值是否同步；若只有單一族群撐盤，追價風險較高。</p>
+      </div>
+      <div>
+        <h3>外部變數</h3>
+        <p>美元、美債殖利率與油價若同向走高，容易壓縮風險資產估值；若回落，科技股反彈較有延續條件。</p>
+      </div>
+      <div>
+        <h3>操作節奏</h3>
+        <p>重大數據與央行會議前，優先控管部位與停損；把新聞當成情境清單，再用價格與量能確認。</p>
+      </div>
+    </section>
 
-20. 據報道，亞馬遜執行長在政府鎮壓之前提出了人擇模型擔憂
-來源：WSJ｜日期：2026-06-14
-連結：<a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxQTG5xY0Q3U2lTVEV2by1yZHNTYW1CaVBJSlBmcWVuN0ljSktmb2doT3pKMGdkZXpjcTN2cUpmcmxNWUhYM1ozb1JxeloxeVJlWG8xVzgtUjFvSFh2SmM4bUFrdEx5QmVkbm5fYU9YSHNXam41d3d3RVM1eUxUNlg0REt2WXJ6ZDdXcHo1ZDVnTnI1a2NJZGc2UWNoeXVMYzZpZHUwcVBDMkVvMjBvUnZyc2FpQThuek0?oc=5">https://news.google.com/rss/articles/CBMitwFBVV95cUxQTG5xY0Q3U2lTVEV2by1yZHNTYW1CaVBJSlBmcWVuN0ljSktmb2doT3pKMGdkZXpjcTN2cUpmcmxNWUhYM1ozb1JxeloxeVJlWG8xVzgtUjFvSFh2SmM4bUFrdEx5QmVkbm5fYU9YSHNXam41d3d3RVM1eUxUNlg0REt2WXJ6ZDdXcHo1ZDVnTnI1a2NJZGc2UWNoeXVMYzZpZHUwcVBDMkVvMjBvUnZyc2FpQThuek0?oc=5</a>
-- AI 判讀：尚未設定 GEMINI_API_KEY，目前先使用規則式觀察。
+    <div class="section-title">
+      <h2>來源分布</h2>
+      <p>用來檢查是否過度集中在單一媒體。</p>
+    </div>
+    <section class="panel sources"><span class="source-pill">Reuters <b>2</b></span>
+<span class="source-pill">Bloomberg <b>2</b></span>
+<span class="source-pill">CNBC <b>2</b></span>
+<span class="source-pill">Yahoo Finance <b>2</b></span>
+<span class="source-pill">Seeking Alpha <b>2</b></span>
+<span class="source-pill">Investing.com <b>2</b></span>
+<span class="source-pill">WSJ <b>1</b></span>
+<span class="source-pill">Financial Times <b>1</b></span>
+<span class="source-pill">The Economist <b>1</b></span>
+<span class="source-pill">鉅亨網 <b>1</b></span>
+<span class="source-pill">MacroMicro <b>1</b></span>
+<span class="source-pill">TradingView <b>1</b></span></section>
 
-提醒：這是投資資訊整理與觀察方向，不是保證式買賣建議。</section>
-    <p class="footer">Updated: 2026-06-14 18:39:20 Asia/Taipei. This page is generated from the same daily finance workflow used by the Telegram digest.</p>
+    <p class="footer">Updated: 2026-06-15 14:36:47 Asia/Taipei. This page is generated independently by GitHub Actions and no longer depends on Codex automation.</p>
   </main>
 </body>
 </html>

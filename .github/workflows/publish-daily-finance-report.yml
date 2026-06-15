@@ -1,6 +1,13 @@
 name: Publish Daily Finance Report
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-daily-finance-report.yml"
+      - "assets/**"
+      - "scripts/**"
   schedule:
     # GitHub Actions schedule is UTC. Taipei is UTC+8.
     # 22:30/22:45/22:58 UTC = 06:30/06:45/06:58 Taipei.

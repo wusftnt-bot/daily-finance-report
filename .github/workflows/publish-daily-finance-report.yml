@@ -38,7 +38,21 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check existing daily report
+        id: existing_report
+        working-directory: site
+        shell: bash
+        run: |
+          today="$(TZ=Asia/Taipei date +%F)"
+          if [[ "${{ github.event_name }}" == "schedule" ]] && grep -q "Daily Finance Report - $today" index.html; then
+            echo "Daily finance report for $today already exists. Skipping scheduled fallback run."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Generate daily finance report HTML
+        if: steps.existing_report.outputs.skip != 'true'
         working-directory: site
         env:
           TELEGRAM_CHAT_ID: placeholder
@@ -49,6 +63,7 @@ jobs:
         run: python scripts/publish_daily_finance_report.py
 
       - name: Commit and push report site
+        if: steps.existing_report.outputs.skip != 'true'
         working-directory: site
         shell: bash
         run: |
@@ -61,4 +76,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
           git commit -m "Update daily finance report $today"
+          if git push; then
+            exit 0
+          fi
+          git fetch origin main
+          if git show origin/main:index.html | grep -q "Daily Finance Report - $today"; then
+            echo "Another scheduled run already published $today. Treating this fallback run as successful."
+            exit 0
+          fi
+          git pull --rebase origin main
           git push

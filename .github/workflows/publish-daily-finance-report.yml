@@ -14,6 +14,10 @@ on:
     - cron: "30 22 * * *"
     - cron: "45 22 * * *"
     - cron: "58 22 * * *"
+    # Backup schedules for the observed GitHub schedule offset. If these run normally, the existing-date guard skips them.
+    - cron: "30 3 * * *"
+    - cron: "45 3 * * *"
+    - cron: "58 3 * * *"
   workflow_dispatch:
 
 permissions:

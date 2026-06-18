@@ -51,10 +51,15 @@
     .section-title { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 26px 0 12px; }
     .section-title h2 { margin: 0; font-size: 22px; }
     .section-title p { margin: 0; color: var(--muted); font-size: 14px; }
-    .themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .themes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
     .theme-card { padding: 18px; }
-    .theme-topline { display: flex; align-items: center; justify-content: space-between; color: var(--teal); font-weight: 700; }
+    .axis-rank { color: var(--teal); font-size: 13px; font-weight: 800; }
+    .theme-topline { display: flex; align-items: start; justify-content: space-between; gap: 12px; color: var(--teal); }
+    .theme-topline h3 { margin: 6px 0 0; color: var(--ink); font-size: 19px; }
     .theme-topline strong { color: var(--ink); font-size: 24px; }
+    .theme-card dl { margin: 14px 0; }
+    .theme-card dt { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .theme-card dd { margin: 2px 0 10px; color: #334454; }
     .theme-card p { margin: 12px 0; color: #334454; }
     .theme-card ul { margin: 0; padding-left: 18px; }
     .news-list { display: grid; gap: 12px; }
@@ -83,9 +88,9 @@
 <body>
   <header>
     <div class="hero">
-      <div class="kicker">Daily Finance Report | 2026-06-18 09:22:16 Asia/Taipei</div>
+      <div class="kicker">Daily Finance Report | 2026-06-18 23:28:23 Asia/Taipei</div>
       <h1>2026-06-18 投資儀表版</h1>
-      <p>整理今日全球財經新聞、利率與能源脈動、AI/半導體題材，以及台股開盤前後應觀察的資金與風險訊號。</p>
+      <p>今日以AI、半導體與科技資本支出為首要主軸，並結合利率、通膨與流動性與地緣政治與政策風險觀察資金輪動。</p>
       <div class="meta">
         <span class="pill">Date: 2026-06-18</span>
         <span class="pill">Source: GitHub Actions</span>
@@ -95,10 +100,15 @@
   </header>
   <main>
     <section class="metrics" aria-label="Report metrics">
-      <div class="metric"><span>整理新聞</span><strong>18</strong></div>
+      <div class="metric"><span>今日新聞</span><strong>18</strong></div>
       <div class="metric"><span>新聞來源</span><strong>12</strong></div>
-      <div class="metric"><span>今日主軸</span><strong>利率與估值</strong></div>
-      <div class="metric"><span>更新狀態</span><strong>Current</strong></div>
+      <div class="metric"><span>第一主軸</span><strong>AI、半導體與科技資本支出</strong></div>
+      <div class="metric"><span>解讀模式</span><strong>Dynamic 3</strong></div>
+    </section>
+
+    <section class="panel market-brief">
+      <strong>相較昨日</strong>
+      <p>今日建立第一份動態市場比較基準。</p>
     </section>
 
     <div class="section-title">
@@ -107,42 +117,47 @@
     </div>
     <section class="themes">
             <article class="theme-card">
+              <div class="axis-rank">今日主軸 1</div>
               <div class="theme-topline">
-                <span>利率與估值</span>
-                <strong>12</strong>
+                <h3>AI、半導體與科技資本支出</h3>
+                <strong>5</strong>
               </div>
-              <p>長天期利率、美元與通膨預期仍是估值壓力的主軸；成長股反彈若缺乏殖利率配合，容易出現震盪。</p>
-              <ul><li><a href="https://news.google.com/rss/articles/CBMiuwFBVV95cUxQUkxjSDA1V3VDUWZXbVNCbkNsQVdRdWVoWDFfU0phVW5sbzNKWVVDYTlmVFpoQVNadmJ0WjJQYmYxX3QwVUUxcHRqalpwMm5VbjQ3RjFBbHVQb3MxTkk0X2JIMENvT0FCZUJJSEdoaHJOMnkwa09CX0pvUzd6d1JvdVRZckQySzJZQV95eksxWWtwcXJkNk5GRTY4Rm9oR3BKZ0oxTFYySTFkNWxNZXl6UGdKcnI5YzJId3hr?oc=5">由於市場等待伊朗協議細節、聯準會政策，歐洲股市收高；BMW滑梯</a></li><li><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxPbGtQMnI4cF9yUGY4aE1KN211cU5pYXBJRGZpeS1SMFlOVW10NFZla29FYzl5aWN3anhOMEtfVUxpZkdubGluQ1A2NGFNRlpCQUhfbkpRRTJOaXdsbDhnOXpVSjFiRmFBVWNjLUlqWE5pR2dJQWVwQ1pTRnhDcmlwQjNRbXBCSzRRdmk3eEZQa2JhR25xSmZzU3E4NVRBaXExaUtWVjU0bjhPRU9tbU5ETW5nMA?oc=5">亞洲股市和債券因聯準會鷹派訊號而下跌：市場結束</a></li></ul>
+              <p>今日新聞焦點集中在 AI 需求、半導體供應鏈與科技資本支出。</p>
+              <dl>
+                <dt>市場影響</dt><dd>有利高品質成長股，但估值偏高標的對展望修正更敏感。</dd>
+                <dt>24 小時觀察</dt><dd>觀察龍頭公司指引、伺服器需求與半導體接單動能。</dd>
+              </dl>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTFB0VFNkN19lRFpvRTF6RmlVLTBGWVhnbFZvMkZCZXQ2dHA4cFF0dFlGMUR1U3FnWHh2ZXZmSDhBZE5PY2ZaWE5aR0lrR3ViNGM?oc=5">輝達搶著要 郭明錤：台積電玻璃基板是AI晶片必需品</a></li><li><a href="https://news.google.com/rss/articles/CBMilAJBVV95cUxPRV84S0lYUVBuWUdnOW10TWI2WkpicXBKbHRwTTNCTTlJOVMzUko4aERuc3BMbk1aaHdObUZiRlRZUEtnWHlDUzJrUWFrSDd5Nk1jdjFTSkNORTA2dkpIVk1SdEtWR0JqLVNCcHlRRzlMemo2anhkZ3hDTU1hRUlnbFdjRXhXOHNWcW1OWjhJMXQtbWR2UWczWlhBcU1wdWw5bFZRTTlJeHhnZ3lXckdZWFZmWFNyUW13UVFBT25ZdUY5WUY0cGczT3Y5d2RxQk94OTlLZ3B6QS15Y2lzZGcyVzR4Uk1MVUNydzUzNHJQZGN5c05pQ09qRUMyelpTbjVMRXJLMkZVTW5LZXM3Zkdhdi1GZUM?oc=5">CNXN：人工智慧驅動的需求和強勁的財務狀況推動醫療保健、零售和管理服務的成長</a></li></ul>
             </article>
             
 
             <article class="theme-card">
+              <div class="axis-rank">今日主軸 2</div>
               <div class="theme-topline">
-                <span>能源與地緣風險</span>
-                <strong>3</strong>
+                <h3>利率、通膨與流動性</h3>
+                <strong>5</strong>
               </div>
-              <p>能源與地緣新聞會直接影響通膨預期、航運成本與避險情緒，短線需留意油價與美元同步變化。</p>
-              <ul><li><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxOaThXeEdicGl3ay1hQUh6SHVpei1jVUlSYzBBdFg4UnpmdnpKSmV2bnVQWXRWSHBBRkhqeVV0MEg3a2tjQWNxanU3VUhhMFQ4N2xyNENiWHB6N0pNZHRnQk1GY20zRjdTWnRDZ1BsT3VvU0JDMGNFdnpmMVNrSGwyQVhhazQ?oc=5">石油市場如何擺脫伊朗危機的影響</a></li><li><a href="https://news.google.com/rss/articles/CBMivwFBVV95cUxQZlpWbGg3aTFfZjA4YS1JbWhKUThMQ1h2Q2g2OEhYTV9pN1ByeUpLZXZMNXpfRmp3emZ2Z3NTeGlvZm1JWkRJU2FDV1pUSHdFTnhzazZQbVYwdnVCOGtnR3BVOWxjTEdyUUxoeEJjWktaQjJ5c1VqY0JndXViSzlTMjJyNS1seE1qZ0VtdXZocEVXYV9jSU9pRHRVOTVWSjhSRTlfbzd1ZzNvUW5sTF9SZ3NnNjNreWMxZmtrdl9oVQ?oc=5">伊朗遭受重創的經濟需要數年時間才能從戰爭中恢復過來</a></li></ul>
+              <p>利率、通膨與流動性仍是影響全球估值與資金成本的核心變數。</p>
+              <dl>
+                <dt>市場影響</dt><dd>殖利率上行壓縮成長股估值，降溫則有利風險資產修復。</dd>
+                <dt>24 小時觀察</dt><dd>觀察美債殖利率、美元指數、Fed 官員談話與通膨數據。</dd>
+              </dl>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxPTFhwMlhiZGpuNW1DSDRNWmhlOHY3TjIxY05YbVNQb29OWm1NZGtHNjdnUWZZcl9QMkt6WVM3X0M4UnVHOGRhOWhBZUJpSmp0VFpqTkh0b0ZRd0pMYnZ2WEsyZksza0JudXNVc214cjNzWmtWNnV2eUc2NmtDakkta3ZGRGFVSFdsSTEwRndyNUxlay1kYzZKeFk0MEYtMV9xQnRYWkNHT1YzenAzaHJ4T0hldw?oc=5">聯準會主席沃什擔任通貨膨脹鷹派後銅價下跌</a></li><li><a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxOR1UxUkljOTBaMVZ6T0FCOF9EM0t4Z05yRXYtcW9DeGRPa3F4Rk1SakpiZTZSVGVIMC1QMDFBanFXdFlKdi1ROFd0RnpPLWpPNzZzMm4zY2pfZTRzRmd1bTFlN0xKUjdqYTQzVFVYZFNXZGRscEl1WTRhYnBzOEdqSjJHTGxpamFFRTN3SjViMmdRTjZv?oc=5">伊朗協議後美國股指期貨上漲，聯準會升息擔憂</a></li></ul>
             </article>
             
 
             <article class="theme-card">
+              <div class="axis-rank">今日主軸 3</div>
               <div class="theme-topline">
-                <span>AI 與半導體</span>
-                <strong>3</strong>
+                <h3>地緣政治與政策風險</h3>
+                <strong>5</strong>
               </div>
-              <p>AI 與半導體仍是資金風險偏好的核心題材，但估值與財報展望的容錯空間正在變小。</p>
-              <ul><li><a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxOeVFiTHl1cEM2OUc0VDBIT2VnWXhVQS1wMUFmdmJPblY2WmJkNE9UbU5wSXBJS2dUSzZpNkJsMHlNblpYcUF5N2xDSW1HS1NJTl91ZHg0Y3hPbXg1Y3hiUWZ1WDE4SzZqSjBPV3VWNE9aT0FHU0xoRE9lWjJDSUVJby1kbFk4QmI3ZEZQNHF1Zl9fVnNZUVhYTUpWdkg?oc=5">Jim Cramer 表示他最喜歡的是 NVIDIA“但 AMD 非常棒”</a></li><li><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5KUVVuekRkcW1URUxiNjcwSWc5d2syZDdtR0l4Z0h5QUZ0UlJPNFFrRVlCNUZKa1AxVDNJY01oMHlxTFFHWUhKT3RTSkw2eEF2QmFqMTdGWkVTNkRnbF96aHpyekpfNk9uZFZpeGhQeWozLU41Zm5IZmRMWEJ4X3M?oc=5">Nvidia 不會永遠這麼便宜（納斯達克：NVDA）</a></li></ul>
-            </article>
-            
-
-            <article class="theme-card">
-              <div class="theme-topline">
-                <span>台股與亞洲市場</span>
-                <strong>0</strong>
-              </div>
-              <p>今日此主題新聞權重較低，暫列為背景變數，等待後續數據或市場價格確認。</p>
-              <ul><li>目前沒有高權重新聞，保留追蹤。</li></ul>
+              <p>地緣政治與政策消息提高了市場的事件風險溢價。</p>
+              <dl>
+                <dt>市場影響</dt><dd>局勢升溫時避險資產與能源較受支撐，高波動資產易承壓。</dd>
+                <dt>24 小時觀察</dt><dd>觀察官方聲明、制裁與關稅變化，以及油價與金價反應。</dd>
+              </dl>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMiuwFBVV95cUxQUkxjSDA1V3VDUWZXbVNCbkNsQVdRdWVoWDFfU0phVW5sbzNKWVVDYTlmVFpoQVNadmJ0WjJQYmYxX3QwVUUxcHRqalpwMm5VbjQ3RjFBbHVQb3MxTkk0X2JIMENvT0FCZUJJSEdoaHJOMnkwa09CX0pvUzd6d1JvdVRZckQySzJZQV95eksxWWtwcXJkNk5GRTY4Rm9oR3BKZ0oxTFYySTFkNWxNZXl6UGdKcnI5YzJId3hr?oc=5">由於市場等待伊朗協議細節、聯準會政策，歐洲股市收高；BMW滑梯</a></li><li><a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxQOU80Vl84d2NNOXVLU2I2dVVvZkliZC00ZFRpMkRvRjFqSXUzX1hvSmR1XzMySHROZ096c0VfckthcDYzWG5zd29tZ3lidXlmazMtZjg5WkVQVnRrOTlIRmtuN3lyTERkY0ljMEd1a0dPR3NXLUpJVG9lMmRuMmR2b09FZi1JZU9kY3NRSXdEc3dQdC05Z1ZqT20tONIBoAFBVV95cUxNTUNBNTg1YU40OHBlNEw4dVFrTDJqVVRiQ3Y0RmdRQXIwNVdLWDNhZWk4c1JYc0w2NUtqT3FpQ3ptQXowMWo1ZVJ6ejlJNmV5WWU5Mmxsb1hSQVZXSU80U3ZZS2V3ZnpzRWEzdnZiLWNSQkJVYmZQdHduZnhlQ0JIMDljVmlHVzFiY0ZBOU9kTm5OZWpqdU5lYUg0UHBva0J5?oc=5">CNBC 每日開盤：沃什的聯準會首次亮相以及伊朗與美國的關係交易焦點</a></li></ul>
             </article>
             </section>
 
@@ -155,7 +170,7 @@
               <div class="rank">01</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>地緣政治與政策風險</span>
                   <span>Reuters</span>
                   <span>2026-06-18</span>
                 </div>
@@ -169,11 +184,11 @@
               <div class="rank">02</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>利率、通膨與流動性</span>
                   <span>Bloomberg</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxPbGtQMnI4cF9yUGY4aE1KN211cU5pYXBJRGZpeS1SMFlOVW10NFZla29FYzl5aWN3anhOMEtfVUxpZkdubGluQ1A2NGFNRlpCQUhfbkpRRTJOaXdsbDhnOXpVSjFiRmFBVWNjLUlqWE5pR2dJQWVwQ1pTRnhDcmlwQjNRbXBCSzRRdmk3eEZQa2JhR25xSmZzU3E4NVRBaXExaUtWVjU0bjhPRU9tbU5ETW5nMA?oc=5">亞洲股市和債券因聯準會鷹派訊號而下跌：市場結束</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxPTFhwMlhiZGpuNW1DSDRNWmhlOHY3TjIxY05YbVNQb29OWm1NZGtHNjdnUWZZcl9QMkt6WVM3X0M4UnVHOGRhOWhBZUJpSmp0VFpqTkh0b0ZRd0pMYnZ2WEsyZksza0JudXNVc214cjNzWmtWNnV2eUc2NmtDakkta3ZGRGFVSFdsSTEwRndyNUxlay1kYzZKeFk0MEYtMV9xQnRYWkNHT1YzenAzaHJ4T0hldw?oc=5">聯準會主席沃什擔任通貨膨脹鷹派後銅價下跌</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -183,11 +198,11 @@
               <div class="rank">03</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>地緣政治與政策風險</span>
                   <span>CNBC</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMidkFVX3lxTE00ODdOSGsxSnVTeE9JOEo2b2JPdFo3R0kxa0paLVlZblA0aEw2XzhXMlNzTHhYSHRtSFJrRU05bzNycUFNRVFJR3R4bTZEYTM0ZmplYnNqeFMxaXNsekNwTHBPZHpZR0ZNN1dHVWNpamtLR1NaSUHSAXtBVV95cUxNTUZXN0ZiQ0RnZWM1S0p3SDc4LWRYc1NrY3czalp1TVNrZGNBQzBSMl9aR0tENkVoM1QxRnJnR1pYRmZ3bGJFWXI5cDJqcF9YVGtFWlRMdHRwaUtlTXp2bm93MVJwSENWckdFcG9EcDkwSzk2SnJ5ZUhUNUU?oc=5">沃什在「聯準會日」經歷了自 1994 年以來新任主席以來標普 500 指數表現最差的一次</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxQOU80Vl84d2NNOXVLU2I2dVVvZkliZC00ZFRpMkRvRjFqSXUzX1hvSmR1XzMySHROZ096c0VfckthcDYzWG5zd29tZ3lidXlmazMtZjg5WkVQVnRrOTlIRmtuN3lyTERkY0ljMEd1a0dPR3NXLUpJVG9lMmRuMmR2b09FZi1JZU9kY3NRSXdEc3dQdC05Z1ZqT20tONIBoAFBVV95cUxNTUNBNTg1YU40OHBlNEw4dVFrTDJqVVRiQ3Y0RmdRQXIwNVdLWDNhZWk4c1JYc0w2NUtqT3FpQ3ptQXowMWo1ZVJ6ejlJNmV5WWU5Mmxsb1hSQVZXSU80U3ZZS2V3ZnpzRWEzdnZiLWNSQkJVYmZQdHduZnhlQ0JIMDljVmlHVzFiY0ZBOU9kTm5OZWpqdU5lYUg0UHBva0J5?oc=5">CNBC 每日開盤：沃什的聯準會首次亮相以及伊朗與美國的關係交易焦點</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -197,11 +212,11 @@
               <div class="rank">04</div>
               <div>
                 <div class="news-meta">
-                  <span>AI 與半導體</span>
+                  <span>利率、通膨與流動性</span>
                   <span>Yahoo Finance</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxOeVFiTHl1cEM2OUc0VDBIT2VnWXhVQS1wMUFmdmJPblY2WmJkNE9UbU5wSXBJS2dUSzZpNkJsMHlNblpYcUF5N2xDSW1HS1NJTl91ZHg0Y3hPbXg1Y3hiUWZ1WDE4SzZqSjBPV3VWNE9aT0FHU0xoRE9lWjJDSUVJby1kbFk4QmI3ZEZQNHF1Zl9fVnNZUVhYTUpWdkg?oc=5">Jim Cramer 表示他最喜歡的是 NVIDIA“但 AMD 非常棒”</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxOR1UxUkljOTBaMVZ6T0FCOF9EM0t4Z05yRXYtcW9DeGRPa3F4Rk1SakpiZTZSVGVIMC1QMDFBanFXdFlKdi1ROFd0RnpPLWpPNzZzMm4zY2pfZTRzRmd1bTFlN0xKUjdqYTQzVFVYZFNXZGRscEl1WTRhYnBzOEdqSjJHTGxpamFFRTN3SjViMmdRTjZv?oc=5">伊朗協議後美國股指期貨上漲，聯準會升息擔憂</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -211,7 +226,7 @@
               <div class="rank">05</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>利率、通膨與流動性</span>
                   <span>Seeking Alpha</span>
                   <span>2026-06-18</span>
                 </div>
@@ -225,11 +240,11 @@
               <div class="rank">06</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>地緣政治與政策風險</span>
                   <span>Investing.com</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiwAFBVV95cUxPRzJMQUhmajFhekRaLXRBRGFjTVZHTkFHSUV1ZWducko2d0dCNjYxTFJxSjdlSUMwbDQ0emdaRnh5bmRid0dCNXRSOEdGSG8zTkd2R2c0aVZZbzhDbGdJQkhYb09HZ3BCUjd2aWM4dGVZSmpwQVdYX0xETkFWUWJrRWtWcDE2YzNhYjBDcUo0ZlNLbTdPYjNYU0ZVNjZ0Tmo2VVpVN2lGOWYtOFNTWWVOeHo5VDF3ZDRjZDRZMjQ3eTA?oc=5">沃什以全面審查開啟聯準會主席時代，利率維持不變 路透社</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxQaWlxeVhrcHV3V0J2ZkFrSTZqOFYwRDFzYUZmS3dINVpFdWNab3ZoZnh6TC13SkQwUkRYUkZyUWl6ak8ybm85bDdlSVRjcTVyMDJPcXhfWWZXSXpSUW9GRklTNTZudFNiQU9PY3BqVG5XZ1cxMmpIX3RKZnpuVTBCb1VTREhOcWJCbVgtMnQ5VEhqdUx4Wm0yQ19VNVp4bjFzVGYxVUUxUHlsSE9TdU4wZVF3MnhQc2p6MWc?oc=5">多倫多證券交易所指數因聯準會決定而上漲，美國與伊朗臨時協議成為焦點</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -239,11 +254,11 @@
               <div class="rank">07</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>企業財報與產業展望</span>
                   <span>WSJ</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxQRko4X1hjWnZLa0hlT0Q0SjRELWt1cDNoSmJ6MGxtNEg1NUVaazBoU3hSQkJ3MUR3cnRyRklfbEVydERxWldnTWY3a3J3WW9mQjFmdjlvTUZ2elc1bkE3WVk4QkFuSmczb2Q2cndFbElWUWk3M01XTXQ3amlPU0twa0hKUlhPN2hsbWRNUTMtRE9aLU92WWpxT2dyN191d0l2RHd3SE52aDFfWEhVQ00wcnFrN2dvUQ?oc=5">凱文沃什作為聯準會主席首次會議的五個要點</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMiogFBVV95cUxPREdiUzRWclF5N1JQNTJteXpLVjQzVTVYNFIxM0hlWW1MM2tmeWxybWJEandlQzUzUW42UjFMWjBHZ2tZWTRWWW9iTTZ2OThBZk9uVy16NVJKMW5qYXdiNnNETTdvOGhaM0dJRzJVbEk3SzQtU1czMG5hTkUxTFg5eXpER1ZJWUN0cjBVaGxxLWxVY2dKYy11NGp1RHFpc0pnSVE?oc=5">協議使伊朗有機會增加其石油收入</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -253,11 +268,11 @@
               <div class="rank">08</div>
               <div>
                 <div class="news-meta">
-                  <span>能源與地緣風險</span>
+                  <span>利率、通膨與流動性</span>
                   <span>Financial Times</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxOaThXeEdicGl3ay1hQUh6SHVpei1jVUlSYzBBdFg4UnpmdnpKSmV2bnVQWXRWSHBBRkhqeVV0MEg3a2tjQWNxanU3VUhhMFQ4N2xyNENiWHB6N0pNZHRnQk1GY20zRjdTWnRDZ1BsT3VvU0JDMGNFdnpmMVNrSGwyQVhhazQ?oc=5">石油市場如何擺脫伊朗危機的影響</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxQZXhYam95RjFtbWVSTzZWU1k5ZUt2TkNTYlRKbHlURVBkaEZKTVdaV21STVRNbi1MaHZnMG1FVXk1WC13RWlFdHRUWXpUaGZLMjlEY1NmbTdzT2NkWE14bW80M0lwUFFOb3NVaUtlUkZ2Zl9rOUJPREJhTjNkeFJpc0ExS20?oc=5">關於凱文沃什 (Kevin Warsh) 作為主席的首次美聯儲會議需要了解的五件事</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -267,7 +282,7 @@
               <div class="rank">09</div>
               <div>
                 <div class="news-meta">
-                  <span>能源與地緣風險</span>
+                  <span>地緣政治與政策風險</span>
                   <span>The Economist</span>
                   <span>2026-06-18</span>
                 </div>
@@ -281,11 +296,11 @@
               <div class="rank">10</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>AI、半導體與科技資本支出</span>
                   <span>鉅亨網</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE11MVlsUWVSUGlvUWlTMmJ6S3lLSVVkWjFSUGluSFdBeXV3VFVXX2NfQlZacF9WaFNyamJpdWZUdVlGT0lSQ2Q3eml6TERfSDQ?oc=5">Fed維持利率不變 聲明大幅精簡 刪除偏向「降息」措辭</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTFB0VFNkN19lRFpvRTF6RmlVLTBGWVhnbFZvMkZCZXQ2dHA4cFF0dFlGMUR1U3FnWHh2ZXZmSDhBZE5PY2ZaWE5aR0lrR3ViNGM?oc=5">輝達搶著要 郭明錤：台積電玻璃基板是AI晶片必需品</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -295,7 +310,7 @@
               <div class="rank">11</div>
               <div>
                 <div class="news-meta">
-                  <span>能源與地緣風險</span>
+                  <span>全球風險偏好與資產配置</span>
                   <span>MacroMicro</span>
                   <span>2026-06-18</span>
                 </div>
@@ -309,11 +324,11 @@
               <div class="rank">12</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>AI、半導體與科技資本支出</span>
                   <span>TradingView</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMi9gFBVV95cUxPX19zZS0xbno2ell1QmV2WnBZV3lDR01mUmJJWHFpNVdlbWNMc0U4UWt6VFhTRTJITHhJRDdjTTR1YnY4VnlVcnJBSUliV2NITFdaQ05UUmM5T2NGay0yeENPeTdJRVk5Q1VJeGVQRmVwbnBtbVdhZ0kwQkF0cGhqa2JjbTduVXJKdW9FWlJsc3BQRmp6eE5RZlNwSk4xOF9VbFh2VWs2dU1FVTVIRk1HNy1tTHNzNG9QdVBtOGVfMTQxRzlPdXhfM0IzNy1hWFpKaUthS3RHMFB3clBaaHNBTWd3dURXR3R3WGN2cFE5bTZLdVRrTVE?oc=5">文字記錄：聯準會主席沃什表示希望做出改變，任命五個工作小組，但將維持 2% 的通膨目標</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMilAJBVV95cUxPRV84S0lYUVBuWUdnOW10TWI2WkpicXBKbHRwTTNCTTlJOVMzUko4aERuc3BMbk1aaHdObUZiRlRZUEtnWHlDUzJrUWFrSDd5Nk1jdjFTSkNORTA2dkpIVk1SdEtWR0JqLVNCcHlRRzlMemo2anhkZ3hDTU1hRUlnbFdjRXhXOHNWcW1OWjhJMXQtbWR2UWczWlhBcU1wdWw5bFZRTTlJeHhnZ3lXckdZWFZmWFNyUW13UVFBT25ZdUY5WUY0cGczT3Y5d2RxQk94OTlLZ3B6QS15Y2lzZGcyVzR4Uk1MVUNydzUzNHJQZGN5c05pQ09qRUMyelpTbjVMRXJLMkZVTW5LZXM3Zkdhdi1GZUM?oc=5">CNXN：人工智慧驅動的需求和強勁的財務狀況推動醫療保健、零售和管理服務的成長</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -323,11 +338,11 @@
               <div class="rank">13</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>地緣政治與政策風險</span>
                   <span>Reuters</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxNUklQakNqNVVPRDVvUllkUHFYYVB4SXZTX3VkWml5eXJBRlJsZU4tclpReXJYc0dMTXhHaV9ySEtvTUpqbWhUcmI2YWM3THlWV1ZuUFpraFBTRldqUGJnZUN4ckRTV1BFc0NoZ0MwcDlPM1FQNE9sOVlyWjZLUFpDd0NxX1dYel9DMXltRmxjLTBvX2c?oc=5">華爾街因押注聯準會今年將升息而下跌</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMiygFBVV95cUxNT0ZnSXJjZ184a1RUdE9pQVpwNXpMTkZ0SVd6OER1dk9YMUZ2djVBclBoMkt4anlWRzEwMDFhV3Z2TFlPNGp5SUc0OGtBelRaS1FzazBEcV9mTmtYSWFabzFndUNTaDFPZHpUYURDcnFKMmhoSlVVV2hOaFNvd2NWeDRCdmpQZjVKSU1uTFQ1VXYyRlMwVlVfRlhJaWxQcDAzUGJpUGQtTjRqWGEyTkxycDBJbERHLU9hbTBrVkR0UjdHUzNOS09fcE93?oc=5">由於美國和伊朗協議的樂觀情緒平衡了鷹派的美聯儲，華爾街期貨反彈；英特爾向上</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -337,11 +352,11 @@
               <div class="rank">14</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>能源、原物料與運輸成本</span>
                   <span>Bloomberg</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxPU1lSZnNEZEhxMzRabFo3a01nSFZKRGhjUEdjd3dsa0VUZmtOZ0wyU2VyMHdxZmtVVC03TjlOY2FfY3B0SXhHdU5pdlVnZ3JCQ0cxUmlCZmRyQmpFUWJFMFEwbEx1Vkh0RjFKdG13LW03SW1HMjhRNWFkUHo4R3R6MjR3T0RVejZPSEhOYjdmajVyd1luenJubkxpM3lqN3RtMVlyckVB?oc=5">聯準會維持利率穩定決定的主要要點</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMihwFBVV95cUxObFppRTd4aXRFY1hqMFdmSThFRk5GNWJyN3ZXSmJlbzRCX21ZMHNoaW1uNzNJMTBpNXkwRUI2R3ZtcmVjdnhtT0sxaUlTN1FkTXhoNXRSN2pEVXhEZ1RFWXRLeUZjX3NydC13ZGVaZjhMbUNINnpodzd3SE5lQ0ZadlFJbDF1M00?oc=5">美伊協議導致股市期貨上漲、油價下跌；沃什震撼債券市場|彭博簡報 2026 年 6 月 18 日</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -351,11 +366,11 @@
               <div class="rank">15</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>利率、通膨與流動性</span>
                   <span>CNBC</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxNeExtY0hraWNiOFowR2M1MnYzVjA0dTRFZE5Id3pjUHBtWGZLb09VVGhVOTZfVDJUMzNBbzFTXzFCc3RXQ2ROa2NVUjlxOWdBVHVZaEdRejAwcEJ0cHZBaEpWY0lhaFZxRjM4N1JzNEIyNENvNnhGbTdsWm5kY3JkM0YzTDhJNVcyM0Vzc0xWOXpqdzE4MVJBZUtJamVvdmY1RWRBc3d2UVZMRlByNWVVajJOQmhMWTjSAbwBQVVfeXFMTS1NTGhIbnJid2k2VjBqRWlFbjgtOGlYV0R4aFJqcU1Lc2tHLUR1RDlCdXFNSnFVRDBlTzRLOThTODNzb3BLcW1kM2ttVUFMbWt0bjZ4M25zUzBUN2RHLUp4cEljYUxBZHlKWjlvNmF2a05Fb0xJa0hjNWdoSGtnMWJIczVSd0otdmJKUC1yeTRiMUtld24zUUJzd1V1Z2pJejVMR29GMDVGOFF1Nk5HcmFKZzM5VVZQUm85ZjY?oc=5">以下是凱文沃什作為聯準會主席首次會議的五個要點</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMidkFVX3lxTE00ODdOSGsxSnVTeE9JOEo2b2JPdFo3R0kxa0paLVlZblA0aEw2XzhXMlNzTHhYSHRtSFJrRU05bzNycUFNRVFJR3R4bTZEYTM0ZmplYnNqeFMxaXNsekNwTHBPZHpZR0ZNN1dHVWNpamtLR1NaSUHSAXtBVV95cUxNTUZXN0ZiQ0RnZWM1S0p3SDc4LWRYc1NrY3czalp1TVNrZGNBQzBSMl9aR0tENkVoM1QxRnJnR1pYRmZ3bGJFWXI5cDJqcF9YVGtFWlRMdHRwaUtlTXp2bm93MVJwSENWckdFcG9EcDkwSzk2SnJ5ZUhUNUU?oc=5">沃什在「聯準會日」經歷了自 1994 年以來新任主席以來標普 500 指數表現最差的一次</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -365,11 +380,11 @@
               <div class="rank">16</div>
               <div>
                 <div class="news-meta">
-                  <span>利率與估值</span>
+                  <span>AI、半導體與科技資本支出</span>
                   <span>Yahoo Finance</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxNQzFyelNwbEp5d3hDb1VLTTlEY3VZdUs5alYzNlM0US1RMjg3MUNhUEtlX3IyRWR0emdKeXduWk9MakxiWUtFWHZ2VHdOandKc3hnS1ctQUJPZ3habl9QSGgwZGNab04xV0VzZjFhakVxWDlXSjdsandUQXJwTVhackktemJkdlAtT3Q3MnVTeDFkQWgwOG9VamZrOXdfRVZ6NDIwQnRHbG4?oc=5">聯準會預測可能升息，納斯達克、美國股市下滑</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNN2lrSi1ndDdOdHlJTWZXZ3djQnlNVFVEaFozdDdBbXlxVnhJeHlTN01GNElWZmNqX0VHZUVXcWFKRUNlWktUYnZYWDVEOG93RnVtLVJUMFpGNnlVQnF5UzgxM243WXpJY1NYXzdlQkZwTlRpM21XMVNqZHV0SWhYLWlRdU1tNElnb2JubzdGLVdlUVYtNmtMTHVhVVJDS3dfVnQwWlM3UFFzS01lRmFSNzVmZnNiNGlBNUVPZWlGQ3hkamxweFJ6VEFBUTdFS25BTUE?oc=5">Coinbase執行長談比特幣底部、人工智慧代理商以及他與摩根大通執行長的口水戰</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -379,11 +394,11 @@
               <div class="rank">17</div>
               <div>
                 <div class="news-meta">
-                  <span>AI 與半導體</span>
+                  <span>AI、半導體與科技資本支出</span>
                   <span>Seeking Alpha</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5KUVVuekRkcW1URUxiNjcwSWc5d2syZDdtR0l4Z0h5QUZ0UlJPNFFrRVlCNUZKa1AxVDNJY01oMHlxTFFHWUhKT3RTSkw2eEF2QmFqMTdGWkVTNkRnbF96aHpyekpfNk9uZFZpeGhQeWozLU41Zm5IZmRMWEJ4X3M?oc=5">Nvidia 不會永遠這麼便宜（納斯達克：NVDA）</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxOZURoRnBxUzhlM2hHc1FUWGI0QVZnSTVaZ3dwWnFIWXBqNUZ2d21SVXNiZzdOX1ZhNkdweEU2bEJEQ3hGNDBxRHNUUWZIaWt5cHZkQVBBVkFDMFBDVnFJbkxSbzZuYy1lc3IzLU9URVdLclZPOGNFQ3UyN0NDdW92WWdWcUVQMnRjVkNwNGo3S3c5MkZYYnFoWkd0VGtORVphWmVKT05lQWFDX1pPbHZVVWpTRmhaZw?oc=5">台積電：當你運行人工智慧需求的數字時，並不昂貴（NYSE：TSM）</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -393,11 +408,11 @@
               <div class="rank">18</div>
               <div>
                 <div class="news-meta">
-                  <span>AI 與半導體</span>
+                  <span>AI、半導體與科技資本支出</span>
                   <span>Investing.com</span>
                   <span>2026-06-18</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxNbjlJcEI1eG9mNGhFNHpna05zTXJvWmZWcnR5T0ZYVlUtbnRZVzJ2UUdfNlpsNEhtVFNfeEpIN3h6Ym1XWE5jRjhvdEttcVd1bTFzSTlsWmFpeFJ3dE9LalRBSlIzOWRYQng4eXBQNURJNS01a19VNjU0TmhfejZQZ29ma2RvcDc0Y1JpSUdSdEgyLTRTYzY4Nl9xV2lNUUFTb3hTcXNieFBrS0JtTGhDb1NOQkxiUDh0VU82RXdvd0ViTlJHWjE4Ug?oc=5">Vultr 選擇 HPE 和 NVIDIA 進行 AI 資料中心擴展</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMigAJBVV95cUxQVzFBSnk4NkV0WmVDUnEzdlRxVlBvRzhEZ3ZjazNfUVVFX19wazE3LUJNSGdPTkpPMzVWRGZ4dF84eWlNeHlHM0cyZG1MMVJ5M0tBNG1RYzN1Wi1GMmJQc1NfRllPcFZHeGtyY3BqV25KcHprc3NsbUM2V05GMzgtLVhNU0FHMUVWNS1GTXV1cmhlZXl3RG44VFZ4dlQxQWJWemY3VFdjYUdGcGZKdE5QUjZ2WVE5MDZWNWU2TFFLUHNMY05xTWlQeFNlWUFSVEVLWTcxelVFSnlsbmZSQmNxSUZyNUxhVExmM3paQ0t3clJaRVZ2WUdzc3VrczJHQTNo?oc=5">美國盤前：美伊協議對沖鷹派聯準會。三大股指期貨反彈，英特爾漲超9%，AI晶片股大漲</a></h3>
                 <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
               </div>
             </article>
@@ -408,18 +423,9 @@
       <p>把新聞轉成明天/今日盤中可追蹤的檢查項。</p>
     </div>
     <section class="panel watch-grid">
-      <div>
-        <h3>權值與族群</h3>
-        <p>先看台積電、AI 伺服器、半導體設備與金融權值是否同步；若只有單一族群撐盤，追價風險較高。</p>
-      </div>
-      <div>
-        <h3>外部變數</h3>
-        <p>美元、美債殖利率與油價若同向走高，容易壓縮風險資產估值；若回落，科技股反彈較有延續條件。</p>
-      </div>
-      <div>
-        <h3>操作節奏</h3>
-        <p>重大數據與央行會議前，優先控管部位與停損；把新聞當成情境清單，再用價格與量能確認。</p>
-      </div>
+      <div><h3>今日市場狀態</h3><p>今日以AI、半導體與科技資本支出為首要主軸，並結合利率、通膨與流動性與地緣政治與政策風險觀察資金輪動。</p></div>
+      <div><h3>相較昨日</h3><p>今日建立第一份動態市場比較基準。</p></div>
+      <div><h3>台股與亞洲風險清單</h3><p>有利高品質成長股，但估值偏高標的對展望修正更敏感。；殖利率上行壓縮成長股估值，降溫則有利風險資產修復。；局勢升溫時避險資產與能源較受支撐，高波動資產易承壓。 驗證點：觀察龍頭公司指引、伺服器需求與半導體接單動能。；觀察美債殖利率、美元指數、Fed 官員談話與通膨數據。；觀察官方聲明、制裁與關稅變化，以及油價與金價反應。</p></div>
     </section>
 
     <div class="section-title">
@@ -439,7 +445,9 @@
 <span class="source-pill">MacroMicro <b>1</b></span>
 <span class="source-pill">TradingView <b>1</b></span></section>
 
-    <p class="footer">Updated: 2026-06-18 09:22:16 Asia/Taipei. This page is generated independently by GitHub Actions and no longer depends on Codex automation.</p>
+    <script type="application/json" id="market-analysis-data">{"market_state":"今日以AI、半導體與科技資本支出為首要主軸，並結合利率、通膨與流動性與地緣政治與政策風險觀察資金輪動。","change_from_previous":"今日建立第一份動態市場比較基準。","axes":[{"theme_key":"ai","title":"AI、半導體與科技資本支出","summary":"今日新聞焦點集中在 AI 需求、半導體供應鏈與科技資本支出。","impact":"有利高品質成長股，但估值偏高標的對展望修正更敏感。","watch":"觀察龍頭公司指引、伺服器需求與半導體接單動能。","count":5},{"theme_key":"rates","title":"利率、通膨與流動性","summary":"利率、通膨與流動性仍是影響全球估值與資金成本的核心變數。","impact":"殖利率上行壓縮成長股估值，降溫則有利風險資產修復。","watch":"觀察美債殖利率、美元指數、Fed 官員談話與通膨數據。","count":5},{"theme_key":"geopolitics","title":"地緣政治與政策風險","summary":"地緣政治與政策消息提高了市場的事件風險溢價。","impact":"局勢升溫時避險資產與能源較受支撐，高波動資產易承壓。","watch":"觀察官方聲明、制裁與關稅變化，以及油價與金價反應。","count":5}]}</script>
+
+    <p class="footer">Updated: 2026-06-18 23:28:23 Asia/Taipei. This page is generated independently by GitHub Actions and no longer depends on Codex automation.</p>
   </main>
 </body>
 </html>

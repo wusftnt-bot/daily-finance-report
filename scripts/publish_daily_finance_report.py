@@ -5,6 +5,7 @@ import html
 import json
 import os
 import re
+import time
 from collections import Counter
 from pathlib import Path
 from urllib.parse import urlparse
@@ -102,6 +103,38 @@ def translate_headline(headline: str) -> str:
     return translated or headline
 
 
+def translate_headlines(headlines: list[str]) -> list[str]:
+    pending = [
+        {"id": index, "headline": headline}
+        for index, headline in enumerate(headlines)
+        if not re.search(r"[\u4e00-\u9fff]", headline)
+    ]
+    if not pending:
+        return headlines
+
+    fallback = {"translations": pending}
+    prompt = (
+        "Translate every headline into Traditional Chinese (Taiwan). "
+        "Keep company names, product names, and stock symbols in English. "
+        "Return JSON only in this shape: "
+        '{"translations":[{"id":0,"headline":"translated headline"}]}.\n'
+        f"Headlines: {json.dumps(pending, ensure_ascii=False)}"
+    )
+    raw = telegram.call_gemini(prompt, json.dumps(fallback, ensure_ascii=False), max_tokens=2400)
+    candidate = parse_json_object(raw)
+    translations = candidate.get("translations") if isinstance(candidate, dict) else None
+    if not isinstance(translations, list):
+        return headlines
+
+    by_id = {item.get("id"): clean_text(item.get("headline")) for item in translations if isinstance(item, dict)}
+    result = headlines.copy()
+    for item in pending:
+        translated = by_id.get(item["id"])
+        if translated:
+            result[item["id"]] = translated[:300]
+    return result
+
+
 def collect_news(today: dt.date) -> list[dict[str, str]]:
     telegram.PUSHED_NEWS_KEYS.clear()
     candidates = telegram.finance_candidates(today)
@@ -122,7 +155,7 @@ def collect_news(today: dt.date) -> list[dict[str, str]]:
         if not key or key in seen:
             continue
         seen.add(key)
-        title = translate_headline(headline)
+        title = headline
         news.append(
             {
                 "source": source,
@@ -136,6 +169,11 @@ def collect_news(today: dt.date) -> list[dict[str, str]]:
         )
         if len(news) >= MAX_NEWS_ITEMS:
             break
+
+    translated = translate_headlines([item["original_headline"] for item in news])
+    for item, title in zip(news, translated):
+        item["headline"] = title
+        item["theme"] = classify_item(f"{item['original_headline']} {title} {item['source']}")
     return news
 
 
@@ -306,9 +344,16 @@ def build_market_analysis(news: list[dict[str, str]], today: dt.date, previous: 
 }}
 規則：axes 必須恰好三組，並按指定 key 順序。文字要具體、可驗證，避免只寫「保留追蹤」或永遠重複利率與評價。
 """
-    raw = telegram.call_gemini(prompt, json.dumps(fallback, ensure_ascii=False), max_tokens=1800)
-    candidate = parse_json_object(raw)
-    candidate_axes = candidate.get("axes") if isinstance(candidate, dict) else None
+    candidate: dict = {}
+    candidate_axes = None
+    for attempt in range(3):
+        raw = telegram.call_gemini(prompt, json.dumps(fallback, ensure_ascii=False), max_tokens=1800)
+        candidate = parse_json_object(raw)
+        candidate_axes = candidate.get("axes") if isinstance(candidate, dict) else None
+        if isinstance(candidate_axes, list):
+            break
+        if attempt < 2:
+            time.sleep(2 ** attempt)
     if not isinstance(candidate_axes, list):
         return fallback
 

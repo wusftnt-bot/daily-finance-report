@@ -14,6 +14,7 @@ import daily_telegram_push as telegram
 TW = dt.timezone(dt.timedelta(hours=8))
 DEFAULT_OUTPUT_DIR = Path(os.environ.get("DAILY_FINANCE_REPORT_DIR", "daily-finance-report-site"))
 MAX_NEWS_ITEMS = int(os.environ.get("DAILY_FINANCE_REPORT_NEWS_LIMIT", "18"))
+MIN_NEWS_ITEMS = int(os.environ.get("DAILY_FINANCE_REPORT_MIN_NEWS", "10"))
 
 
 THEMES = {
@@ -206,6 +207,9 @@ def render_html(news: list[dict[str, str]], today: dt.date) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="report-date" content="{today:%Y-%m-%d}">
+  <meta name="report-news-count" content="{len(news)}">
+  <meta name="report-generator" content="github-actions">
   <title>Daily Finance Report - {today:%Y-%m-%d}</title>
   <style>
     :root {{
@@ -350,6 +354,11 @@ def main() -> int:
     output_dir = DEFAULT_OUTPUT_DIR
     output_dir.mkdir(parents=True, exist_ok=True)
     news = collect_news(today)
+    if len(news) < MIN_NEWS_ITEMS:
+        raise RuntimeError(
+            f"Refusing to publish an incomplete report: got {len(news)} news items, "
+            f"need at least {MIN_NEWS_ITEMS}"
+        )
     (output_dir / "index.html").write_text(render_html(news, today), encoding="utf-8")
     print(f"Published dashboard finance report for {today:%Y-%m-%d} with {len(news)} items to {output_dir / 'index.html'}")
     return 0

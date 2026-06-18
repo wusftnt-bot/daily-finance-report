@@ -104,6 +104,9 @@ def translate_headline(headline: str) -> str:
 
 
 def translate_headlines(headlines: list[str]) -> list[str]:
+    if not telegram.GEMINI_API_KEY:
+        return [translate_headline(headline) for headline in headlines]
+
     pending = [
         {"id": index, "headline": headline}
         for index, headline in enumerate(headlines)
@@ -124,14 +127,16 @@ def translate_headlines(headlines: list[str]) -> list[str]:
     candidate = parse_json_object(raw)
     translations = candidate.get("translations") if isinstance(candidate, dict) else None
     if not isinstance(translations, list):
-        return headlines
+        return [translate_headline(headline) for headline in headlines]
 
     by_id = {item.get("id"): clean_text(item.get("headline")) for item in translations if isinstance(item, dict)}
     result = headlines.copy()
     for item in pending:
         translated = by_id.get(item["id"])
-        if translated:
+        if translated and translated != item["headline"]:
             result[item["id"]] = translated[:300]
+        else:
+            result[item["id"]] = translate_headline(item["headline"])
     return result
 
 

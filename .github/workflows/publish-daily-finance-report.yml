@@ -85,3 +85,74 @@ jobs:
           fi
           git pull --rebase origin main
           git push
+
+      - name: Dispatch Telegram after current report is ready
+        if: always()
+        working-directory: site
+        env:
+          JT_PM_ACTIONS_TOKEN: ${{ secrets.JT_PM_ACTIONS_TOKEN }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import re
+          import urllib.request
+          from pathlib import Path
+
+          taipei = dt.timezone(dt.timedelta(hours=8))
+          now = dt.datetime.now(taipei)
+          now_hm = now.hour * 100 + now.minute
+          today = now.date().isoformat()
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+
+          def summarize(message: str) -> None:
+              with summary_path.open("a", encoding="utf-8") as summary:
+                  summary.write("\n## Telegram dispatch after site publish\n\n")
+                  summary.write(message + "\n")
+
+          if now_hm < 520 or now_hm > 815:
+              print(f"Telegram dispatch skipped outside Taipei 05:20-08:15 window: {now_hm}.")
+              raise SystemExit(0)
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          report_date = re.search(r'<meta name="report-date" content="([^"]+)">', html)
+          if not report_date or report_date.group(1) != today:
+              print(f"Telegram dispatch skipped because report-date is not {today}.")
+              raise SystemExit(0)
+
+          token = os.environ.get("JT_PM_ACTIONS_TOKEN", "")
+          if not token:
+              summarize(
+                  "Current finance report is ready, but `JT_PM_ACTIONS_TOKEN` is not configured. "
+                  "Telegram will rely on the JT-PM schedules/watchdog only."
+              )
+              print("JT_PM_ACTIONS_TOKEN is not configured; skip cross-repo Telegram dispatch.")
+              raise SystemExit(0)
+
+          payload = {
+              "ref": "main",
+              "inputs": {
+                  "force_resend": "false",
+                  "allow_after_hours": "false",
+              },
+          }
+          request = urllib.request.Request(
+              "https://api.github.com/repos/wusftnt-bot/JT-PM/actions/workflows/daily-telegram.yml/dispatches",
+              data=json.dumps(payload).encode("utf-8"),
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {token}",
+                  "Content-Type": "application/json",
+                  "User-Agent": "daily-finance-report-telegram-dispatch",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+              method="POST",
+          )
+          with urllib.request.urlopen(request, timeout=45) as response:
+              if response.status not in (204, 201, 200):
+                  raise SystemExit(f"Unexpected GitHub dispatch status: {response.status}")
+          summarize("Current finance report is ready and JT-PM Telegram workflow was dispatched.")
+          print("Dispatched JT-PM Daily Telegram Push after current finance report was ready.")
+          PY

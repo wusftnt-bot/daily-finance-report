@@ -792,16 +792,78 @@ def theme_watch_text(theme_key: str) -> str:
     }.get(theme_key, "觀察價格、成交量、法人籌碼與基本面是否同時驗證。")
 
 
-def score_candidates(news: list[dict[str, str]], analysis: dict) -> list[dict[str, object]]:
+def clamp(value: int, low: int, high: int) -> int:
+    return max(low, min(high, value))
+
+
+def candidate_institutional_signal(ticker: str, today: dt.date) -> dict[str, object]:
+    try:
+        rows = telegram.latest_institutional_rows(today, ticker, 5)
+    except Exception as exc:
+        print(f"Candidate institutional fallback for {ticker}: {exc}")
+        return {
+            "score": 12,
+            "text": "法人資料暫缺",
+            "warning": "籌碼未驗證，避免只因題材追價",
+            "latest_total": None,
+        }
+    latest_date, latest = rows[-1]
+    foreign = telegram.lots(latest[4])
+    investment = telegram.lots(latest[10])
+    dealer = telegram.lots(latest[11])
+    total = telegram.lots(latest[18])
+    five_day_total = sum(telegram.lots(row[18]) for _, row in rows)
+    positive_days = sum(1 for _, row in rows if telegram.lots(row[18]) > 0)
+    score = 15
+    score += 5 if total > 0 else -6 if total < 0 else 0
+    score += 5 if foreign > 0 else -8 if foreign <= -10000 else -4 if foreign < 0 else 0
+    score += 5 if five_day_total > 0 else -8 if five_day_total <= -10000 else -4 if five_day_total < 0 else 0
+    score += (positive_days - 2) * 2
+    warning = "法人偏買，題材較有延續條件"
+    if foreign <= -10000 or total <= -10000 or five_day_total <= -20000:
+        warning = "外資/法人明顯賣超，降分並避免追價"
+    elif total < 0 or five_day_total < 0:
+        warning = "法人偏賣，需等籌碼止穩"
+    return {
+        "score": clamp(score, 0, 30),
+        "text": (
+            f"{latest_date:%m/%d} 外資{foreign:+,}張、投信{investment:+,}張、"
+            f"自營商{dealer:+,}張；三大法人{total:+,}張，近5日合計{five_day_total:+,}張"
+        ),
+        "warning": warning,
+        "latest_total": total,
+    }
+
+
+def candidate_technical_signal(ticker: str) -> dict[str, object]:
+    quote = fetch_yahoo_quote(f"{ticker}.TW")
+    if not quote.get("ok"):
+        quote = fetch_yahoo_quote(f"{ticker}.TWO")
+    change = quote.get("change_pct")
+    if not isinstance(change, (int, float)):
+        return {"score": 8, "text": "技術資料暫缺"}
+    score = 10 + (4 if change > 1 else 2 if change > 0 else -4 if change < -1 else -1)
+    return {"score": clamp(score, 0, 20), "text": f"近一日股價變化 {change:+.2f}%"}
+
+
+def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date) -> list[dict[str, object]]:
     theme_strength = Counter(item["theme"] for item in news)
     source_count = len({item["source"] for item in news}) or 1
     rows = []
     all_text = " ".join(f"{item['headline']} {item['original_headline']}" for item in news).lower()
     for stock in STOCK_UNIVERSE:
-        theme_score = sum(theme_strength[theme] for theme in stock["themes"]) * 5
+        theme_score = min(30, sum(theme_strength[theme] for theme in stock["themes"]) * 5)
         mention_bonus = 10 if stock["name"].lower() in all_text or stock["ticker"] in all_text else 0
-        quality = min(25, source_count * 2)
-        score = min(95, 45 + theme_score + mention_bonus + quality)
+        theme_component = min(35, theme_score + mention_bonus)
+        institutional = candidate_institutional_signal(str(stock["ticker"]), today)
+        technical = candidate_technical_signal(str(stock["ticker"]))
+        quality = min(10, source_count)
+        data_score = 10 if institutional["latest_total"] is not None else 4
+        score = clamp(
+            int(theme_component) + int(institutional["score"]) + int(technical["score"]) + quality + data_score,
+            0,
+            95,
+        )
         if score >= 82:
             bucket = "正式 Top"
             action = "續抱/拉回觀察"
@@ -813,8 +875,26 @@ def score_candidates(news: list[dict[str, str]], analysis: dict) -> list[dict[st
             action = "持續追蹤"
         else:
             bucket = "法人建倉雷達"
-            action = "進入候選池"
-        rows.append({**stock, "score": score, "bucket": bucket, "action": action, "change": f"+{max(1, score - 65)}"})
+            action = "先不追價"
+        if "明顯賣超" in str(institutional["warning"]):
+            bucket = "Watchlist"
+            action = "等外資止賣"
+        elif "法人偏賣" in str(institutional["warning"]) and score < 74:
+            action = "等籌碼止穩"
+        rows.append(
+            {
+                **stock,
+                "score": score,
+                "bucket": bucket,
+                "action": action,
+                "theme_score": theme_component,
+                "flow_score": institutional["score"],
+                "technical_score": technical["score"],
+                "flow_text": institutional["text"],
+                "flow_warning": institutional["warning"],
+                "technical_text": technical["text"],
+            }
+        )
     return sorted(rows, key=lambda item: (-int(item["score"]), item["ticker"]))[:8]
 
 
@@ -874,7 +954,10 @@ def render_candidate_table(candidates: list[dict[str, object]]) -> str:
           <td><b>{html.escape(str(item['bucket']))}</b></td>
           <td>{html.escape(str(item['ticker']))} {html.escape(str(item['name']))}</td>
           <td><strong>{item['score']}</strong></td>
-          <td>{html.escape(str(item['change']))}</td>
+          <td>{html.escape(str(item['theme_score']))}</td>
+          <td>{html.escape(str(item['flow_score']))}</td>
+          <td>{html.escape(str(item['technical_score']))}</td>
+          <td>{html.escape(str(item['flow_text']))}<br><b>{html.escape(str(item['flow_warning']))}</b></td>
           <td>{html.escape(str(item['catalyst']))}</td>
           <td>{html.escape(str(item['risk']))}</td>
           <td>{html.escape(str(item['action']))}</td>
@@ -987,7 +1070,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     analysis = build_market_analysis(news, today, previous)
     snapshot = market_snapshot()
     temperature = market_temperature(snapshot)
-    candidates = score_candidates(news, analysis)
+    candidates = score_candidates(news, analysis, today)
     events = event_calendar(today)
     source_count = len({item["source"] for item in news})
     theme_count = len({item["theme"] for item in news})
@@ -1081,7 +1164,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
 
     <div class="section-title"><h2>候選股分層清單</h2><p>依新聞主題、來源分散度與題材對應做初步排序，尚未納入個人持股。</p></div>
     <table>
-      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>今日變化</th><th>催化劑</th><th>風險</th><th>操作狀態</th></tr></thead>
+      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>題材</th><th>籌碼</th><th>技術</th><th>今日籌碼</th><th>催化劑</th><th>風險</th><th>操作狀態</th></tr></thead>
       <tbody>{render_candidate_table(candidates)}</tbody>
     </table>
 

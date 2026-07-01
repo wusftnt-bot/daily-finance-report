@@ -895,7 +895,7 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date)
                 "technical_text": technical["text"],
             }
         )
-    return sorted(rows, key=lambda item: (-int(item["score"]), item["ticker"]))[:8]
+    return sorted(rows, key=lambda item: (-int(item["score"]), item["ticker"]))
 
 
 def impact_card(item: dict[str, str]) -> dict[str, str]:

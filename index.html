@@ -6,176 +6,454 @@
   <meta name="report-date" content="2026-07-01">
   <meta name="report-news-count" content="18">
   <meta name="report-generator" content="github-actions">
-  <title>Daily Finance Report - 2026-07-01</title>
+  <title>JT 投資儀表板 - 2026-07-01</title>
   <style>
     :root {
-      --ink: #18222d;
-      --muted: #667789;
-      --line: #d9e1e8;
-      --bg: #f4f7f8;
-      --panel: #ffffff;
-      --navy: #10263d;
-      --blue: #235fb7;
-      --teal: #087f8c;
-      --amber: #a76b12;
+      --ink: #17212b; --muted: #637383; --line: #d8e0e6; --bg: #f5f7f8; --panel: #fff;
+      --navy: #10263d; --blue: #235fb7; --teal: #087f8c; --amber: #a76b12; --red: #b94040; --green: #117a4b;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: "Segoe UI", "Noto Sans TC", Arial, sans-serif;
-      line-height: 1.65;
-    }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", "Noto Sans TC", Arial, sans-serif; line-height: 1.62; }
     a { color: var(--blue); text-decoration: none; overflow-wrap: anywhere; }
     a:hover { text-decoration: underline; }
-    header {
-      background:
-        linear-gradient(120deg, rgba(10,31,52,.9), rgba(4,84,96,.7)),
-        url("assets/finance-newsroom-hero.png") center/cover;
-      color: #fff;
-    }
-    .hero, main { width: min(1160px, 92vw); margin: 0 auto; }
-    .hero { min-height: 320px; display: grid; align-content: end; padding: 42px 0; }
+    header { background: linear-gradient(120deg, rgba(10,31,52,.92), rgba(4,84,96,.72)), url("assets/finance-newsroom-hero.png") center/cover; color: #fff; }
+    .hero, main { width: min(1240px, 92vw); margin: 0 auto; }
+    .hero { min-height: 330px; display: grid; align-content: end; padding: 44px 0; }
     .kicker { font-size: 14px; color: #dbe7f0; }
-    h1 { max-width: 820px; margin: 12px 0 0; font-size: clamp(30px, 4.2vw, 54px); line-height: 1.08; letter-spacing: 0; }
-    .hero p { max-width: 760px; margin: 16px 0 0; color: #edf5f8; font-size: 18px; }
+    h1 { max-width: 900px; margin: 12px 0 0; font-size: clamp(30px, 4vw, 52px); line-height: 1.1; letter-spacing: 0; }
+    .hero p { max-width: 860px; margin: 16px 0 0; color: #edf5f8; font-size: 18px; }
     .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
     .pill { border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.13); border-radius: 999px; padding: 6px 12px; font-size: 14px; }
     main { padding: 28px 0 54px; }
-    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .metric, .panel, .theme-card, .news-row { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
-    .metric { padding: 16px; }
-    .metric span { display: block; color: var(--muted); font-size: 13px; }
-    .metric strong { display: block; margin-top: 6px; font-size: 24px; }
-    .section-title { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 26px 0 12px; }
+    .metrics, .quotes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .quotes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .metric, .panel, .theme-card, .news-row, .quote-tile, .impact-card, .event-row { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+    .metric, .quote-tile { padding: 16px; }
+    .metric span, .quote-tile span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong, .quote-tile strong { display: block; margin-top: 6px; font-size: 24px; }
+    .quote-tile em { font-style: normal; color: var(--muted); }
+    .quote-tile.up em { color: var(--green); } .quote-tile.down em { color: var(--red); }
+    .section-title { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 28px 0 12px; }
     .section-title h2 { margin: 0; font-size: 22px; }
     .section-title p { margin: 0; color: var(--muted); font-size: 14px; }
-    .themes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-    .theme-card { padding: 18px; }
+    .themes, .impact-grid, .events { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .theme-card, .impact-card, .event-row, .panel { padding: 18px; }
     .axis-rank { color: var(--teal); font-size: 13px; font-weight: 800; }
     .theme-topline { display: flex; align-items: start; justify-content: space-between; gap: 12px; color: var(--teal); }
     .theme-topline h3 { margin: 6px 0 0; color: var(--ink); font-size: 19px; }
     .theme-topline strong { color: var(--ink); font-size: 24px; }
-    .theme-card dl { margin: 14px 0; }
-    .theme-card dt { color: var(--muted); font-size: 12px; font-weight: 800; }
-    .theme-card dd { margin: 2px 0 10px; color: #334454; }
-    .theme-card p { margin: 12px 0; color: #334454; }
-    .theme-card ul { margin: 0; padding-left: 18px; }
+    dl { margin: 12px 0; } dt { color: var(--muted); font-size: 12px; font-weight: 800; } dd { margin: 2px 0 10px; color: #334454; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #eef3f5; color: #34485a; font-size: 13px; }
+    tr:last-child td { border-bottom: 0; }
     .news-list { display: grid; gap: 12px; }
     .news-row { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; padding: 16px; }
     .rank { width: 38px; height: 38px; border-radius: 999px; display: grid; place-items: center; background: #e8f0f2; color: var(--navy); font-weight: 800; }
-    .news-meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
-    .news-meta span { border-right: 1px solid var(--line); padding-right: 8px; }
-    .news-meta span:last-child { border-right: 0; padding-right: 0; }
+    .news-meta, .impact-meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
+    .impact-meta span { background: #eef3f5; border-radius: 999px; padding: 4px 9px; }
     h3 { margin: 6px 0 6px; font-size: 18px; line-height: 1.38; }
-    .news-row p { margin: 0; color: #415161; }
-    .panel { padding: 18px; }
-    .watch-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-    .watch-grid div { border-left: 3px solid var(--amber); padding-left: 12px; }
-    .watch-grid h3 { margin-top: 0; }
     .sources { display: flex; flex-wrap: wrap; gap: 8px; }
     .source-pill { background: #eef3f5; border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; color: #34485a; }
     .footer { color: var(--muted); font-size: 13px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }
-    .empty { color: var(--muted); padding: 16px; }
-    @media (max-width: 820px) {
-      .hero { min-height: 360px; }
-      .metrics, .themes, .watch-grid { grid-template-columns: 1fr; }
-      .news-row { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 920px) { .metrics, .quotes, .themes, .impact-grid, .events { grid-template-columns: 1fr; } .news-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <header>
     <div class="hero">
-      <div class="kicker">Daily Finance Report | 2026-07-01 06:40:38 Asia/Taipei</div>
-      <h1>2026-07-01 投資儀表版</h1>
-      <p>今日以AI、半導體與科技資本支出為首要主軸，並結合全球風險偏好與資產配置與台股與亞洲市場觀察資金輪動。</p>
+      <div class="kicker">JT Investment Dashboard | 2026-07-01 17:12:20 Asia/Taipei</div>
+      <h1>2026-07-01 JT 投資儀表板</h1>
+      <p>股市與波動指標偏向風險承擔，適合追蹤主流成長族群的延續性。 今日主軸：AI 與半導體供應鏈。</p>
       <div class="meta">
-        <span class="pill">Date: 2026-07-01</span>
-        <span class="pill">Source: GitHub Actions</span>
-        <span class="pill">Mode: dashboard report</span>
+        <span class="pill">市場燈號：偏多</span>
+        <span class="pill">新聞：18 則</span>
+        <span class="pill">來源：11 個</span>
+        <span class="pill">個人持股區：未啟用</span>
       </div>
     </div>
   </header>
   <main>
-    <section class="metrics" aria-label="Report metrics">
-      <div class="metric"><span>今日新聞</span><strong>18</strong></div>
-      <div class="metric"><span>新聞來源</span><strong>11</strong></div>
-      <div class="metric"><span>第一主軸</span><strong>AI、半導體與科技資本支出</strong></div>
-      <div class="metric"><span>解讀模式</span><strong>Dynamic 3</strong></div>
+    <section class="metrics">
+      <div class="metric"><span>市場風險燈號</span><strong>偏多</strong></div>
+      <div class="metric"><span>信號品質分數</span><strong>100</strong></div>
+      <div class="metric"><span>今日主軸</span><strong>AI 與半導體供應鏈</strong></div>
+      <div class="metric"><span>主題分散度</span><strong>7</strong></div>
     </section>
 
-    <section class="panel market-brief">
-      <strong>相較昨日</strong>
-      <p>主軸已依今日新聞權重重新排序，並與昨日焦點交叉比對。</p>
-    </section>
+    <div class="section-title"><h2>市場即時儀表板</h2><p>以公開行情源抓取，失敗時保留待更新，不中斷報告。</p></div>
+    <section class="quotes">
+        <div class="quote-tile up">
+          <span>台股加權</span>
+          <strong>47,018.99</strong>
+          <em>+1.65%</em>
+        </div>
+        
 
-    <div class="section-title">
-      <h2>市場主題</h2>
-      <p>依新聞權重歸納今日環境，作為投資儀表版摘要。</p>
-    </div>
+        <div class="quote-tile down">
+          <span>櫃買指數</span>
+          <strong>269.45</strong>
+          <em>-38.74%</em>
+        </div>
+        
+
+        <div class="quote-tile up">
+          <span>Nasdaq</span>
+          <strong>26,213.72</strong>
+          <em>+2.45%</em>
+        </div>
+        
+
+        <div class="quote-tile up">
+          <span>SOX</span>
+          <strong>14,246.96</strong>
+          <em>+5.67%</em>
+        </div>
+        
+
+        <div class="quote-tile up">
+          <span>S&amp;P 500</span>
+          <strong>7,499.36</strong>
+          <em>+1.82%</em>
+        </div>
+        
+
+        <div class="quote-tile down">
+          <span>VIX</span>
+          <strong>16.91</strong>
+          <em>-10.48%</em>
+        </div>
+        
+
+        <div class="quote-tile up">
+          <span>美債10Y</span>
+          <strong>0.44%</strong>
+          <em>+0.36%</em>
+        </div>
+        
+
+        <div class="quote-tile down">
+          <span>美元指數</span>
+          <strong>101.35</strong>
+          <em>-0.01%</em>
+        </div>
+        
+
+        <div class="quote-tile up">
+          <span>美元/台幣</span>
+          <strong>31.816</strong>
+          <em>+0.03%</em>
+        </div>
+        </section>
+
+    <div class="section-title"><h2>候選股分層清單</h2><p>依新聞主題、來源分散度與題材對應做初步排序，尚未納入個人持股。</p></div>
+    <table>
+      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>今日變化</th><th>催化劑</th><th>風險</th><th>操作狀態</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>2308 台達電</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>電源、散熱、資料中心能源管理</td>
+          <td>匯率、毛利率與資本支出循環</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        
+
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>2317 鴻海</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>AI 伺服器出貨與集團電動車/雲端布局</td>
+          <td>毛利率改善速度與大型客戶訂單節奏</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        
+
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>2330 台積電</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>AI/HPC 需求、先進製程與法說展望</td>
+          <td>估值偏高、外資調節或先進製程指引下修</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        
+
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>2382 廣達</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>AI 伺服器與資料中心資本支出</td>
+          <td>題材擁擠、出貨延後或毛利率不如預期</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        
+
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>2454 聯發科</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>手機復甦、邊緣 AI 與高階晶片</td>
+          <td>中國手機需求與競爭壓力</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        
+
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>3231 緯創</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>AI 伺服器訂單與營收成長</td>
+          <td>短線漲幅過大、營收未能連續驗證</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        
+
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>3661 世芯-KY</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>ASIC 與客製化 AI 晶片需求</td>
+          <td>單一客戶與高本益比修正</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        
+
+        <tr>
+          <td><b>正式 Top</b></td>
+          <td>6669 緯穎</td>
+          <td><strong>95</strong></td>
+          <td>+30</td>
+          <td>雲端客戶拉貨與高階伺服器需求</td>
+          <td>客戶集中與估值敏感度</td>
+          <td>續抱/拉回觀察</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="section-title"><h2>今日產業主軸</h2><p>把新聞轉成可驗證的市場假設。</p></div>
     <section class="themes">
             <article class="theme-card">
-              <div class="axis-rank">今日主軸 1</div>
+              <div class="axis-rank">主軸 1</div>
               <div class="theme-topline">
-                <h3>AI、半導體與科技資本支出</h3>
-                <strong>7</strong>
+                <h3>AI 與半導體供應鏈</h3>
+                <strong>6</strong>
               </div>
-              <p>今日新聞焦點集中在 AI 需求、半導體供應鏈與科技資本支出。</p>
+              <p>AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：今日股市：人工智慧反彈重拾魔力後道瓊斯指數、標準普爾 500 指數、納斯達剋期貨回調；愛立信：基地台帶動邊緣運算升級 網通ASIC、晶片代工台廠卡位軟硬整合新商機</p>
               <dl>
-                <dt>市場影響</dt><dd>有利高品質成長股，但估值偏高標的對展望修正更敏感。</dd>
-                <dt>24 小時觀察</dt><dd>觀察龍頭公司指引、伺服器需求與半導體接單動能。</dd>
+                <dt>投資影響</dt><dd>直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。</dd>
+                <dt>24 小時觀察</dt><dd>觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。</dd>
               </dl>
-              <ul><li><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOcnl6cXZ3b0cxZEJFTFJSNW9ySGpXalVsZldLbGJzQmF0aWRDQXNIdWd1V2l5Mk9rdVVjcnFUNVdwUE80bEhKLWs3T0k3VkJuemxyc2c3TTJ5bWlicDQyeFI0R09GcmNzVU5yQUFBbWR5aTFuM0lqTjdhUWR0ZE1hRVBsVV95LXFsMTJwZndHcjdkTThXS3JrSTh3WVhJVk9TVHFNT2h0UWLSAa4BQVVfeXFMUExNcjJHZDZQbHVuUllfdnhqUl9wZUQyejNJWTVaS0VZeWw1LXBFbGU3aXVSU0ZxM1lqUG9nLTYtZjFKbF8zT1NadHo0YnRwcnM4cFpLaEhfLU5SQ0ZNeXBFajM0aVN0M3I0eUFDNTdkZV9SaWx5NHZXODM5NV9lazlvQWxnR0R1a2d3X2VVWWQ4WWs3U1NTMmZ4TFRfUC1vRXl5X1pHNkVycFlDc2ln?oc=5">邁克爾伯里 (Michael Burry) 表示，在 2026 年人工智慧驅動的反彈中，卡特彼勒 (Caterpillar) 幾乎翻了一番後，他首次做空卡特彼勒 (Caterpillar)</a></li><li><a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxQTTBRT2hacERTLUtiaXY0djl5c2ZsLTBObzc1TGpUV1RQZXZPYndMcURhVjhXRWRZVUJNUVFBSzg1RmVWMnpHV3drM0JxVDZvb1lMZTE5V0w4RWZueWN6MTkyQ2J1RGljQ29hQmVhS0w5R0o2U1RiRzI5R1F1QTdGUV8wVmx0NVFrRXJJYXlkYkYxWjJqeEd2RWpDcUc1T3pXWWxoVktrSmRjQmt0QVZUV3lhMjZ3MUpfQm1MMEJxdm1jOWtTbDZLMUZrd3Z3Y0FxdDliMg?oc=5">SemiAnalysis 預計 H2 資料中心營收將比預期高出 20%，NVIDIA 股價上漲</a></li></ul>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMi1wFBVV95cUxOMTV6alFnbzB3WWVuejVYOHZDeEdiWkFJR3M1QUFlbWVDcmtNZ05rd0ZEZnQzd0tuTnZaS0V1RS1QX05PMlV6ek4wQnFfalhvYmpxVFlvT3lMbDZReXNmYjZQX3kxRF8zTDNGazY4aXk4WTVDaVNRUGNCcVJzMTYxZW5BMzRfT2FCS1g1ajlFa1gydlREMGVDNWtPa19VZTBkVEtlS0RwWkh0SDZTN3pMYWxmb0dpTmFRNjFVVlQyNzFXQnZRR2JmMnJVU1M1S3ZqY3ZQLUE4VQ?oc=5">今日股市：人工智慧反彈重拾魔力後道瓊斯指數、標準普爾 500 指數、納斯達剋期貨回調</a></li><li><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE1QdHE2WG5XNFJ5SjRKZ25FdWUzVEVBUGcwLW9FcTdFNkxLU1RNNWlOZGNPZGxuZDVxUHZXNUZ4djhXb0JxSjJ3UXZVR0tPeEU?oc=5">愛立信：基地台帶動邊緣運算升級 網通ASIC、晶片代工台廠卡位軟硬整合新商機</a></li></ul>
             </article>
             
 
             <article class="theme-card">
-              <div class="axis-rank">今日主軸 2</div>
+              <div class="axis-rank">主軸 2</div>
               <div class="theme-topline">
-                <h3>全球風險偏好與資產配置</h3>
+                <h3>全球股市與風險情緒</h3>
                 <strong>5</strong>
               </div>
-              <p>全球股匯債商品訊號分歧，市場焦點正在資產配置與風險控管。</p>
+              <p>全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：投資者等待就業數據，道瓊斯指數、標準普爾 500 指數和納斯達剋期貨下跌；AtaiBeckley：BPL-003 在 TRD 上的巨大潛力讓我保持樂觀（納斯達克股票代碼：ATAI）</p>
               <dl>
-                <dt>市場影響</dt><dd>風險偏好回升有利股市，若債匯波動擴大則適合降低單一方向暴露。</dd>
-                <dt>24 小時觀察</dt><dd>觀察美股期貨、波動率、美元、殖利率與主要股指廣度。</dd>
+                <dt>投資影響</dt><dd>全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。</dd>
+                <dt>24 小時觀察</dt><dd>觀察 VIX、Nasdaq、SOX、S&amp;P 500 與台股電子成交比重。</dd>
               </dl>
-              <ul><li><a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxOR25EbGViSWxWemp3UlVlUm9pTWE4S2VkXzhqN2dhVWE2SGpmVV9veDVZMlBPU2xXUnFpTWtDRXZhWi1GYWhXbVp0MjJSQmlQYkE4SHJ1NVNFR05hQ2VFZkFNdmNYVldoeVNPOXVYdlJYR0xWbFVfR29JYWt5THlqM180V0dnUWRrZ1FZMGxiUUJuNUhCVVVsZEswRkNEOEVKSWJac1lmUTRnLTNPTTVrY3g5OVY?oc=5">國際財經新聞：Asian Stocks Eye Gains as US Posts Stellar Quarter: Markets Wrap</a></li><li><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE9JWGhyV0MydlZ4WDRmMi1kb0VRSFpiNmN6eUIteUItM3JEOTBJVml2bGNzdWJqdGNOMWoyb2JtUHV5YVlmWTBwZjllR0NMX05jcVRrSEI2X0RpSEpLVEYxSHQxcTFpMUQ2VFE?oc=5">是時候對沖了（納斯達克股票代碼：QQQ）</a></li></ul>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxONGtucWpSQ0Rvd0dXY2tLZjRFUDlkeTJYQ2doeHpCbERTNzJqRXRlMjJKbWpuWml0SHlFVE5rRjhqdWppODhuOHpiOTRZUHpCTzB5TjI5TmRIbXlWbzhFTHRLb3JKYmhjemdHOFlKa0xtMmItcjFMbFNENFR2RXY5Vm9Ba1ZXYU4z?oc=5">投資者等待就業數據，道瓊斯指數、標準普爾 500 指數和納斯達剋期貨下跌</a></li><li><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOYnlZVFZUUjA2X0V1WlhxOU13eW5ZNGRLY003S2FPOVRKaHdXOFZXS3lKZU42R3h5VDJwS1JHTnZxWWY0cGxjbE5MZlJsakNyMUl4ODJxelFhZ1pyYVVqcmhMX2ZKQWpjWUI0OUN0YUEtaXRkOWl5Nncwc2liSEhrTDdBNkR5Tkx2VEIyQ2t4amtKNC11RXpnYlp2by1hRnNhc0wxclF0aVA?oc=5">AtaiBeckley：BPL-003 在 TRD 上的巨大潛力讓我保持樂觀（納斯達克股票代碼：ATAI）</a></li></ul>
             </article>
             
 
             <article class="theme-card">
-              <div class="axis-rank">今日主軸 3</div>
+              <div class="axis-rank">主軸 3</div>
               <div class="theme-topline">
-                <h3>台股與亞洲市場</h3>
+                <h3>能源、原物料與航運</h3>
                 <strong>2</strong>
               </div>
-              <p>台股與亞股焦點落在外資流向、權值股表現與區域風險偏好。</p>
+              <p>能源、原物料與航運出現 2 則相關訊號，重點新聞包含：伊朗與美國談判破裂引發供應擔憂，油價小漲 路透；伊朗的石油資金正在回歸。它的主要街道將不得不等待。</p>
               <dl>
-                <dt>市場影響</dt><dd>若匯率與外資同步轉強，電子權值股的支撐度較高。</dd>
-                <dt>24 小時觀察</dt><dd>觀察台幣、外資現貨與期貨部位、成交量與類股輪動。</dd>
+                <dt>投資影響</dt><dd>能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。</dd>
+                <dt>24 小時觀察</dt><dd>觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。</dd>
               </dl>
-              <ul><li><a href="https://news.google.com/rss/articles/CBMi2AFBVV95cUxQaG5KdFcxZlpaMmZQbWtHXzZnckpGQnhzVlViVWJkQjFsTVdlZVlBQWU5aW9UbzBZLW9JRGxTdlZlc3NtNlZ6YTdMUFk2Ml9JTTY1VHRxd25Kd1JxZl83TmFGQkZvdW5qblBremZPWnRDdVdCQ0U3Tk45TC1NZjRRYWFpb3hWUm9KSXFpLWFhVVRhc1VOdmZSVFRLa18yTVkteDVQc1hzVnQ5OE1PUjMyR05VUlVzV19tZ0dYd1Zra2VZbVd2T3ZhSzJoUHNjWExzNnZiQ2dxQU0?oc=5">今日股市：標普 500 指數、納斯達克指數上漲，道瓊斯指數創下新紀錄，結束出色的季度</a></li><li><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxPR1NQSFRjX2dJMnJZZzdxQ2htX0J2eEhRajlrWjQ1amktUVFGZElGajlDLUxWcHoyTks3TW5lclNMb2wtbEc2OVp4aVJOcjVmbS1kZkc4Q2VHbDVsb0xPX3dzTzFYUnVuUExkOV91QUlzcGN6TVJteFluaGRBSFhnSWFjNnR0X3dnWjR5dVhNUnNVQkU1YWpGLU5OWTNnN2pYSkNlMzNyazltcXVrVWM3VnlFNTloRnVWcWJONHJCbnljQ2pIbktR?oc=5">債務和高風險押注推動韓國和台灣的人工智慧股票繁榮</a></li></ul>
+              <ul><li><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxQRm5sVG5aLTIzQ3Z5QnJzVFBRa3ZoNEJiVTRrdFNMcVNqdnBqS1g0YTNGT0tJN19jUW4zNkxOMkF3bmh4azJKUzJOaW9kdF90MF9YMHh2dHZpT21rMUpPeXNDWHJrNldBbnd6UXBiLTUxQWI1dFhVTHVQUU5KUFBmOEZhTlRVT1hJUHRvMkk2d0t1YUhRR1FOZS1PUVdQM1h6S0tCa3Zzb3FPUk52d3R4QjAxQlViREpkcTVua1hOZVk5Mm1NZXJz?oc=5">伊朗與美國談判破裂引發供應擔憂，油價小漲 路透</a></li><li><a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE8zUnhnQzdFX0Jib2NXOEllYW9hLWFoLTFoYlFlN3FkNDMtMmk2TXFaMWd0NFRKVkhtS2MyamY1anFZelJkQjdRUUpFWkdzZmstLWNBYlZQS3E0UGs0Q1doVWJseW13QU1SbnBlYzZDS0QwaXRNYmdZOA?oc=5">伊朗的石油資金正在回歸。它的主要街道將不得不等待。</a></li></ul>
             </article>
             </section>
 
-    <div class="section-title">
-      <h2>重點新聞</h2>
-      <p>保留來源連結，避免只留下 Telegram 摘要文字。</p>
-    </div>
+    <div class="section-title"><h2>投資影響卡</h2><p>每則重點新聞對應受惠族群、台股標的與驗證指標。</p></div>
+    <section class="impact-grid">
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>中影響</span>
+            <span>盤中至 1-2 週</span>
+            <span>等待驗證後操作</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxONGtucWpSQ0Rvd0dXY2tLZjRFUDlkeTJYQ2doeHpCbERTNzJqRXRlMjJKbWpuWml0SHlFVE5rRjhqdWppODhuOHpiOTRZUHpCTzB5TjI5TmRIbXlWbzhFTHRLb3JKYmhjemdHOFlKa0xtMmItcjFMbFNENFR2RXY5Vm9Ba1ZXYU4z?oc=5">投資者等待就業數據，道瓊斯指數、標準普爾 500 指數和納斯達剋期貨下跌</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>整體風險資產</dd>
+            <dt>台股對應</dt><dd>權值股、ETF、指數期貨</dd>
+            <dt>驗證指標</dt><dd>VIX、SOX、Nasdaq、成交值</dd>
+          </dl>
+        </article>
+        
+
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>高影響</span>
+            <span>盤中至 1-2 週</span>
+            <span>等待驗證後操作</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxPR1NQSFRjX2dJMnJZZzdxQ2htX0J2eEhRajlrWjQ1amktUVFGZElGajlDLUxWcHoyTks3TW5lclNMb2wtbEc2OVp4aVJOcjVmbS1kZkc4Q2VHbDVsb0xPX3dzTzFYUnVuUExkOV91QUlzcGN6TVJteFluaGRBSFhnSWFjNnR0X3dnWjR5dVhNUnNVQkU1YWpGLU5OWTNnN2pYSkNlMzNyazltcXVrVWM3VnlFNTloRnVWcWJONHJCbnljQ2pIbktR?oc=5">債務和高風險押注推動韓國和台灣的人工智慧股票繁榮</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>台股權值股、櫃買成長股、金融</dd>
+            <dt>台股對應</dt><dd>台積電、鴻海、富邦金、主要 ETF</dd>
+            <dt>驗證指標</dt><dd>成交值、外資、台幣、均線</dd>
+          </dl>
+        </article>
+        
+
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>中影響</span>
+            <span>盤中至 1-2 週</span>
+            <span>觀察</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxQdlV1Q1p5NjBXVGdyTjY4bTZDRktCbzV0MnRLOHhsVG1RRnFJWGw1alplaUstMnNKSHFUMjd6dGY4ZHhaRzlUcG5DVXlxU2d6ZnM0UW9iYi01cEJYOXhyNTdSVXF0RmVoLUd4cUNJU1BLdnZVQ0Y5eEl0V1lUN1duY3F0TmxNU2dUMHdjb1ZQOXl1UQ?oc=5">由於聯準會政策仍不明朗，下半年哪裡可以找到最高的 CD 收益率</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>供應鏈、能源、避險資產</dd>
+            <dt>台股對應</dt><dd>半導體供應鏈、能源與防禦型資產</dd>
+            <dt>驗證指標</dt><dd>油價、美元、VIX</dd>
+          </dl>
+        </article>
+        
+
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>高影響</span>
+            <span>1-3 個月</span>
+            <span>等待驗證後操作</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMi1wFBVV95cUxOMTV6alFnbzB3WWVuejVYOHZDeEdiWkFJR3M1QUFlbWVDcmtNZ05rd0ZEZnQzd0tuTnZaS0V1RS1QX05PMlV6ek4wQnFfalhvYmpxVFlvT3lMbDZReXNmYjZQX3kxRF8zTDNGazY4aXk4WTVDaVNRUGNCcVJzMTYxZW5BMzRfT2FCS1g1ajlFa1gydlREMGVDNWtPa19VZTBkVEtlS0RwWkh0SDZTN3pMYWxmb0dpTmFRNjFVVlQyNzFXQnZRR2JmMnJVU1M1S3ZqY3ZQLUE4VQ?oc=5">今日股市：人工智慧反彈重拾魔力後道瓊斯指數、標準普爾 500 指數、納斯達剋期貨回調</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>GPU、伺服器、晶圓代工、散熱、電源</dd>
+            <dt>台股對應</dt><dd>台積電、廣達、緯創、緯穎、台達電</dd>
+            <dt>驗證指標</dt><dd>月營收、法人買超、突破前高</dd>
+          </dl>
+        </article>
+        
+
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>中影響</span>
+            <span>盤中至 1-2 週</span>
+            <span>等待驗證後操作</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOYnlZVFZUUjA2X0V1WlhxOU13eW5ZNGRLY003S2FPOVRKaHdXOFZXS3lKZU42R3h5VDJwS1JHTnZxWWY0cGxjbE5MZlJsakNyMUl4ODJxelFhZ1pyYVVqcmhMX2ZKQWpjWUI0OUN0YUEtaXRkOWl5Nncwc2liSEhrTDdBNkR5Tkx2VEIyQ2t4amtKNC11RXpnYlp2by1hRnNhc0wxclF0aVA?oc=5">AtaiBeckley：BPL-003 在 TRD 上的巨大潛力讓我保持樂觀（納斯達克股票代碼：ATAI）</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>整體風險資產</dd>
+            <dt>台股對應</dt><dd>權值股、ETF、指數期貨</dd>
+            <dt>驗證指標</dt><dd>VIX、SOX、Nasdaq、成交值</dd>
+          </dl>
+        </article>
+        
+
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>中影響</span>
+            <span>盤中至 1-2 週</span>
+            <span>觀察</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxQRm5sVG5aLTIzQ3Z5QnJzVFBRa3ZoNEJiVTRrdFNMcVNqdnBqS1g0YTNGT0tJN19jUW4zNkxOMkF3bmh4azJKUzJOaW9kdF90MF9YMHh2dHZpT21rMUpPeXNDWHJrNldBbnd6UXBiLTUxQWI1dFhVTHVQUU5KUFBmOEZhTlRVT1hJUHRvMkk2d0t1YUhRR1FOZS1PUVdQM1h6S0tCa3Zzb3FPUk52d3R4QjAxQlViREpkcTVua1hOZVk5Mm1NZXJz?oc=5">伊朗與美國談判破裂引發供應擔憂，油價小漲 路透</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>能源、航運、原物料成本敏感族群</dd>
+            <dt>台股對應</dt><dd>航運、塑化、原物料與用電大戶</dd>
+            <dt>驗證指標</dt><dd>油價、運價、成本轉嫁</dd>
+          </dl>
+        </article>
+        
+
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>中影響</span>
+            <span>盤中至 1-2 週</span>
+            <span>觀察</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE8zUnhnQzdFX0Jib2NXOEllYW9hLWFoLTFoYlFlN3FkNDMtMmk2TXFaMWd0NFRKVkhtS2MyamY1anFZelJkQjdRUUpFWkdzZmstLWNBYlZQS3E0UGs0Q1doVWJseW13QU1SbnBlYzZDS0QwaXRNYmdZOA?oc=5">伊朗的石油資金正在回歸。它的主要街道將不得不等待。</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>能源、航運、原物料成本敏感族群</dd>
+            <dt>台股對應</dt><dd>航運、塑化、原物料與用電大戶</dd>
+            <dt>驗證指標</dt><dd>油價、運價、成本轉嫁</dd>
+          </dl>
+        </article>
+        
+
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>中影響</span>
+            <span>盤中至 1-2 週</span>
+            <span>等待驗證後操作</span>
+          </div>
+          <h3><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxPaDFDWnQ0bDh3NUVibndlVGl2S0dDU0RDaUo0bjcwWGRuUHhEVHlVMnE3emQ1MDVlLV9TNGhQckhNeHNxdzMtbGdNWGRNcnBpS09Sdmc1MkZ0bElmamZCSmI2MVAycThFSkVNLTE5RHREWGpGeXZsc214NFIwNmFwdV9mVGI?oc=5">美股創下六年來最大季度漲幅</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>整體風險資產</dd>
+            <dt>台股對應</dt><dd>權值股、ETF、指數期貨</dd>
+            <dt>驗證指標</dt><dd>VIX、SOX、Nasdaq、成交值</dd>
+          </dl>
+        </article>
+        </section>
+
+    <div class="section-title"><h2>未來事件行事曆</h2><p>先追蹤 7/30 天內會影響成長股與法人資金的事件。</p></div>
+    <section class="events">
+        <article class="event-row">
+          <span>未來 7 天</span>
+          <h3>台股月營收公告高峰</h3>
+          <p><b>敏感族群：</b>AI 伺服器、半導體、電子零組件</p>
+          <p><b>觀察條件：</b>YoY/MoM 是否連續加速，弱於同業者降權</p>
+        </article>
+        
+
+        <article class="event-row">
+          <span>未來 7 天</span>
+          <h3>台指期/選擇權籌碼變化</h3>
+          <p><b>敏感族群：</b>權值股、ETF、期貨避險部位</p>
+          <p><b>觀察條件：</b>外資期現貨是否同向，逆價差是否擴大</p>
+        </article>
+        
+
+        <article class="event-row">
+          <span>未來 30 天</span>
+          <h3>美國 CPI/PPI/非農與 FOMC 訊號</h3>
+          <p><b>敏感族群：</b>高估值科技股、金融、美元資產</p>
+          <p><b>觀察條件：</b>10Y 殖利率與 DXY 是否同時上行</p>
+        </article>
+        
+
+        <article class="event-row">
+          <span>07/01 起</span>
+          <h3>企業法說與財報指引</h3>
+          <p><b>敏感族群：</b>成長股與高本益比族群</p>
+          <p><b>觀察條件：</b>指引上修、毛利率改善與訂單能見度</p>
+        </article>
+        </section>
+
+    <div class="section-title"><h2>重要新聞清單</h2><p>保留來源連結，避免只留下摘要文字。</p></div>
     <section class="news-list">
             <article class="news-row">
               <div class="rank">01</div>
               <div>
                 <div class="news-meta">
-                  <span>利率、通膨與流動性</span>
+                  <span>全球股市與風險情緒</span>
                   <span>Reuters</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxQeGJxNUJQYmFmQkF2SnJQY3lXcGV1b0tWT2ktRjdveUt2WkxyTmg1X3RzSjU5TGxTNDc5ekNDXzZWQUFUUEhjZWllcG5OMTVNSlprckVTbWExWW41b1pVdmpsMEJIWUpXZUZqalQzSmFFVTh2Q0RTdTM0blpJZzhDaHNCTGdxaUdmcDNaY25KbjFSc1hGQ3R3cndiSzNsRGp3U3ltYTcteXJ1ZWttUE1TQl8xYkhMRjhFQXc?oc=5">聯準會哈馬克告訴 CNBC 可能需要升息來平息高通膨</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxONGtucWpSQ0Rvd0dXY2tLZjRFUDlkeTJYQ2doeHpCbERTNzJqRXRlMjJKbWpuWml0SHlFVE5rRjhqdWppODhuOHpiOTRZUHpCTzB5TjI5TmRIbXlWbzhFTHRLb3JKYmhjemdHOFlKa0xtMmItcjFMbFNENFR2RXY5Vm9Ba1ZXYU4z?oc=5">投資者等待就業數據，道瓊斯指數、標準普爾 500 指數和納斯達剋期貨下跌</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -184,12 +462,12 @@
               <div class="rank">02</div>
               <div>
                 <div class="news-meta">
-                  <span>全球風險偏好與資產配置</span>
+                  <span>台股與亞洲市場</span>
                   <span>Bloomberg</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxOR25EbGViSWxWemp3UlVlUm9pTWE4S2VkXzhqN2dhVWE2SGpmVV9veDVZMlBPU2xXUnFpTWtDRXZhWi1GYWhXbVp0MjJSQmlQYkE4SHJ1NVNFR05hQ2VFZkFNdmNYVldoeVNPOXVYdlJYR0xWbFVfR29JYWt5THlqM180V0dnUWRrZ1FZMGxiUUJuNUhCVVVsZEswRkNEOEVKSWJac1lmUTRnLTNPTTVrY3g5OVY?oc=5">國際財經新聞：Asian Stocks Eye Gains as US Posts Stellar Quarter: Markets Wrap</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxPR1NQSFRjX2dJMnJZZzdxQ2htX0J2eEhRajlrWjQ1amktUVFGZElGajlDLUxWcHoyTks3TW5lclNMb2wtbEc2OVp4aVJOcjVmbS1kZkc4Q2VHbDVsb0xPX3dzTzFYUnVuUExkOV91QUlzcGN6TVJteFluaGRBSFhnSWFjNnR0X3dnWjR5dVhNUnNVQkU1YWpGLU5OWTNnN2pYSkNlMzNyazltcXVrVWM3VnlFNTloRnVWcWJONHJCbnljQ2pIbktR?oc=5">債務和高風險押注推動韓國和台灣的人工智慧股票繁榮</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -198,12 +476,12 @@
               <div class="rank">03</div>
               <div>
                 <div class="news-meta">
-                  <span>AI、半導體與科技資本支出</span>
+                  <span>地緣政治與政策風險</span>
                   <span>CNBC</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOcnl6cXZ3b0cxZEJFTFJSNW9ySGpXalVsZldLbGJzQmF0aWRDQXNIdWd1V2l5Mk9rdVVjcnFUNVdwUE80bEhKLWs3T0k3VkJuemxyc2c3TTJ5bWlicDQyeFI0R09GcmNzVU5yQUFBbWR5aTFuM0lqTjdhUWR0ZE1hRVBsVV95LXFsMTJwZndHcjdkTThXS3JrSTh3WVhJVk9TVHFNT2h0UWLSAa4BQVVfeXFMUExNcjJHZDZQbHVuUllfdnhqUl9wZUQyejNJWTVaS0VZeWw1LXBFbGU3aXVSU0ZxM1lqUG9nLTYtZjFKbF8zT1NadHo0YnRwcnM4cFpLaEhfLU5SQ0ZNeXBFajM0aVN0M3I0eUFDNTdkZV9SaWx5NHZXODM5NV9lazlvQWxnR0R1a2d3X2VVWWQ4WWs3U1NTMmZ4TFRfUC1vRXl5X1pHNkVycFlDc2ln?oc=5">邁克爾伯里 (Michael Burry) 表示，在 2026 年人工智慧驅動的反彈中，卡特彼勒 (Caterpillar) 幾乎翻了一番後，他首次做空卡特彼勒 (Caterpillar)</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxQdlV1Q1p5NjBXVGdyTjY4bTZDRktCbzV0MnRLOHhsVG1RRnFJWGw1alplaUstMnNKSHFUMjd6dGY4ZHhaRzlUcG5DVXlxU2d6ZnM0UW9iYi01cEJYOXhyNTdSVXF0RmVoLUd4cUNJU1BLdnZVQ0Y5eEl0V1lUN1duY3F0TmxNU2dUMHdjb1ZQOXl1UQ?oc=5">由於聯準會政策仍不明朗，下半年哪裡可以找到最高的 CD 收益率</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -212,12 +490,12 @@
               <div class="rank">04</div>
               <div>
                 <div class="news-meta">
-                  <span>台股與亞洲市場</span>
+                  <span>AI 與半導體供應鏈</span>
                   <span>Yahoo Finance</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMi2AFBVV95cUxQaG5KdFcxZlpaMmZQbWtHXzZnckpGQnhzVlViVWJkQjFsTVdlZVlBQWU5aW9UbzBZLW9JRGxTdlZlc3NtNlZ6YTdMUFk2Ml9JTTY1VHRxd25Kd1JxZl83TmFGQkZvdW5qblBremZPWnRDdVdCQ0U3Tk45TC1NZjRRYWFpb3hWUm9KSXFpLWFhVVRhc1VOdmZSVFRLa18yTVkteDVQc1hzVnQ5OE1PUjMyR05VUlVzV19tZ0dYd1Zra2VZbVd2T3ZhSzJoUHNjWExzNnZiQ2dxQU0?oc=5">今日股市：標普 500 指數、納斯達克指數上漲，道瓊斯指數創下新紀錄，結束出色的季度</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMi1wFBVV95cUxOMTV6alFnbzB3WWVuejVYOHZDeEdiWkFJR3M1QUFlbWVDcmtNZ05rd0ZEZnQzd0tuTnZaS0V1RS1QX05PMlV6ek4wQnFfalhvYmpxVFlvT3lMbDZReXNmYjZQX3kxRF8zTDNGazY4aXk4WTVDaVNRUGNCcVJzMTYxZW5BMzRfT2FCS1g1ajlFa1gydlREMGVDNWtPa19VZTBkVEtlS0RwWkh0SDZTN3pMYWxmb0dpTmFRNjFVVlQyNzFXQnZRR2JmMnJVU1M1S3ZqY3ZQLUE4VQ?oc=5">今日股市：人工智慧反彈重拾魔力後道瓊斯指數、標準普爾 500 指數、納斯達剋期貨回調</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -226,12 +504,12 @@
               <div class="rank">05</div>
               <div>
                 <div class="news-meta">
-                  <span>全球風險偏好與資產配置</span>
+                  <span>全球股市與風險情緒</span>
                   <span>Seeking Alpha</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE9JWGhyV0MydlZ4WDRmMi1kb0VRSFpiNmN6eUIteUItM3JEOTBJVml2bGNzdWJqdGNOMWoyb2JtUHV5YVlmWTBwZjllR0NMX05jcVRrSEI2X0RpSEpLVEYxSHQxcTFpMUQ2VFE?oc=5">是時候對沖了（納斯達克股票代碼：QQQ）</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOYnlZVFZUUjA2X0V1WlhxOU13eW5ZNGRLY003S2FPOVRKaHdXOFZXS3lKZU42R3h5VDJwS1JHTnZxWWY0cGxjbE5MZlJsakNyMUl4ODJxelFhZ1pyYVVqcmhMX2ZKQWpjWUI0OUN0YUEtaXRkOWl5Nncwc2liSEhrTDdBNkR5Tkx2VEIyQ2t4amtKNC11RXpnYlp2by1hRnNhc0wxclF0aVA?oc=5">AtaiBeckley：BPL-003 在 TRD 上的巨大潛力讓我保持樂觀（納斯達克股票代碼：ATAI）</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -240,12 +518,12 @@
               <div class="rank">06</div>
               <div>
                 <div class="news-meta">
-                  <span>AI、半導體與科技資本支出</span>
+                  <span>能源、原物料與航運</span>
                   <span>Investing.com</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxQTTBRT2hacERTLUtiaXY0djl5c2ZsLTBObzc1TGpUV1RQZXZPYndMcURhVjhXRWRZVUJNUVFBSzg1RmVWMnpHV3drM0JxVDZvb1lMZTE5V0w4RWZueWN6MTkyQ2J1RGljQ29hQmVhS0w5R0o2U1RiRzI5R1F1QTdGUV8wVmx0NVFrRXJJYXlkYkYxWjJqeEd2RWpDcUc1T3pXWWxoVktrSmRjQmt0QVZUV3lhMjZ3MUpfQm1MMEJxdm1jOWtTbDZLMUZrd3Z3Y0FxdDliMg?oc=5">SemiAnalysis 預計 H2 資料中心營收將比預期高出 20%，NVIDIA 股價上漲</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxQRm5sVG5aLTIzQ3Z5QnJzVFBRa3ZoNEJiVTRrdFNMcVNqdnBqS1g0YTNGT0tJN19jUW4zNkxOMkF3bmh4azJKUzJOaW9kdF90MF9YMHh2dHZpT21rMUpPeXNDWHJrNldBbnd6UXBiLTUxQWI1dFhVTHVQUU5KUFBmOEZhTlRVT1hJUHRvMkk2d0t1YUhRR1FOZS1PUVdQM1h6S0tCa3Zzb3FPUk52d3R4QjAxQlViREpkcTVua1hOZVk5Mm1NZXJz?oc=5">伊朗與美國談判破裂引發供應擔憂，油價小漲 路透</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -254,12 +532,12 @@
               <div class="rank">07</div>
               <div>
                 <div class="news-meta">
-                  <span>地緣政治與政策風險</span>
+                  <span>能源、原物料與航運</span>
                   <span>WSJ</span>
                   <span>2026-07-01</span>
                 </div>
                 <h3><a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE8zUnhnQzdFX0Jib2NXOEllYW9hLWFoLTFoYlFlN3FkNDMtMmk2TXFaMWd0NFRKVkhtS2MyamY1anFZelJkQjdRUUpFWkdzZmstLWNBYlZQS3E0UGs0Q1doVWJseW13QU1SbnBlYzZDS0QwaXRNYmdZOA?oc=5">伊朗的石油資金正在回歸。它的主要街道將不得不等待。</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -268,12 +546,12 @@
               <div class="rank">08</div>
               <div>
                 <div class="news-meta">
-                  <span>全球風險偏好與資產配置</span>
+                  <span>全球股市與風險情緒</span>
                   <span>Financial Times</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMicEFVX3lxTE1IRUhPanJDU01DWjJoX3FWWWpVQURQYnlnMzAtbExyRk5lZEdneUtodEtzcE1DbjgtNVFNcmxqZDV1YWF5WmhxamlVZFdyMVpxTTZic2FJSmY2S1ppWm5aYkRHQ1E2X1BQTlBQUmptRE4?oc=5">美股創下六年來最大季度漲幅</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxPaDFDWnQ0bDh3NUVibndlVGl2S0dDU0RDaUo0bjcwWGRuUHhEVHlVMnE3emQ1MDVlLV9TNGhQckhNeHNxdzMtbGdNWGRNcnBpS09Sdmc1MkZ0bElmamZCSmI2MVAycThFSkVNLTE5RHREWGpGeXZsc214NFIwNmFwdV9mVGI?oc=5">美股創下六年來最大季度漲幅</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -282,12 +560,12 @@
               <div class="rank">09</div>
               <div>
                 <div class="news-meta">
-                  <span>AI、半導體與科技資本支出</span>
+                  <span>全球股市與風險情緒</span>
                   <span>The Economist</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxOY01vLTZhQzBRWHlRdWtQQlRhaTE2elZ1YWp3eWY0YXhlMU1hSjRONkFrSVZsWG9UZlFKcXd1WGJpWlp5ZUt5cXRUUWhDalo4czBKNFJuUThHbExEWlFReExtWDNtMkZDcDhic0s4MTM0blFxeE1uMHI2TGFfWDFudS14NkM?oc=5">人工智慧狂熱會持續多久？</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMirgFBVV95cUxNSm0yVjltR1lfMGZNbThoV2dtY19ZYVMya3RtbE4wa0VWNGJocDluc3d2VTdOcmFrS1JQTVE4MGYxY0FyVG5UVFRYZ19SNDhFdDZ5eXplM1pfcTVpUjBOQmVJY3lpSjNsU3UyamEzSXZpYkNxRWszRXZ1Yk5ITHowSWRrc2gwX2wtZGIzZTdMM3FwdmJfdV9keWJXRlpLOXlVelJCOFk2LUhaOWs5dVE?oc=5">英國希望無人機能幫助其擺脫國防預算束縛</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -296,12 +574,12 @@
               <div class="rank">10</div>
               <div>
                 <div class="news-meta">
-                  <span>AI、半導體與科技資本支出</span>
+                  <span>AI 與半導體供應鏈</span>
                   <span>鉅亨網</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTFBsZFhDVFBoMV9yZ184QmdfVW4xaFNMZU5sQUF3Y1hKYlNuVHAySF9GOGJkZVR0RS03MHpqQk5kV0ZfcEJLeTV6UDRBVThyNXM?oc=5">晶片股Q2狂飆 美光、AMD、英特爾市值暴增2兆美元</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE1QdHE2WG5XNFJ5SjRKZ25FdWUzVEVBUGcwLW9FcTdFNkxLU1RNNWlOZGNPZGxuZDVxUHZXNUZ4djhXb0JxSjJ3UXZVR0tPeEU?oc=5">愛立信：基地台帶動邊緣運算升級 網通ASIC、晶片代工台廠卡位軟硬整合新商機</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -310,12 +588,12 @@
               <div class="rank">11</div>
               <div>
                 <div class="news-meta">
-                  <span>匯率、美元與跨境資金</span>
+                  <span>美元、匯率與資金流</span>
                   <span>TradingView</span>
                   <span>2026-07-01</span>
                 </div>
                 <h3><a href="https://news.google.com/rss/articles/CBMi2AFBVV95cUxONG9WaE5yZlZKYzB5bmNhR3N3OFp5MjY2UFhLOWktbnU5Rko0RWZ1N2RFQVkwYWlQR2hyN3Z5Xzk3eE41am9yY3V6Mzk1Q1VDUkNlRkU1VUFabGVXb25DRzl5UDJ3ZGpvU3RRYmVTN2hDZ1I1RnI0NWY1bi0yMVJQYXhCRW5UM040NV92UnROb25RTWlfRmh2cTVWaDl0Ylk5Q3YtLVZkSXo1ak83MXJoZ2gzZTd1TzR3a0RTVng4aVNqYkNKX3hTbUhKMS03MkpucnNpdkcwd2c?oc=5">隨著美元兌日圓觸及 40 年來新高，比特幣價格風險跌破 5.8 萬美元</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -324,12 +602,12 @@
               <div class="rank">12</div>
               <div>
                 <div class="news-meta">
-                  <span>全球風險偏好與資產配置</span>
+                  <span>AI 與半導體供應鏈</span>
                   <span>Reuters</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMisgFBVV95cUxNUlVaekl4RUFIMENoNEw1Y29fMk93RzNIeDRWNE1lYldyNlh6N2I4M1RlMGphWFRmYndzSDVmQUt4Ymx4RlZjeXNpbTUteXVQU3B3RDNNcG91TVYwNU5NNUxRU0EyM05tY0FGbjlzaElwM2p3SFVvM2RyQXNRNEhFclZkQVNTcDZGcXdQcXF2YTUxZjI3Z1VhT0V0RVpqX0ZTcC1NT3UwbVNRTXkwZTJlYjFB?oc=5">多倫多證券交易所有望連續第八個季度上漲</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxNeDdZYmtUdkhOejZzdzI2aG9EekJqaV9aTTQ5cmoyMEFiaHd2NmNwN0hPVU9sQmFYSnNrX2dfNmxvM1pMVWd0YjR0dDZNM3laYUtPVzBBUWhjYnYwWnM3V3RweDdvc1h2dkxOSnI2R3JkY0dZT3U3UUdYc2dTUi05RVM1Z3hmSVFEcXd6Qjkwc1hUSVdabDkydHpYekNXT29WMHgwM1U2OU9nT05i?oc=5">投資人對歐洲股市的熱情因華爾街人工智慧的光芒而黯然失色</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -338,12 +616,12 @@
               <div class="rank">13</div>
               <div>
                 <div class="news-meta">
-                  <span>台股與亞洲市場</span>
+                  <span>AI 與半導體供應鏈</span>
                   <span>Bloomberg</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxPR1NQSFRjX2dJMnJZZzdxQ2htX0J2eEhRajlrWjQ1amktUVFGZElGajlDLUxWcHoyTks3TW5lclNMb2wtbEc2OVp4aVJOcjVmbS1kZkc4Q2VHbDVsb0xPX3dzTzFYUnVuUExkOV91QUlzcGN6TVJteFluaGRBSFhnSWFjNnR0X3dnWjR5dVhNUnNVQkU1YWpGLU5OWTNnN2pYSkNlMzNyazltcXVrVWM3VnlFNTloRnVWcWJONHJCbnljQ2pIbktR?oc=5">債務和高風險押注推動韓國和台灣的人工智慧股票繁榮</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxNZUE1RTZyNnBJdUlFUWVESVJhcjg3UXVDYUpBVHE0ZnFZWWFHcWI0aTkyMXNfb01pNTNzaW9aM0dfakd4WW45clNST0c0Ukw1bUVzckgwVXRWbTh4amMxemNOZ1I4em1ZdmdDamdEOTZSY0pkQ2dVcEVZeFdtSTlDbVdGS0xnX1AyeUlYdU9nNDRHYk1xVlhpZFFTSkxQY0JReVNBVWlsa2NIN2laVWRGQTd1Q0w?oc=5">Vertiv 開設馬來西亞工廠以滿足人工智慧資料中心的電力需求</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -352,12 +630,12 @@
               <div class="rank">14</div>
               <div>
                 <div class="news-meta">
-                  <span>AI、半導體與科技資本支出</span>
+                  <span>利率、通膨與估值</span>
                   <span>CNBC</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxOWDk4dXRoQU1nUG42LVR1VFFkbkt3VG9PWkU0MUFsX2JkTGlvRzd3SF8xTFA4dkxVR0k2RTVNNktSRnhwVVRXTXJLR1FrcVNGZ2trZkw2THRHVjFqWGxuYmN0TWZJUDdNWXVmYzFEMnJVeHVpUTV0VXNIMlFMZDdtOUtvRzFsR3RESEI0VmxBZkVpcHlKVmllWHd4Q2tQTlBPZXVGWdIBqgFBVV95cUxPaDk4dnJ4czJxMk5jRElPLTRYM0R0Y1dxTTlfYVFJbDVacTZORXIxNmZrbXI2djk4ZDY1cGFXZHlILXBvRjVpRlNSdGV5SU1CeHhseDlmSmV3R052dWNPWVcwNUJ5dkZhMV8za3A3WkFwTnZPLTJucG9hc2dkY2FjMEZ1b0tVVWVvTnplMzdRNmJZQUFEcHVZclB6X3U4aXRBQXE0NW9jbWNGQQ?oc=5">第二季創紀錄的晶片漲勢為美光、英特爾和 AMD 帶來了 2 兆美元的總價值</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFAtZTVzckFhenhuaXo1eXlIdk1QbVZTa3kwVmh4MXBhLVJZd3JpRFg1MzdMM1IwdXhyeDROc0lJWVNrOVkyMWg2NXlGN2FFQmZ3ajFXNkduTXpqR0xKZncycWd2cDlkZjkxc2s1OUpTVVU3N0h3V09rUWV4cVNmTknSAYQBQVVfeXFMTzNmZnZlMGdreC12Tkk0dndsajJGaDREOXM5UHJKZ1dUR2wzMlk0VEY1M0NycGNIVVZUTUxXTHN4dFZBeldOeE9DWFZ2by1lV2wtTkJMSndOWDlJNlBLaDk4MmVFcF9UR1l0ZHlWUVlCeXhMTXl3ZHBpSk43ZDhPS1hlZG8w?oc=5">由於投資人等待聯準會主席沃什在歐洲的會談，美國公債殖利率小幅走高</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -366,12 +644,12 @@
               <div class="rank">15</div>
               <div>
                 <div class="news-meta">
-                  <span>AI、半導體與科技資本支出</span>
+                  <span>AI 與半導體供應鏈</span>
                   <span>Yahoo Finance</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxPNUpRMmFVNWMzVHpRUEtfS29LOF9QMENZVWg0amFnYmVLOFpLS3hUcjM4UDdGNW9ybkZ4MzlMQnQ2Ql9YMzBEU1EtRGZPZFN0X2E3a2JQUmkwOFJwdE5XS0xaRWE0NWZ6MWREcndHTWgwNmd2V20xQzctTEp3QjQtcWhoMGNGQjJETUtTNFlaLXRMallG?oc=5">Rambus 是目前最值得買的人工智慧股票之一嗎？</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNbWFTU3VzRU9WYVZtZkMyOFVxbTB2ck1ldHlhSnkweElSSm1DRUZjU09YVVdweDNYbG00Y0lFYWZGOGxWQTRPVWhCa3U2Qk14bnFmeFFoT3VtZ3BIZnQ1aEwxZ0ZZS2FoYXBEbElpZjh6QkV6RDZuWnNIUWJmSHZuX3Nodjg5S0w1RXVzUXlqTFBPelJZb3pTMi1zRzlxQUJXbnV1QlFlSFB0UnFlZFk0TXZVWEZFRXRfd0FvMnFxTUR2ZWIxQWljNmtXZ1BISzlxQ1E?oc=5">今日股市：人工智慧反彈重獲動力後，道瓊斯指數、標準普爾 500 指數、納斯達剋期貨出現波動</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -380,12 +658,12 @@
               <div class="rank">16</div>
               <div>
                 <div class="news-meta">
-                  <span>全球風險偏好與資產配置</span>
+                  <span>全球股市與風險情緒</span>
                   <span>Seeking Alpha</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxOaGJBLWZHNWJ1TjVRMHJGaUJQcG92TTNya0tnNzdaMDhMd0hqTm1CV2pPMDh4eUgyQ3dLWDAwMTk1WkM4bUttT0hzSjA1VEZkT1ZPbkZaUzVDbVJlYy1MWWtTZ3c2S0trWC1yTzNRVTQwbjljYmZqa25XOHNETDI2MnVIWmtlQ1owUXJyZnM1SUpkQWphU2ZhYTJlR0NHRzN6ZU9wYjQ3bk0tUGFqWVBzVVE2RDRFUHc?oc=5">Oppenheimer：Akamai 的雲端業務因 $1.8B Anthropic 交易而被低估</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE9JWGhyV0MydlZ4WDRmMi1kb0VRSFpiNmN6eUIteUItM3JEOTBJVml2bGNzdWJqdGNOMWoyb2JtUHV5YVlmWTBwZjllR0NMX05jcVRrSEI2X0RpSEpLVEYxSHQxcTFpMUQ2VFE?oc=5">是時候對沖了（納斯達克股票代碼：QQQ）</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -394,12 +672,12 @@
               <div class="rank">17</div>
               <div>
                 <div class="news-meta">
-                  <span>AI、半導體與科技資本支出</span>
+                  <span>AI 與半導體供應鏈</span>
                   <span>Investing.com</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxNQ3Job0ZucjZ2ZE1tRWtxeUJ1LVFGTE93M3BGd2FZUF9TOWNENFg2eE1NVTFyQ2lQNmU4SVJQU0o2dFNIdE5qWTYxRkNFV3E4dmRpOHNSNVpuanNJTVFYa2pKMVNzLTlrb1JWa3hZaXp0OHNEYkpxVXUxZDg0b1ZmZENtT0JhRXB5RmNfZTdPcF85ZWtxcE14MG0zYnZHaHpQTU94SnBraGpPOUhUM0lRVXJPRTZPWXRZT3ZqLW56Um1objZ0amtR?oc=5">Etched 從與台積電相關的創投公司 Jane Street 籌集了 8 億美元資金 - 彭博社</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxQV2xlTnhhT3lGbDJwRzhSS1owWUFYUWZ6UGZMUUZGT0VXZHJWYnlJWUZjUVhUeDFXZk8yRFBMSXRENlhqNV8xalQwOW5FSzkwZ0FZWUZNLWlWbUh1MGIzeklmNEh0ZXdrSFktNlJ6em56cDRpQXBITHRscWJlNmJUU0VjU2FtOWtsbHpFdUlrTjRQS0VLX2s3clJiV2h1VFVjUW5VX2Y1eWN0elNuSVRRbFJVSWJMXzhHb2hqS1JJMHh3UFJFd2lGcQ?oc=5">邁克爾·伯里（Michael Burry）在新的人工智慧泡沫空頭部位中做空特斯拉和英偉達</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             
@@ -408,30 +686,17 @@
               <div class="rank">18</div>
               <div>
                 <div class="news-meta">
-                  <span>利率、通膨與流動性</span>
+                  <span>地緣政治與政策風險</span>
                   <span>WSJ</span>
                   <span>2026-07-01</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxNTER6RE1CVDctQ3haV1ozLXNZaUVxaVMyN1QzSTZvdUYwMzNQWW43Q0l3M3lvdG5XV1RJbkdmNjVCMWNHYUgtWGVwN2FfWkVqZVpEQ2NHRGsySHVjYWRKcVUwcmRvTkV4VjZIY21GNnhMVWFaLTJtSmJEd2c1WlE4cThkQUpwRGdrUWc?oc=5">沃什希望聯準會少說話。這只會讓華爾街更加認真地傾聽。</a></h3>
-                <p>觀察重點：這則新聞可能影響相關資產的風險偏好、估值假設或事件溢價；進場前應再對照價格、成交量與美元/利率變化。</p>
+                <h3><a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxPdDJ0Sk0yaWZoMEZHN1A5TEdPNXRwcmJuU2xvT014bllhdFp2dFZFY1VwOWhLRk5uaHRUSGpvRE05em12enVBOGduY1UwMFpDWmNJMTNFSUNlWFNwbWJva1JXQnE0ekhYVW5zdVE5cjdlbXpkQnhhYmxZNGZQVkowSDNQYTlpdEdsa3NLeE9xZHdQOVlsYy01V3lXdUF6OXJvdmJud3NGU3JvS1EtOXJMYktlOHYtN2tHNGxmaQ?oc=5">獨家|川普聽取了有關伊朗全面戰爭選項的簡報，但選擇堅持談判</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
             </section>
 
-    <div class="section-title">
-      <h2>台股觀察與風險</h2>
-      <p>把新聞轉成明天/今日盤中可追蹤的檢查項。</p>
-    </div>
-    <section class="panel watch-grid">
-      <div><h3>今日市場狀態</h3><p>今日以AI、半導體與科技資本支出為首要主軸，並結合全球風險偏好與資產配置與台股與亞洲市場觀察資金輪動。</p></div>
-      <div><h3>相較昨日</h3><p>主軸已依今日新聞權重重新排序，並與昨日焦點交叉比對。</p></div>
-      <div><h3>台股與亞洲風險清單</h3><p>有利高品質成長股，但估值偏高標的對展望修正更敏感。；風險偏好回升有利股市，若債匯波動擴大則適合降低單一方向暴露。；若匯率與外資同步轉強，電子權值股的支撐度較高。 驗證點：觀察龍頭公司指引、伺服器需求與半導體接單動能。；觀察美股期貨、波動率、美元、殖利率與主要股指廣度。；觀察台幣、外資現貨與期貨部位、成交量與類股輪動。</p></div>
-    </section>
-
-    <div class="section-title">
-      <h2>來源分布</h2>
-      <p>用來檢查是否過度集中在單一媒體。</p>
-    </div>
+    <div class="section-title"><h2>資料來源分布</h2><p>來源分散度會影響信號品質分數。</p></div>
     <section class="panel sources"><span class="source-pill">Reuters <b>2</b></span>
 <span class="source-pill">Bloomberg <b>2</b></span>
 <span class="source-pill">CNBC <b>2</b></span>
@@ -444,9 +709,8 @@
 <span class="source-pill">鉅亨網 <b>1</b></span>
 <span class="source-pill">TradingView <b>1</b></span></section>
 
-    <script type="application/json" id="market-analysis-data">{"market_state":"今日以AI、半導體與科技資本支出為首要主軸，並結合全球風險偏好與資產配置與台股與亞洲市場觀察資金輪動。","change_from_previous":"主軸已依今日新聞權重重新排序，並與昨日焦點交叉比對。","axes":[{"theme_key":"ai","title":"AI、半導體與科技資本支出","summary":"今日新聞焦點集中在 AI 需求、半導體供應鏈與科技資本支出。","impact":"有利高品質成長股，但估值偏高標的對展望修正更敏感。","watch":"觀察龍頭公司指引、伺服器需求與半導體接單動能。","count":7},{"theme_key":"markets","title":"全球風險偏好與資產配置","summary":"全球股匯債商品訊號分歧，市場焦點正在資產配置與風險控管。","impact":"風險偏好回升有利股市，若債匯波動擴大則適合降低單一方向暴露。","watch":"觀察美股期貨、波動率、美元、殖利率與主要股指廣度。","count":5},{"theme_key":"taiwan","title":"台股與亞洲市場","summary":"台股與亞股焦點落在外資流向、權值股表現與區域風險偏好。","impact":"若匯率與外資同步轉強，電子權值股的支撐度較高。","watch":"觀察台幣、外資現貨與期貨部位、成交量與類股輪動。","count":2}]}</script>
-
-    <p class="footer">Updated: 2026-07-01 06:40:38 Asia/Taipei. This page is generated independently by GitHub Actions and no longer depends on Codex automation.</p>
+    <script type="application/json" id="market-analysis-data">{"market_state":"今日以新聞主題、主要市場數據與候選股因子交叉判讀，先確認風險燈號，再追蹤可驗證的營收、法人與技術條件。","change_from_previous":"與前一版相比，本版加入市場數據、候選股分層、投資影響卡、事件行事曆與信號品質，降低只讀新聞標題的盲點。","axes":[{"theme_key":"ai","title":"AI 與半導體供應鏈","summary":"AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：今日股市：人工智慧反彈重拾魔力後道瓊斯指數、標準普爾 500 指數、納斯達剋期貨回調；愛立信：基地台帶動邊緣運算升級 網通ASIC、晶片代工台廠卡位軟硬整合新商機","impact":"直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。","watch":"觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。","count":6},{"theme_key":"markets","title":"全球股市與風險情緒","summary":"全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：投資者等待就業數據，道瓊斯指數、標準普爾 500 指數和納斯達剋期貨下跌；AtaiBeckley：BPL-003 在 TRD 上的巨大潛力讓我保持樂觀（納斯達克股票代碼：ATAI）","impact":"全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。","watch":"觀察 VIX、Nasdaq、SOX、S\u0026P 500 與台股電子成交比重。","count":5},{"theme_key":"energy","title":"能源、原物料與航運","summary":"能源、原物料與航運出現 2 則相關訊號，重點新聞包含：伊朗與美國談判破裂引發供應擔憂，油價小漲 路透；伊朗的石油資金正在回歸。它的主要街道將不得不等待。","impact":"能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。","watch":"觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。","count":2}]}</script>
+    <p class="footer">Updated: 2026-07-01 17:12:20 Asia/Taipei. This page is generated independently by GitHub Actions. Personal holdings and private risk data are intentionally not included.</p>
   </main>
 </body>
 </html>

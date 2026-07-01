@@ -6,6 +6,7 @@ import json
 import os
 import re
 import time
+import urllib.request
 from collections import Counter
 from pathlib import Path
 from urllib.parse import urlparse
@@ -605,6 +606,502 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     {analysis_data_html(analysis)}
 
     <p class="footer">Updated: {generated_at}. This page is generated independently by GitHub Actions and no longer depends on Codex automation.</p>
+  </main>
+</body>
+</html>
+"""
+
+
+# Clean Traditional Chinese dashboard renderer.
+# The earlier renderer is kept above for compatibility, but these definitions
+# intentionally override it so fallback text remains readable even without Gemini.
+THEMES = {
+    "ai": {
+        "label": "AI 與半導體供應鏈",
+        "keywords": ("ai", "nvidia", "amd", "semiconductor", "chip", "tsmc", "apple", "microsoft", "data center", "gpu", "server", "memory", "hbm", "人工智慧", "半導體", "晶片", "台積電", "輝達", "伺服器"),
+    },
+    "taiwan": {
+        "label": "台股與亞洲市場",
+        "keywords": ("taiwan", "taipei", "taiex", "asia", "japan", "nikkei", "korea", "台股", "台灣", "亞洲", "日股", "韓股", "新台幣", "加權指數"),
+    },
+    "rates": {
+        "label": "利率、通膨與估值",
+        "keywords": ("fed", "fomc", "yield", "rate", "treasury", "bond", "inflation", "cpi", "ppi", "利率", "通膨", "殖利率", "公債", "聯準會", "降息", "升息"),
+    },
+    "fx": {
+        "label": "美元、匯率與資金流",
+        "keywords": ("dollar", "currency", "forex", "yen", "yuan", "exchange rate", "dxy", "美元", "匯率", "日圓", "人民幣", "資金流", "外匯"),
+    },
+    "earnings": {
+        "label": "財報、營收與企業展望",
+        "keywords": ("earnings", "revenue", "profit", "guidance", "forecast", "sales", "margin", "財報", "營收", "獲利", "毛利率", "展望", "法說"),
+    },
+    "energy": {
+        "label": "能源、原物料與航運",
+        "keywords": ("oil", "opec", "energy", "crude", "gas", "gold", "copper", "shipping", "原油", "能源", "黃金", "銅", "航運", "原物料"),
+    },
+    "geopolitics": {
+        "label": "地緣政治與政策風險",
+        "keywords": ("iran", "israel", "war", "tariff", "sanction", "trade", "policy", "關稅", "制裁", "戰爭", "政策", "地緣", "貿易"),
+    },
+    "markets": {
+        "label": "全球股市與風險情緒",
+        "keywords": (),
+    },
+}
+
+
+MARKET_TICKERS = [
+    ("台股加權", "^TWII"),
+    ("櫃買指數", "^TWOII"),
+    ("Nasdaq", "^IXIC"),
+    ("SOX", "^SOX"),
+    ("S&P 500", "^GSPC"),
+    ("VIX", "^VIX"),
+    ("美債10Y", "^TNX"),
+    ("美元指數", "DX-Y.NYB"),
+    ("美元/台幣", "TWD=X"),
+]
+
+
+STOCK_UNIVERSE = [
+    {"ticker": "2330", "name": "台積電", "themes": ("ai", "taiwan"), "catalyst": "AI/HPC 需求、先進製程與法說展望", "risk": "估值偏高、外資調節或先進製程指引下修"},
+    {"ticker": "2317", "name": "鴻海", "themes": ("ai", "earnings"), "catalyst": "AI 伺服器出貨與集團電動車/雲端布局", "risk": "毛利率改善速度與大型客戶訂單節奏"},
+    {"ticker": "2382", "name": "廣達", "themes": ("ai", "earnings"), "catalyst": "AI 伺服器與資料中心資本支出", "risk": "題材擁擠、出貨延後或毛利率不如預期"},
+    {"ticker": "3231", "name": "緯創", "themes": ("ai", "earnings"), "catalyst": "AI 伺服器訂單與營收成長", "risk": "短線漲幅過大、營收未能連續驗證"},
+    {"ticker": "6669", "name": "緯穎", "themes": ("ai", "earnings"), "catalyst": "雲端客戶拉貨與高階伺服器需求", "risk": "客戶集中與估值敏感度"},
+    {"ticker": "2308", "name": "台達電", "themes": ("ai", "energy"), "catalyst": "電源、散熱、資料中心能源管理", "risk": "匯率、毛利率與資本支出循環"},
+    {"ticker": "3661", "name": "世芯-KY", "themes": ("ai", "earnings"), "catalyst": "ASIC 與客製化 AI 晶片需求", "risk": "單一客戶與高本益比修正"},
+    {"ticker": "2454", "name": "聯發科", "themes": ("ai", "earnings"), "catalyst": "手機復甦、邊緣 AI 與高階晶片", "risk": "中國手機需求與競爭壓力"},
+    {"ticker": "6488", "name": "環球晶", "themes": ("taiwan", "earnings"), "catalyst": "半導體景氣復甦與矽晶圓報價", "risk": "庫存去化速度與資本支出保守"},
+    {"ticker": "2881", "name": "富邦金", "themes": ("rates", "taiwan"), "catalyst": "利率環境、股債評價回升與金融股防禦性", "risk": "殖利率急升、匯損或信用風險"},
+]
+
+
+def fetch_yahoo_quote(symbol: str) -> dict[str, object]:
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=5d&interval=1d"
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": "daily-finance-report"})
+        with urllib.request.urlopen(request, timeout=8) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        result = data["chart"]["result"][0]
+        meta = result.get("meta", {})
+        closes = [value for value in result.get("indicators", {}).get("quote", [{}])[0].get("close", []) if value is not None]
+        current = float(meta.get("regularMarketPrice") or (closes[-1] if closes else 0))
+        previous = float(meta.get("chartPreviousClose") or (closes[-2] if len(closes) >= 2 else current))
+        change_pct = ((current - previous) / previous * 100) if previous else 0.0
+        return {"value": current, "change_pct": change_pct, "ok": True}
+    except Exception as exc:
+        print(f"Market quote fallback for {symbol}: {exc}")
+        return {"value": None, "change_pct": None, "ok": False}
+
+
+def market_snapshot() -> list[dict[str, object]]:
+    rows = []
+    for label, symbol in MARKET_TICKERS:
+        quote = fetch_yahoo_quote(symbol)
+        rows.append({"label": label, "symbol": symbol, **quote})
+    return rows
+
+
+def market_temperature(snapshot: list[dict[str, object]]) -> dict[str, str]:
+    score = 0
+    by_label = {row["label"]: row for row in snapshot}
+    for label in ("台股加權", "櫃買指數", "Nasdaq", "SOX", "S&P 500"):
+        change = by_label.get(label, {}).get("change_pct")
+        if isinstance(change, (int, float)):
+            score += 1 if change > 0 else -1 if change < -0.8 else 0
+    vix = by_label.get("VIX", {}).get("value")
+    if isinstance(vix, (int, float)):
+        score += 1 if vix < 18 else -2 if vix > 25 else 0
+    dxy = by_label.get("美元指數", {}).get("change_pct")
+    if isinstance(dxy, (int, float)) and dxy > 0.4:
+        score -= 1
+    if score >= 3:
+        return {"label": "偏多", "tone": "risk-on", "note": "股市與波動指標偏向風險承擔，適合追蹤主流成長族群的延續性。"}
+    if score <= -2:
+        return {"label": "偏空", "tone": "risk-off", "note": "風險指標轉弱，應降低追價並提高對匯率、利率與量能的要求。"}
+    return {"label": "中性", "tone": "neutral", "note": "市場訊號分歧，適合用法人籌碼與營收驗證篩選可操作標的。"}
+
+
+def format_market_value(row: dict[str, object]) -> str:
+    value = row.get("value")
+    if not isinstance(value, (int, float)):
+        return "資料暫缺"
+    if row.get("label") == "美元/台幣":
+        return f"{value:.3f}"
+    if row.get("label") == "美債10Y":
+        return f"{value / 10:.2f}%"
+    return f"{value:,.2f}"
+
+
+def format_change(row: dict[str, object]) -> str:
+    change = row.get("change_pct")
+    if not isinstance(change, (int, float)):
+        return "待更新"
+    sign = "+" if change >= 0 else ""
+    return f"{sign}{change:.2f}%"
+
+
+def build_market_analysis(news: list[dict[str, str]], today: dt.date, previous: dict) -> dict:
+    counts = theme_counts(news)
+    selected_keys = ranked_theme_keys(news, today, previous)
+    axes = []
+    for key in selected_keys:
+        count = counts[key]
+        examples = top_items_for_theme(news, key, limit=2)
+        sample = "；".join(item["headline"] for item in examples) or "今日新聞權重較低，先以市場數據確認方向"
+        axes.append(
+            {
+                "theme_key": key,
+                "title": THEMES[key]["label"],
+                "summary": f"{THEMES[key]['label']}出現 {count} 則相關訊號，重點新聞包含：{sample}",
+                "impact": theme_impact_text(key),
+                "watch": theme_watch_text(key),
+                "count": count,
+            }
+        )
+    market_state = "今日以新聞主題、主要市場數據與候選股因子交叉判讀，先確認風險燈號，再追蹤可驗證的營收、法人與技術條件。"
+    change = "與前一版相比，本版加入市場數據、候選股分層、投資影響卡、事件行事曆與信號品質，降低只讀新聞標題的盲點。"
+    return {"market_state": market_state, "change_from_previous": change, "axes": axes}
+
+
+def theme_impact_text(theme_key: str) -> str:
+    return {
+        "ai": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
+        "taiwan": "影響台股風險偏好、外資匯入匯出與電子權值股估值，需觀察台幣與成交值。",
+        "rates": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
+        "fx": "美元與台幣走勢會影響外資動能、出口電子匯兌與原物料成本。",
+        "earnings": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
+        "energy": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
+        "geopolitics": "政策與地緣風險容易造成短線避險與供應鏈重估，追價需更嚴格。",
+        "markets": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
+    }.get(theme_key, "需觀察新聞是否轉化為可驗證的價格、籌碼與基本面訊號。")
+
+
+def theme_watch_text(theme_key: str) -> str:
+    return {
+        "ai": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
+        "taiwan": "觀察加權指數、櫃買、成交值、外資現貨與台指期淨部位是否同向。",
+        "rates": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
+        "fx": "觀察美元/台幣、DXY、外資買賣超與電子權值股是否同步轉強或轉弱。",
+        "earnings": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+        "energy": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
+        "geopolitics": "觀察避險資產、油價、美元與供應鏈受影響族群是否出現異常波動。",
+        "markets": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
+    }.get(theme_key, "觀察價格、成交量、法人籌碼與基本面是否同時驗證。")
+
+
+def score_candidates(news: list[dict[str, str]], analysis: dict) -> list[dict[str, object]]:
+    theme_strength = Counter(item["theme"] for item in news)
+    source_count = len({item["source"] for item in news}) or 1
+    rows = []
+    all_text = " ".join(f"{item['headline']} {item['original_headline']}" for item in news).lower()
+    for stock in STOCK_UNIVERSE:
+        theme_score = sum(theme_strength[theme] for theme in stock["themes"]) * 5
+        mention_bonus = 10 if stock["name"].lower() in all_text or stock["ticker"] in all_text else 0
+        quality = min(25, source_count * 2)
+        score = min(95, 45 + theme_score + mention_bonus + quality)
+        if score >= 82:
+            bucket = "正式 Top"
+            action = "續抱/拉回觀察"
+        elif score >= 74:
+            bucket = "機會股"
+            action = "等突破或營收確認"
+        elif score >= 66:
+            bucket = "Watchlist"
+            action = "持續追蹤"
+        else:
+            bucket = "法人建倉雷達"
+            action = "進入候選池"
+        rows.append({**stock, "score": score, "bucket": bucket, "action": action, "change": f"+{max(1, score - 65)}"})
+    return sorted(rows, key=lambda item: (-int(item["score"]), item["ticker"]))[:8]
+
+
+def impact_card(item: dict[str, str]) -> dict[str, str]:
+    theme = item["theme"]
+    mapping = {
+        "ai": ("GPU、伺服器、晶圓代工、散熱、電源", "台積電、廣達、緯創、緯穎、台達電", "月營收、法人買超、突破前高"),
+        "taiwan": ("台股權值股、櫃買成長股、金融", "台積電、鴻海、富邦金、主要 ETF", "成交值、外資、台幣、均線"),
+        "rates": ("高估值成長股、金融、債券", "AI 高本益比股、金融股", "10Y 殖利率、DXY、Fed 利率預期"),
+        "fx": ("出口電子、金融、原物料", "大型電子權值、壽險金控", "美元/台幣、外資買賣超"),
+        "earnings": ("公布財報與指引公司", "月營收加速或法說上修個股", "營收 YoY/MoM、毛利率、EPS 預估"),
+        "energy": ("能源、航運、原物料成本敏感族群", "航運、塑化、原物料與用電大戶", "油價、運價、成本轉嫁"),
+        "geopolitics": ("供應鏈、能源、避險資產", "半導體供應鏈、能源與防禦型資產", "油價、美元、VIX"),
+        "markets": ("整體風險資產", "權值股、ETF、指數期貨", "VIX、SOX、Nasdaq、成交值"),
+    }
+    sector, taiwan_names, verify = mapping.get(theme, mapping["markets"])
+    return {
+        "event": item["headline"],
+        "source": item["source"],
+        "link": item["link"],
+        "impact": "高" if theme in {"ai", "rates", "taiwan"} else "中",
+        "horizon": "1-3 個月" if theme in {"ai", "earnings"} else "盤中至 1-2 週",
+        "sector": sector,
+        "taiwan": taiwan_names,
+        "verify": verify,
+        "action": "觀察" if theme in {"geopolitics", "energy"} else "等待驗證後操作",
+    }
+
+
+def event_calendar(today: dt.date) -> list[dict[str, str]]:
+    month_start = today.replace(day=1)
+    return [
+        {"window": "未來 7 天", "event": "台股月營收公告高峰", "affected": "AI 伺服器、半導體、電子零組件", "watch": "YoY/MoM 是否連續加速，弱於同業者降權"},
+        {"window": "未來 7 天", "event": "台指期/選擇權籌碼變化", "affected": "權值股、ETF、期貨避險部位", "watch": "外資期現貨是否同向，逆價差是否擴大"},
+        {"window": "未來 30 天", "event": "美國 CPI/PPI/非農與 FOMC 訊號", "affected": "高估值科技股、金融、美元資產", "watch": "10Y 殖利率與 DXY 是否同時上行"},
+        {"window": f"{month_start:%m/%d} 起", "event": "企業法說與財報指引", "affected": "成長股與高本益比族群", "watch": "指引上修、毛利率改善與訂單能見度"},
+    ]
+
+
+def render_market_snapshot(snapshot: list[dict[str, object]]) -> str:
+    return "\n".join(
+        f"""
+        <div class="quote-tile {'up' if isinstance(row.get('change_pct'), (int, float)) and row['change_pct'] >= 0 else 'down'}">
+          <span>{html.escape(str(row['label']))}</span>
+          <strong>{html.escape(format_market_value(row))}</strong>
+          <em>{html.escape(format_change(row))}</em>
+        </div>
+        """
+        for row in snapshot
+    )
+
+
+def render_candidate_table(candidates: list[dict[str, object]]) -> str:
+    return "\n".join(
+        f"""
+        <tr>
+          <td><b>{html.escape(str(item['bucket']))}</b></td>
+          <td>{html.escape(str(item['ticker']))} {html.escape(str(item['name']))}</td>
+          <td><strong>{item['score']}</strong></td>
+          <td>{html.escape(str(item['change']))}</td>
+          <td>{html.escape(str(item['catalyst']))}</td>
+          <td>{html.escape(str(item['risk']))}</td>
+          <td>{html.escape(str(item['action']))}</td>
+        </tr>
+        """
+        for item in candidates
+    )
+
+
+def render_impact_cards(news: list[dict[str, str]]) -> str:
+    cards = [impact_card(item) for item in news[:8]]
+    return "\n".join(
+        f"""
+        <article class="impact-card">
+          <div class="impact-meta">
+            <span>{html.escape(card['impact'])}影響</span>
+            <span>{html.escape(card['horizon'])}</span>
+            <span>{html.escape(card['action'])}</span>
+          </div>
+          <h3><a href="{html.escape(card['link'])}">{html.escape(card['event'])}</a></h3>
+          <dl>
+            <dt>直接受惠/受影響</dt><dd>{html.escape(card['sector'])}</dd>
+            <dt>台股對應</dt><dd>{html.escape(card['taiwan'])}</dd>
+            <dt>驗證指標</dt><dd>{html.escape(card['verify'])}</dd>
+          </dl>
+        </article>
+        """
+        for card in cards
+    )
+
+
+def render_event_calendar(events: list[dict[str, str]]) -> str:
+    return "\n".join(
+        f"""
+        <article class="event-row">
+          <span>{html.escape(event['window'])}</span>
+          <h3>{html.escape(event['event'])}</h3>
+          <p><b>敏感族群：</b>{html.escape(event['affected'])}</p>
+          <p><b>觀察條件：</b>{html.escape(event['watch'])}</p>
+        </article>
+        """
+        for event in events
+    )
+
+
+def render_theme_cards(news: list[dict[str, str]], analysis: dict) -> str:
+    cards: list[str] = []
+    for index, axis in enumerate(analysis["axes"], 1):
+        related = top_items_for_theme(news, axis["theme_key"])
+        headlines = "".join(
+            f'<li><a href="{html.escape(item["link"])}">{html.escape(item["headline"])}</a></li>'
+            for item in related
+        )
+        cards.append(
+            f"""
+            <article class="theme-card">
+              <div class="axis-rank">主軸 {index}</div>
+              <div class="theme-topline">
+                <h3>{html.escape(axis["title"])}</h3>
+                <strong>{axis["count"]}</strong>
+              </div>
+              <p>{html.escape(axis["summary"])}</p>
+              <dl>
+                <dt>投資影響</dt><dd>{html.escape(axis["impact"])}</dd>
+                <dt>24 小時觀察</dt><dd>{html.escape(axis["watch"])}</dd>
+              </dl>
+              <ul>{headlines}</ul>
+            </article>
+            """
+        )
+    return "\n".join(cards)
+
+
+def render_news_list(news: list[dict[str, str]]) -> str:
+    if not news:
+        return '<div class="empty">今日新聞數量不足，系統保留不完整報告以避免誤導。</div>'
+    rows = []
+    for index, item in enumerate(news, 1):
+        label = THEMES.get(item["theme"], {"label": "市場新聞"})["label"]
+        rows.append(
+            f"""
+            <article class="news-row">
+              <div class="rank">{index:02d}</div>
+              <div>
+                <div class="news-meta">
+                  <span>{html.escape(label)}</span>
+                  <span>{html.escape(item["source"])}</span>
+                  <span>{html.escape(item["published"])}</span>
+                </div>
+                <h3><a href="{html.escape(item["link"])}">{html.escape(item["headline"])}</a></h3>
+                <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
+              </div>
+            </article>
+            """
+        )
+    return "\n".join(rows)
+
+
+def render_source_table(news: list[dict[str, str]]) -> str:
+    counts = Counter(item["source"] for item in news)
+    return "\n".join(
+        f'<span class="source-pill">{html.escape(source)} <b>{count}</b></span>'
+        for source, count in counts.most_common()
+    )
+
+
+def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str = "") -> str:
+    generated_at = dt.datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S Asia/Taipei")
+    previous = extract_previous_analysis(previous_html)
+    analysis = build_market_analysis(news, today, previous)
+    snapshot = market_snapshot()
+    temperature = market_temperature(snapshot)
+    candidates = score_candidates(news, analysis)
+    events = event_calendar(today)
+    source_count = len({item["source"] for item in news})
+    theme_count = len({item["theme"] for item in news})
+    signal_score = min(100, 45 + len(news) * 2 + source_count * 3 + theme_count * 4)
+    dominant_label = analysis["axes"][0]["title"]
+    return f"""<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="report-date" content="{today:%Y-%m-%d}">
+  <meta name="report-news-count" content="{len(news)}">
+  <meta name="report-generator" content="github-actions">
+  <title>JT 投資儀表板 - {today:%Y-%m-%d}</title>
+  <style>
+    :root {{
+      --ink: #17212b; --muted: #637383; --line: #d8e0e6; --bg: #f5f7f8; --panel: #fff;
+      --navy: #10263d; --blue: #235fb7; --teal: #087f8c; --amber: #a76b12; --red: #b94040; --green: #117a4b;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{ margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", "Noto Sans TC", Arial, sans-serif; line-height: 1.62; }}
+    a {{ color: var(--blue); text-decoration: none; overflow-wrap: anywhere; }}
+    a:hover {{ text-decoration: underline; }}
+    header {{ background: linear-gradient(120deg, rgba(10,31,52,.92), rgba(4,84,96,.72)), url("assets/finance-newsroom-hero.png") center/cover; color: #fff; }}
+    .hero, main {{ width: min(1240px, 92vw); margin: 0 auto; }}
+    .hero {{ min-height: 330px; display: grid; align-content: end; padding: 44px 0; }}
+    .kicker {{ font-size: 14px; color: #dbe7f0; }}
+    h1 {{ max-width: 900px; margin: 12px 0 0; font-size: clamp(30px, 4vw, 52px); line-height: 1.1; letter-spacing: 0; }}
+    .hero p {{ max-width: 860px; margin: 16px 0 0; color: #edf5f8; font-size: 18px; }}
+    .meta {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }}
+    .pill {{ border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.13); border-radius: 999px; padding: 6px 12px; font-size: 14px; }}
+    main {{ padding: 28px 0 54px; }}
+    .metrics, .quotes {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }}
+    .quotes {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+    .metric, .panel, .theme-card, .news-row, .quote-tile, .impact-card, .event-row {{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }}
+    .metric, .quote-tile {{ padding: 16px; }}
+    .metric span, .quote-tile span {{ display: block; color: var(--muted); font-size: 13px; }}
+    .metric strong, .quote-tile strong {{ display: block; margin-top: 6px; font-size: 24px; }}
+    .quote-tile em {{ font-style: normal; color: var(--muted); }}
+    .quote-tile.up em {{ color: var(--green); }} .quote-tile.down em {{ color: var(--red); }}
+    .section-title {{ display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 28px 0 12px; }}
+    .section-title h2 {{ margin: 0; font-size: 22px; }}
+    .section-title p {{ margin: 0; color: var(--muted); font-size: 14px; }}
+    .themes, .impact-grid, .events {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }}
+    .theme-card, .impact-card, .event-row, .panel {{ padding: 18px; }}
+    .axis-rank {{ color: var(--teal); font-size: 13px; font-weight: 800; }}
+    .theme-topline {{ display: flex; align-items: start; justify-content: space-between; gap: 12px; color: var(--teal); }}
+    .theme-topline h3 {{ margin: 6px 0 0; color: var(--ink); font-size: 19px; }}
+    .theme-topline strong {{ color: var(--ink); font-size: 24px; }}
+    dl {{ margin: 12px 0; }} dt {{ color: var(--muted); font-size: 12px; font-weight: 800; }} dd {{ margin: 2px 0 10px; color: #334454; }}
+    table {{ width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }}
+    th, td {{ padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }}
+    th {{ background: #eef3f5; color: #34485a; font-size: 13px; }}
+    tr:last-child td {{ border-bottom: 0; }}
+    .news-list {{ display: grid; gap: 12px; }}
+    .news-row {{ display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; padding: 16px; }}
+    .rank {{ width: 38px; height: 38px; border-radius: 999px; display: grid; place-items: center; background: #e8f0f2; color: var(--navy); font-weight: 800; }}
+    .news-meta, .impact-meta {{ display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }}
+    .impact-meta span {{ background: #eef3f5; border-radius: 999px; padding: 4px 9px; }}
+    h3 {{ margin: 6px 0 6px; font-size: 18px; line-height: 1.38; }}
+    .sources {{ display: flex; flex-wrap: wrap; gap: 8px; }}
+    .source-pill {{ background: #eef3f5; border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; color: #34485a; }}
+    .footer {{ color: var(--muted); font-size: 13px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }}
+    @media (max-width: 920px) {{ .metrics, .quotes, .themes, .impact-grid, .events {{ grid-template-columns: 1fr; }} .news-row {{ grid-template-columns: 1fr; }} }}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <div class="kicker">JT Investment Dashboard | {generated_at}</div>
+      <h1>{today:%Y-%m-%d} JT 投資儀表板</h1>
+      <p>{html.escape(temperature["note"])} 今日主軸：{html.escape(dominant_label)}。</p>
+      <div class="meta">
+        <span class="pill">市場燈號：{html.escape(temperature["label"])}</span>
+        <span class="pill">新聞：{len(news)} 則</span>
+        <span class="pill">來源：{source_count} 個</span>
+        <span class="pill">個人持股區：未啟用</span>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="metrics">
+      <div class="metric"><span>市場風險燈號</span><strong>{html.escape(temperature["label"])}</strong></div>
+      <div class="metric"><span>信號品質分數</span><strong>{signal_score}</strong></div>
+      <div class="metric"><span>今日主軸</span><strong>{html.escape(dominant_label)}</strong></div>
+      <div class="metric"><span>主題分散度</span><strong>{theme_count}</strong></div>
+    </section>
+
+    <div class="section-title"><h2>市場即時儀表板</h2><p>以公開行情源抓取，失敗時保留待更新，不中斷報告。</p></div>
+    <section class="quotes">{render_market_snapshot(snapshot)}</section>
+
+    <div class="section-title"><h2>候選股分層清單</h2><p>依新聞主題、來源分散度與題材對應做初步排序，尚未納入個人持股。</p></div>
+    <table>
+      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>今日變化</th><th>催化劑</th><th>風險</th><th>操作狀態</th></tr></thead>
+      <tbody>{render_candidate_table(candidates)}</tbody>
+    </table>
+
+    <div class="section-title"><h2>今日產業主軸</h2><p>把新聞轉成可驗證的市場假設。</p></div>
+    <section class="themes">{render_theme_cards(news, analysis)}</section>
+
+    <div class="section-title"><h2>投資影響卡</h2><p>每則重點新聞對應受惠族群、台股標的與驗證指標。</p></div>
+    <section class="impact-grid">{render_impact_cards(news)}</section>
+
+    <div class="section-title"><h2>未來事件行事曆</h2><p>先追蹤 7/30 天內會影響成長股與法人資金的事件。</p></div>
+    <section class="events">{render_event_calendar(events)}</section>
+
+    <div class="section-title"><h2>重要新聞清單</h2><p>保留來源連結，避免只留下摘要文字。</p></div>
+    <section class="news-list">{render_news_list(news)}</section>
+
+    <div class="section-title"><h2>資料來源分布</h2><p>來源分散度會影響信號品質分數。</p></div>
+    <section class="panel sources">{render_source_table(news)}</section>
+
+    {analysis_data_html(analysis)}
+    <p class="footer">Updated: {generated_at}. This page is generated independently by GitHub Actions. Personal holdings and private risk data are intentionally not included.</p>
   </main>
 </body>
 </html>

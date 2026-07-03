@@ -865,19 +865,19 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date)
             95,
         )
         if score >= 82:
-            bucket = "正式 Top"
-            action = "續抱/拉回觀察"
+            bucket = "Dashboard 強勢觀察"
+            action = "追蹤延續"
         elif score >= 74:
-            bucket = "機會股"
+            bucket = "題材轉強觀察"
             action = "等突破或營收確認"
         elif score >= 66:
-            bucket = "Watchlist"
+            bucket = "中性追蹤"
             action = "持續追蹤"
         else:
-            bucket = "法人建倉雷達"
+            bucket = "低分觀察"
             action = "先不追價"
         if "明顯賣超" in str(institutional["warning"]):
-            bucket = "Watchlist"
+            bucket = "籌碼降級觀察"
             action = "等外資止賣"
         elif "法人偏賣" in str(institutional["warning"]) and score < 74:
             action = "等籌碼止穩"

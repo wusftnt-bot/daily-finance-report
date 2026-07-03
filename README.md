@@ -39,7 +39,8 @@ Current selection and scoring inputs:
 Rules:
 
 - Strong news themes alone must not create a high total score when institutional flow is clearly negative.
-- Large foreign/institutional selling must downgrade the stock to Watchlist or wait-for-stabilization status.
+- The dashboard classification names must stay distinct from LINE bot recommendation categories. Use dashboard-only labels such as `Dashboard 強勢觀察`, `題材轉強觀察`, `中性追蹤`, `低分觀察`, and `籌碼降級觀察`.
+- Large foreign/institutional selling must downgrade the stock to `籌碼降級觀察` or wait-for-stabilization status.
 - The table is an information dashboard for screening and follow-up, not a guaranteed buy/sell recommendation.
 - LINE bot outputs, LINE cache files, and LINE credentials must not be used here unless a future change explicitly documents a safe cross-repo design.
 

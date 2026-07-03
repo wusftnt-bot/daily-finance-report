@@ -44,6 +44,26 @@ Rules:
 - The table is an information dashboard for screening and follow-up, not a guaranteed buy/sell recommendation.
 - LINE bot outputs, LINE cache files, and LINE credentials must not be used here unless a future change explicitly documents a safe cross-repo design.
 
+## Public Priority Candidate Rule
+
+The public dashboard must show only priority candidates. Low-score, neutral, waitlist, downgrade, or warning-only stocks must not appear in the public candidate table.
+
+- Current public threshold: total score >= 82 and institutional-flow score >= 14.
+- Current public cap: 6 names.
+- Strong news themes alone must not qualify a stock when institutional flow is weak.
+- Large foreign/institutional selling must exclude the stock from the public priority table until flow stabilizes.
+- Dashboard labels must stay distinct from LINE bot recommendation categories.
+
+## Macro Data Roadmap
+
+The dashboard should gradually add macro indicators that can be tied to Taiwan equity decisions. Keep the first version compact and decision-oriented:
+
+- United States monthly core set: core CPI, core PCE, nonfarm payrolls / wage growth, ISM manufacturing new orders, retail sales, 10Y Treasury yield, and DXY.
+- Taiwan monthly core set: exports, export orders, industrial production, NDC business cycle signal, M1B / M2, USD/TWD, foreign investor net buy/sell, and listed-company monthly revenue.
+- Quarterly checks: GDP details, listed-company margin / EPS / inventory trends, key supply-chain earnings calls, FOMC projections, and Taiwan central bank meetings.
+- Each macro item should record actual value, consensus, prior value / revision, MoM / YoY / 3-month trend, surprise direction, and market reaction in yields, USD, TAIEX futures, and foreign flow.
+- Macro signals should be rendered as decision lights: rate-pressure, recovery, and risk-weakening.
+
 ## Secret Safety
 
 - `GEMINI_API_KEY` must be stored only in GitHub Actions Secrets and referenced as `${{ secrets.GEMINI_API_KEY }}`.

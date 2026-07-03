@@ -678,6 +678,11 @@ STOCK_UNIVERSE = [
 ]
 
 
+PRIORITY_CANDIDATE_MIN_SCORE = 82
+PRIORITY_CANDIDATE_MIN_FLOW_SCORE = 14
+PRIORITY_CANDIDATE_LIMIT = 6
+
+
 def fetch_yahoo_quote(symbol: str) -> dict[str, object]:
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=5d&interval=1d"
     try:
@@ -898,6 +903,15 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date)
     return sorted(rows, key=lambda item: (-int(item["score"]), item["ticker"]))
 
 
+def priority_candidates(candidates: list[dict[str, object]]) -> list[dict[str, object]]:
+    return [
+        item
+        for item in candidates
+        if int(item["score"]) >= PRIORITY_CANDIDATE_MIN_SCORE
+        and int(item["flow_score"]) >= PRIORITY_CANDIDATE_MIN_FLOW_SCORE
+    ][:PRIORITY_CANDIDATE_LIMIT]
+
+
 def impact_card(item: dict[str, str]) -> dict[str, str]:
     theme = item["theme"]
     mapping = {
@@ -948,6 +962,12 @@ def render_market_snapshot(snapshot: list[dict[str, object]]) -> str:
 
 
 def render_candidate_table(candidates: list[dict[str, object]]) -> str:
+    if not candidates:
+        return """
+        <tr>
+          <td colspan="10"><b>No priority candidates today.</b><br>今日沒有同時通過分數與籌碼門檻的優先追蹤標的，避免因題材熱度不足或法人轉弱而誤列推薦。</td>
+        </tr>
+        """
     return "\n".join(
         f"""
         <tr>
@@ -1070,7 +1090,8 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     analysis = build_market_analysis(news, today, previous)
     snapshot = market_snapshot()
     temperature = market_temperature(snapshot)
-    candidates = score_candidates(news, analysis, today)
+    all_candidates = score_candidates(news, analysis, today)
+    candidates = priority_candidates(all_candidates)
     events = event_calendar(today)
     source_count = len({item["source"] for item in news})
     theme_count = len({item["theme"] for item in news})

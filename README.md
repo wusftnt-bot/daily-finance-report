@@ -5,6 +5,21 @@ https://wusftnt-bot.github.io/daily-finance-report/
 
 This repository owns the static daily finance page and its GitHub Actions generation flow.
 
+## Product Positioning
+
+This site is the primary investment decision platform, not only a Telegram/LINE message archive.
+
+Target product definition:
+
+- Taiwan-equity-centered investment dashboard.
+- Integrates US macro, Taiwan macro, global cross-asset conditions, Taiwan capital flow, sector rotation, and stock research.
+- Telegram/LINE should stay concise: market light, top 3 changes, major event alerts, priority stock radar, and a website link.
+- The website owns full data, charts, source traceability, methodology, historical records, and deeper drill-down.
+
+Decision flow:
+
+`Market regime -> capital flow -> sector trend -> stock conditions -> investment risk`.
+
 ## Publish Flow
 
 GitHub Actions polls on a short interval but only generates during the configured Taipei morning window. It refuses to publish when fewer than the minimum required news items are available. The generated page exposes machine-readable report date and news count metadata for the Telegram workflow to verify.
@@ -63,6 +78,27 @@ The dashboard should gradually add macro indicators that can be tied to Taiwan e
 - Quarterly checks: GDP details, listed-company margin / EPS / inventory trends, key supply-chain earnings calls, FOMC projections, and Taiwan central bank meetings.
 - Each macro item should record actual value, consensus, prior value / revision, MoM / YoY / 3-month trend, surprise direction, and market reaction in yields, USD, TAIEX futures, and foreign flow.
 - Macro signals should be rendered as decision lights: rate-pressure, recovery, and risk-weakening.
+
+## Development Priorities
+
+P0:
+
+- Rebuild the home page as `Market Dashboard`.
+- Add `Macro Regime Score` with growth, rates/inflation, capital/FX, market trend, and risk-sentiment components.
+- Add global market cards, cross-asset radar, 72-hour event table, Taiwan capital-flow summary, and priority-only Stock Radar.
+- Show source, update time, data status, and failure/placeholder state clearly.
+- Keep mobile layout readable.
+
+P1:
+
+- Add full US Macro and Taiwan Macro pages with actual/forecast/prior/surprise/trend fields.
+- Add sector rotation with 1/5/20/60-day return, turnover, institutional flow, revenue growth, and heat matrix.
+- Add Stock Detail pages with fundamentals, institutional flow, technicals, valuation, events, and change history.
+
+P2:
+
+- Add personalized watchlists only through a private design that never exposes portfolio data on GitHub Pages.
+- Add backtests, sector/stock comparison, and deeper Telegram/LINE linking.
 
 ## Secret Safety
 

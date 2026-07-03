@@ -652,15 +652,27 @@ THEMES = {
 
 
 MARKET_TICKERS = [
-    ("台股加權", "^TWII"),
-    ("櫃買指數", "^TWOII"),
-    ("Nasdaq", "^IXIC"),
-    ("SOX", "^SOX"),
-    ("S&P 500", "^GSPC"),
-    ("VIX", "^VIX"),
-    ("美債10Y", "^TNX"),
-    ("美元指數", "DX-Y.NYB"),
-    ("美元/台幣", "TWD=X"),
+    ("S&P 500", "^GSPC", "global"),
+    ("Nasdaq", "^IXIC", "global"),
+    ("SOX 費半", "^SOX", "global"),
+    ("道瓊", "^DJI", "global"),
+    ("日經225", "^N225", "global"),
+    ("台股加權", "^TWII", "global"),
+    ("櫃買指數", "^TWOII", "global"),
+    ("上海綜合", "000001.SS", "global"),
+    ("恆生國企", "^HSCE", "global"),
+    ("印度Nifty", "^NSEI", "global"),
+    ("巴西Bovespa", "^BVSP", "global"),
+    ("美債10Y", "^TNX", "cross"),
+    ("美元指數", "DX-Y.NYB", "cross"),
+    ("美元/台幣", "TWD=X", "cross"),
+    ("美元/日圓", "JPY=X", "cross"),
+    ("美元/人民幣", "CNY=X", "cross"),
+    ("VIX", "^VIX", "cross"),
+    ("黃金", "GC=F", "cross"),
+    ("WTI 原油", "CL=F", "cross"),
+    ("布蘭特原油", "BZ=F", "cross"),
+    ("銅價", "HG=F", "cross"),
 ]
 
 
@@ -684,35 +696,88 @@ PRIORITY_CANDIDATE_LIMIT = 6
 
 
 def fetch_yahoo_quote(symbol: str) -> dict[str, object]:
-    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=5d&interval=1d"
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=1y&interval=1d"
     try:
         request = urllib.request.Request(url, headers={"User-Agent": "daily-finance-report"})
         with urllib.request.urlopen(request, timeout=8) as response:
             data = json.loads(response.read().decode("utf-8"))
         result = data["chart"]["result"][0]
         meta = result.get("meta", {})
-        closes = [value for value in result.get("indicators", {}).get("quote", [{}])[0].get("close", []) if value is not None]
+        timestamps = result.get("timestamp", [])
+        raw_closes = result.get("indicators", {}).get("quote", [{}])[0].get("close", [])
+        points = [(int(ts), float(close)) for ts, close in zip(timestamps, raw_closes) if close is not None]
+        closes = [close for _, close in points]
         current = float(meta.get("regularMarketPrice") or (closes[-1] if closes else 0))
-        previous = float(meta.get("chartPreviousClose") or (closes[-2] if len(closes) >= 2 else current))
+        previous = float(closes[-2] if len(closes) >= 2 else current)
+        year_start = first_close_of_year(points, dt.datetime.now(TW).year) or (closes[0] if closes else current)
+        high_52w = max(closes) if closes else current
         change_pct = ((current - previous) / previous * 100) if previous else 0.0
-        return {"value": current, "change_pct": change_pct, "ok": True}
+        change_5d = pct_change(current, closes[-6] if len(closes) >= 6 else None)
+        change_20d = pct_change(current, closes[-21] if len(closes) >= 21 else None)
+        ytd_change = pct_change(current, year_start)
+        high_gap = ((current - high_52w) / high_52w * 100) if high_52w else None
+        market_time = meta.get("regularMarketTime")
+        data_time = (
+            dt.datetime.fromtimestamp(int(market_time), TW).strftime("%Y-%m-%d %H:%M")
+            if isinstance(market_time, (int, float))
+            else "收盤/延遲"
+        )
+        if isinstance(market_time, (int, float)):
+            age_days = (dt.datetime.now(TW) - dt.datetime.fromtimestamp(int(market_time), TW)).days
+            if age_days > 10:
+                return {
+                    "value": None,
+                    "change_pct": None,
+                    "change_5d": None,
+                    "change_20d": None,
+                    "ytd_change": None,
+                    "high_52w_gap": None,
+                    "data_time": f"資料更新失敗：最後資料 {data_time}",
+                    "ok": False,
+                }
+        return {
+            "value": current,
+            "change_pct": change_pct,
+            "change_5d": change_5d,
+            "change_20d": change_20d,
+            "ytd_change": ytd_change,
+            "high_52w_gap": high_gap,
+            "data_time": data_time,
+            "ok": True,
+        }
     except Exception as exc:
         print(f"Market quote fallback for {symbol}: {exc}")
-        return {"value": None, "change_pct": None, "ok": False}
+        return {"value": None, "change_pct": None, "change_5d": None, "change_20d": None, "ytd_change": None, "high_52w_gap": None, "data_time": "資料更新失敗", "ok": False}
+
+
+def pct_change(current: float | None, previous: float | None) -> float | None:
+    if not isinstance(current, (int, float)) or not isinstance(previous, (int, float)) or previous == 0:
+        return None
+    return (current - previous) / previous * 100
+
+
+def first_close_of_year(points: list[tuple[int, float]], year: int) -> float | None:
+    for timestamp, close in points:
+        try:
+            if dt.datetime.fromtimestamp(int(timestamp), TW).year == year:
+                return float(close)
+        except Exception:
+            continue
+    return None
 
 
 def market_snapshot() -> list[dict[str, object]]:
     rows = []
-    for label, symbol in MARKET_TICKERS:
+    for label, symbol, group in MARKET_TICKERS:
         quote = fetch_yahoo_quote(symbol)
-        rows.append({"label": label, "symbol": symbol, **quote})
+        rows.append({"label": label, "symbol": symbol, "group": group, **quote})
     return rows
 
 
 def market_temperature(snapshot: list[dict[str, object]]) -> dict[str, str]:
     score = 0
     by_label = {row["label"]: row for row in snapshot}
-    for label in ("台股加權", "櫃買指數", "Nasdaq", "SOX", "S&P 500"):
+    for label in ("台股加權", "櫃買指數", "Nasdaq", "SOX 費半", "S&P 500"):
         change = by_label.get(label, {}).get("change_pct")
         if isinstance(change, (int, float)):
             score += 1 if change > 0 else -1 if change < -0.8 else 0
@@ -727,6 +792,112 @@ def market_temperature(snapshot: list[dict[str, object]]) -> dict[str, str]:
     if score <= -2:
         return {"label": "偏空", "tone": "risk-off", "note": "風險指標轉弱，應降低追價並提高對匯率、利率與量能的要求。"}
     return {"label": "中性", "tone": "neutral", "note": "市場訊號分歧，適合用法人籌碼與營收驗證篩選可操作標的。"}
+
+
+def metric_score(value: object, positive: float = 0.0, negative: float = -0.8) -> int:
+    if not isinstance(value, (int, float)):
+        return 50
+    if value >= positive:
+        return 75
+    if value <= negative:
+        return 35
+    return 55
+
+
+def average_score(values: list[int]) -> int:
+    return int(round(sum(values) / len(values))) if values else 50
+
+
+def market_environment(snapshot: list[dict[str, object]], news: list[dict[str, str]]) -> dict[str, object]:
+    by_label = {row["label"]: row for row in snapshot}
+    growth = average_score(
+        [
+            metric_score(by_label.get("台股加權", {}).get("change_20d"), 1.5, -2.5),
+            metric_score(by_label.get("SOX 費半", {}).get("change_20d"), 1.5, -3.0),
+            metric_score(theme_counts(news).get("ai", 0), 3, 0),
+        ]
+    )
+    rates = average_score(
+        [
+            metric_score(-(by_label.get("美債10Y", {}).get("change_20d") or 0), 0.0, -4.0),
+            metric_score(-(by_label.get("美元指數", {}).get("change_20d") or 0), 0.0, -1.5),
+        ]
+    )
+    capital = average_score(
+        [
+            metric_score(-(by_label.get("美元/台幣", {}).get("change_5d") or 0), 0.0, -0.8),
+            metric_score(-(by_label.get("美元指數", {}).get("change_5d") or 0), 0.0, -0.8),
+            metric_score(by_label.get("台股加權", {}).get("change_5d"), 0.5, -1.5),
+        ]
+    )
+    trend = average_score(
+        [
+            metric_score(by_label.get("Nasdaq", {}).get("change_20d"), 1.5, -3.0),
+            metric_score(by_label.get("SOX 費半", {}).get("change_20d"), 1.5, -3.0),
+            metric_score(by_label.get("台股加權", {}).get("change_20d"), 1.5, -2.5),
+        ]
+    )
+    risk = average_score(
+        [
+            metric_score(-(by_label.get("VIX", {}).get("change_5d") or 0), 0.0, -8.0),
+            metric_score(-(by_label.get("WTI 原油", {}).get("change_5d") or 0), 0.0, -6.0),
+        ]
+    )
+    total = round(growth * 0.25 + rates * 0.25 + capital * 0.20 + trend * 0.20 + risk * 0.10)
+    if total >= 70:
+        status = "Risk-On"
+    elif total >= 58:
+        status = "中性偏多"
+    elif total >= 45:
+        status = "黃燈警戒"
+    else:
+        status = "Risk-Off"
+    factors = environment_factors(snapshot, news)
+    return {
+        "score": int(total),
+        "status": status,
+        "previous_score": "待歷史資料",
+        "weekly_change": "待歷史資料",
+        "data_status": "公開行情：收盤/延遲；總經資料：逐步接入",
+        "components": [
+            ("成長動能", growth, "ISM、零售、外銷訂單、工業生產、出口；目前以 AI/電子新聞與股市趨勢代理"),
+            ("通膨與利率", rates, "CPI、PCE、非農薪資、美債殖利率、Fed 預期；目前以 10Y 與美元壓力代理"),
+            ("資金與匯率", capital, "DXY、美元/台幣、外資、投信、台指期；目前以匯率與台股趨勢代理"),
+            ("市場趨勢", trend, "Nasdaq、費半、台股、均線、成交量；目前以 20 日價格趨勢代理"),
+            ("風險情緒", risk, "VIX、信用風險、油價、地緣政治事件；目前以 VIX/油價與新聞風險代理"),
+        ],
+        "factors": factors,
+        "implication": stock_radar_policy(total),
+    }
+
+
+def environment_factors(snapshot: list[dict[str, object]], news: list[dict[str, str]]) -> list[str]:
+    by_label = {row["label"]: row for row in snapshot}
+    factors: list[str] = []
+    for label in ("台股加權", "Nasdaq", "SOX 費半"):
+        change = by_label.get(label, {}).get("change_20d")
+        if isinstance(change, (int, float)):
+            direction = "轉強" if change >= 1.5 else "轉弱" if change <= -3 else "震盪"
+            factors.append(f"{label} 20 日趨勢{direction}（{change:+.2f}%）")
+    dxy = by_label.get("美元指數", {}).get("change_5d")
+    if isinstance(dxy, (int, float)) and abs(dxy) >= 0.5:
+        factors.append(f"美元指數 5 日變化 {dxy:+.2f}%，影響外資與台幣資金條件")
+    vix = by_label.get("VIX", {}).get("value")
+    if isinstance(vix, (int, float)):
+        factors.append(f"VIX {vix:.2f}，作為短線風險情緒檢查")
+    if theme_counts(news).get("ai", 0) >= 3:
+        factors.append("AI 與半導體新聞密度偏高，需用月營收與法人籌碼驗證")
+    return factors[:3] or ["市場資料不足，先降低操作權重並等待更新"]
+
+
+def stock_radar_policy(score: int) -> str:
+    if score >= 70:
+        return "正式強勢股與機會股可正常升級，但仍需法人與營收同步支持。"
+    if score >= 58:
+        return "優先追蹤強勢股，機會股須搭配法人買超與技術突破確認。"
+    if score >= 45:
+        return "維持黃燈警戒，高估值與漲幅過大個股不宜追價，只保留最強候選。"
+    return "市場環境偏弱，暫停升級，只保留風險最低且法人支撐明確的標的。"
 
 
 def format_market_value(row: dict[str, object]) -> str:
@@ -746,6 +917,27 @@ def format_change(row: dict[str, object]) -> str:
         return "待更新"
     sign = "+" if change >= 0 else ""
     return f"{sign}{change:.2f}%"
+
+
+def format_pct(value: object) -> str:
+    if not isinstance(value, (int, float)):
+        return "待更新"
+    sign = "+" if value >= 0 else ""
+    return f"{sign}{value:.2f}%"
+
+
+def risk_tag(row: dict[str, object]) -> str:
+    label = str(row.get("label", ""))
+    change_20d = row.get("change_20d")
+    change_5d = row.get("change_5d")
+    value = row.get("value")
+    if label == "VIX" and isinstance(value, (int, float)):
+        return "警戒" if value >= 25 else "偏多" if value < 18 else "中性"
+    if label in {"美元指數", "美元/台幣", "美債10Y", "WTI 原油", "布蘭特原油"} and isinstance(change_5d, (int, float)):
+        return "警戒" if change_5d > 2 else "偏空" if change_5d > 0.6 else "中性"
+    if isinstance(change_20d, (int, float)):
+        return "偏多" if change_20d > 1.5 else "偏空" if change_20d < -2.5 else "中性"
+    return "待更新"
 
 
 def build_market_analysis(news: list[dict[str, str]], today: dt.date, previous: dict) -> dict:
@@ -939,12 +1131,11 @@ def impact_card(item: dict[str, str]) -> dict[str, str]:
 
 
 def event_calendar(today: dt.date) -> list[dict[str, str]]:
-    month_start = today.replace(day=1)
     return [
-        {"window": "未來 7 天", "event": "台股月營收公告高峰", "affected": "AI 伺服器、半導體、電子零組件", "watch": "YoY/MoM 是否連續加速，弱於同業者降權"},
-        {"window": "未來 7 天", "event": "台指期/選擇權籌碼變化", "affected": "權值股、ETF、期貨避險部位", "watch": "外資期現貨是否同向，逆價差是否擴大"},
-        {"window": "未來 30 天", "event": "美國 CPI/PPI/非農與 FOMC 訊號", "affected": "高估值科技股、金融、美元資產", "watch": "10Y 殖利率與 DXY 是否同時上行"},
-        {"window": f"{month_start:%m/%d} 起", "event": "企業法說與財報指引", "affected": "成長股與高本益比族群", "watch": "指引上修、毛利率改善與訂單能見度"},
+        {"time": f"{today:%m/%d} 20:30", "country": "美國", "event": "非農就業 / 平均時薪", "previous": "待接資料源", "forecast": "待接資料源", "importance": "高", "impact": "利率、美元、Nasdaq、SOX 與台股外資"},
+        {"time": "未來 72 小時", "country": "美國", "event": "CPI / PCE / Fed 訊號追蹤", "previous": "待接資料源", "forecast": "待接資料源", "importance": "高", "impact": "高估值科技股、金融、美元資產"},
+        {"time": "未來 7 天", "country": "台灣", "event": "上市櫃月營收公告高峰", "previous": "待接資料源", "forecast": "不適用", "importance": "高", "impact": "AI 伺服器、半導體、電子零組件"},
+        {"time": "未來 7 天", "country": "台灣", "event": "台指期/選擇權籌碼變化", "previous": "待接資料源", "forecast": "不適用", "importance": "中", "impact": "權值股、ETF、期貨避險部位"},
     ]
 
 
@@ -958,6 +1149,103 @@ def render_market_snapshot(snapshot: list[dict[str, object]]) -> str:
         </div>
         """
         for row in snapshot
+    )
+
+
+def render_market_environment(env: dict[str, object], generated_at: str) -> str:
+    components = "\n".join(
+        f"""
+        <div class="score-row">
+          <div><b>{html.escape(name)}</b><span>{html.escape(note)}</span></div>
+          <strong>{score}</strong>
+        </div>
+        """
+        for name, score, note in env["components"]
+    )
+    factors = "".join(f"<li>{html.escape(str(item))}</li>" for item in env["factors"])
+    return f"""
+    <section class="regime-panel" id="dashboard">
+      <div class="regime-score">
+        <span>市場環境分數</span>
+        <strong>{env["score"]}</strong>
+        <em>{html.escape(str(env["status"]))}</em>
+      </div>
+      <div class="regime-detail">
+        <div class="status-grid">
+          <div><span>前一日分數</span><b>{html.escape(str(env["previous_score"]))}</b></div>
+          <div><span>一週變化</span><b>{html.escape(str(env["weekly_change"]))}</b></div>
+          <div><span>更新時間</span><b>{html.escape(generated_at)}</b></div>
+          <div><span>資料狀態</span><b>{html.escape(str(env["data_status"]))}</b></div>
+        </div>
+        <div class="score-grid">{components}</div>
+        <div class="factor-grid">
+          <div><h3>造成分數變動的前三項因素</h3><ul>{factors}</ul></div>
+          <div><h3>對台股與 Stock Radar 的操作意義</h3><p>{html.escape(str(env["implication"]))}</p></div>
+        </div>
+      </div>
+    </section>
+    """
+
+
+def render_global_market_cards(snapshot: list[dict[str, object]]) -> str:
+    rows = [row for row in snapshot if row.get("group") == "global"]
+    return "\n".join(
+        f"""
+        <article class="market-card">
+          <div class="card-head"><h3>{html.escape(str(row["label"]))}</h3><span>{html.escape(str(row["data_time"]))}</span></div>
+          <strong>{html.escape(format_market_value(row))}</strong>
+          <dl>
+            <dt>日漲跌</dt><dd>{html.escape(format_pct(row.get("change_pct")))}</dd>
+            <dt>5日</dt><dd>{html.escape(format_pct(row.get("change_5d")))}</dd>
+            <dt>20日</dt><dd>{html.escape(format_pct(row.get("change_20d")))}</dd>
+            <dt>YTD</dt><dd>{html.escape(format_pct(row.get("ytd_change")))}</dd>
+            <dt>距52週高點</dt><dd>{html.escape(format_pct(row.get("high_52w_gap")))}</dd>
+          </dl>
+        </article>
+        """
+        for row in rows
+    )
+
+
+def render_cross_asset_cards(snapshot: list[dict[str, object]]) -> str:
+    rows = [{"label": "美債2Y", "value": None, "change_pct": None, "change_5d": None, "change_20d": None, "data_time": "待接資料源", "group": "cross"}]
+    rows.extend(row for row in snapshot if row.get("group") == "cross")
+    return "\n".join(
+        f"""
+        <article class="asset-card">
+          <div class="card-head"><h3>{html.escape(str(row["label"]))}</h3><span class="tag {html.escape(risk_tag(row))}">{html.escape(risk_tag(row))}</span></div>
+          <strong>{html.escape(format_market_value(row))}</strong>
+          <div class="mini-trend">
+            <span>日 {html.escape(format_pct(row.get("change_pct")))}</span>
+            <span>週 {html.escape(format_pct(row.get("change_5d")))}</span>
+            <span>月 {html.escape(format_pct(row.get("change_20d")))}</span>
+          </div>
+          <p>20 日趨勢：{html.escape(format_pct(row.get("change_20d")))}｜資料：{html.escape(str(row.get("data_time", "待更新")))}</p>
+        </article>
+        """
+        for row in rows
+    )
+
+
+def render_capital_flow_summary(candidates: list[dict[str, object]], snapshot: list[dict[str, object]]) -> str:
+    buy_count = sum(1 for item in candidates if int(item.get("flow_score", 0)) >= 20)
+    neutral_count = sum(1 for item in candidates if 14 <= int(item.get("flow_score", 0)) < 20)
+    twd = next((row for row in snapshot if row["label"] == "美元/台幣"), {})
+    rows = [
+        ("候選股法人支持", f"{buy_count} 檔強、{neutral_count} 檔中性", "來自 TWSE 個股三大法人資料"),
+        ("新台幣匯率", f"{format_market_value(twd)} / 5日 {format_pct(twd.get('change_5d'))}", "美元/台幣作為外資資金壓力代理"),
+        ("台指期外資淨部位", "待接資料源", "P1 接入期交所公開資料"),
+        ("融資融券與借券", "待接資料源", "P1 接入 TWSE/TPEx 公開資料"),
+    ]
+    return "\n".join(
+        f"""
+        <article class="capital-card">
+          <span>{html.escape(title)}</span>
+          <strong>{html.escape(value)}</strong>
+          <p>{html.escape(note)}</p>
+        </article>
+        """
+        for title, value, note in rows
     )
 
 
@@ -1012,12 +1300,15 @@ def render_impact_cards(news: list[dict[str, str]]) -> str:
 def render_event_calendar(events: list[dict[str, str]]) -> str:
     return "\n".join(
         f"""
-        <article class="event-row">
-          <span>{html.escape(event['window'])}</span>
-          <h3>{html.escape(event['event'])}</h3>
-          <p><b>敏感族群：</b>{html.escape(event['affected'])}</p>
-          <p><b>觀察條件：</b>{html.escape(event['watch'])}</p>
-        </article>
+        <tr>
+          <td>{html.escape(event['time'])}</td>
+          <td>{html.escape(event['country'])}</td>
+          <td><b>{html.escape(event['event'])}</b></td>
+          <td>{html.escape(event['previous'])}</td>
+          <td>{html.escape(event['forecast'])}</td>
+          <td><span class="importance {html.escape(event['importance'])}">{html.escape(event['importance'])}</span></td>
+          <td>{html.escape(event['impact'])}</td>
+        </tr>
         """
         for event in events
     )
@@ -1090,6 +1381,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     analysis = build_market_analysis(news, today, previous)
     snapshot = market_snapshot()
     temperature = market_temperature(snapshot)
+    environment = market_environment(snapshot, news)
     all_candidates = score_candidates(news, analysis, today)
     candidates = priority_candidates(all_candidates)
     events = event_calendar(today)
@@ -1105,7 +1397,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
   <meta name="report-date" content="{today:%Y-%m-%d}">
   <meta name="report-news-count" content="{len(news)}">
   <meta name="report-generator" content="github-actions">
-  <title>JT 投資儀表板 - {today:%Y-%m-%d}</title>
+  <title>台股投資決策儀表板 - {today:%Y-%m-%d}</title>
   <style>
     :root {{
       --ink: #17212b; --muted: #637383; --line: #d8e0e6; --bg: #f5f7f8; --panel: #fff;
@@ -1154,54 +1446,118 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     h3 {{ margin: 6px 0 6px; font-size: 18px; line-height: 1.38; }}
     .sources {{ display: flex; flex-wrap: wrap; gap: 8px; }}
     .source-pill {{ background: #eef3f5; border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; color: #34485a; }}
+    .top-nav {{ position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); }}
+    .top-nav div {{ width: min(1240px, 92vw); margin: 0 auto; display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }}
+    .top-nav a {{ flex: 0 0 auto; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; font-size: 13px; background: #fff; }}
+    .regime-panel {{ display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; margin-bottom: 22px; }}
+    .regime-score, .regime-detail, .market-card, .asset-card, .capital-card {{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }}
+    .regime-score {{ display: grid; place-items: center; text-align: center; background: #10263d; color: #fff; min-height: 260px; }}
+    .regime-score span {{ color: #c8d8e8; }}
+    .regime-score strong {{ font-size: 72px; line-height: 1; }}
+    .regime-score em {{ font-style: normal; font-size: 22px; font-weight: 800; }}
+    .status-grid, .score-grid, .factor-grid, .market-grid, .asset-grid, .capital-grid {{ display: grid; gap: 12px; }}
+    .status-grid {{ grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 14px; }}
+    .status-grid div, .score-row {{ border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: #f8fafb; }}
+    .status-grid span, .score-row span, .capital-card span {{ display: block; color: var(--muted); font-size: 12px; }}
+    .score-grid {{ grid-template-columns: repeat(5, minmax(0, 1fr)); }}
+    .score-row {{ display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }}
+    .score-row strong {{ font-size: 28px; color: var(--teal); }}
+    .factor-grid {{ grid-template-columns: 1.2fr .8fr; margin-top: 14px; }}
+    .factor-grid h3 {{ margin-top: 0; }}
+    .market-grid {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
+    .asset-grid {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+    .capital-grid {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
+    .card-head {{ display: flex; align-items: start; justify-content: space-between; gap: 12px; }}
+    .card-head h3 {{ margin: 0; }}
+    .card-head span {{ color: var(--muted); font-size: 12px; }}
+    .market-card strong, .asset-card strong, .capital-card strong {{ display: block; margin: 8px 0 10px; font-size: 24px; }}
+    .market-card dl {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; margin: 0; }}
+    .market-card dt {{ font-size: 12px; color: var(--muted); }}
+    .market-card dd {{ margin: 0; }}
+    .mini-trend {{ display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }}
+    .tag, .importance {{ border-radius: 999px; padding: 4px 9px; border: 1px solid var(--line); background: #eef3f5; color: #34485a; font-size: 12px; font-weight: 800; }}
+    .tag.偏多 {{ background: #e8f4ee; color: var(--green); }} .tag.偏空, .tag.警戒 {{ background: #f8eaea; color: var(--red); }}
+    .importance.高 {{ background: #f8eaea; color: var(--red); }} .importance.中 {{ background: #fff4df; color: var(--amber); }}
+    .research-note {{ background: #fff; border-left: 4px solid var(--teal); padding: 14px 16px; color: #334454; }}
     .footer {{ color: var(--muted); font-size: 13px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }}
-    @media (max-width: 920px) {{ .metrics, .quotes, .themes, .impact-grid, .events {{ grid-template-columns: 1fr; }} .news-row {{ grid-template-columns: 1fr; }} }}
+    @media (max-width: 920px) {{ .metrics, .quotes, .themes, .impact-grid, .events, .regime-panel, .status-grid, .score-grid, .factor-grid, .market-grid, .asset-grid, .capital-grid {{ grid-template-columns: 1fr; }} .news-row {{ grid-template-columns: 1fr; }} table {{ display: block; overflow-x: auto; }} .regime-score strong {{ font-size: 56px; }} }}
   </style>
 </head>
 <body>
   <header>
     <div class="hero">
       <div class="kicker">JT Investment Dashboard | {generated_at}</div>
-      <h1>{today:%Y-%m-%d} JT 投資儀表板</h1>
-      <p>{html.escape(temperature["note"])} 今日主軸：{html.escape(dominant_label)}。</p>
+      <h1>{today:%Y-%m-%d} 台股投資決策儀表板</h1>
+      <p>以台股為核心，整合美國與台灣總經、全球跨資產、法人籌碼、產業趨勢與個股研究。今日主軸：{html.escape(dominant_label)}。</p>
       <div class="meta">
-        <span class="pill">市場燈號：{html.escape(temperature["label"])}</span>
+        <span class="pill">市場環境：{environment["score"]} / 100｜{html.escape(str(environment["status"]))}</span>
         <span class="pill">新聞：{len(news)} 則</span>
         <span class="pill">來源：{source_count} 個</span>
-        <span class="pill">個人持股區：未啟用</span>
+        <span class="pill">資料狀態：收盤/延遲資料</span>
       </div>
     </div>
   </header>
+  <nav class="top-nav" aria-label="Dashboard sections">
+    <div>
+      <a href="#dashboard">首頁 Market Dashboard</a>
+      <a href="#market-pulse">全球市場</a>
+      <a href="#us-macro">US Macro</a>
+      <a href="#taiwan-macro">Taiwan Macro</a>
+      <a href="#capital-flow">台股資金法人</a>
+      <a href="#sector">產業追蹤</a>
+      <a href="#stock-radar">Stock Radar</a>
+      <a href="#calendar">事件行事曆</a>
+      <a href="#methodology">方法論</a>
+    </div>
+  </nav>
   <main>
-    <section class="metrics">
-      <div class="metric"><span>市場風險燈號</span><strong>{html.escape(temperature["label"])}</strong></div>
-      <div class="metric"><span>信號品質分數</span><strong>{signal_score}</strong></div>
-      <div class="metric"><span>今日主軸</span><strong>{html.escape(dominant_label)}</strong></div>
-      <div class="metric"><span>主題分散度</span><strong>{theme_count}</strong></div>
-    </section>
+    {render_market_environment(environment, generated_at)}
 
-    <div class="section-title"><h2>市場即時儀表板</h2><p>以公開行情源抓取，失敗時保留待更新，不中斷報告。</p></div>
-    <section class="quotes">{render_market_snapshot(snapshot)}</section>
+    <div class="section-title" id="market-pulse"><h2>全球市場 Market Pulse</h2><p>不只看單日漲跌，同時呈現 5 日、20 日、YTD 與距 52 週高點。</p></div>
+    <section class="market-grid">{render_global_market_cards(snapshot)}</section>
 
-    <div class="section-title"><h2>候選股分層清單</h2><p>依新聞主題、來源分散度與題材對應做初步排序，尚未納入個人持股。</p></div>
+    <div class="section-title"><h2>跨資產與風險雷達</h2><p>利率、美元、匯率、VIX、商品是台股資金與估值的重要背景。</p></div>
+    <section class="asset-grid">{render_cross_asset_cards(snapshot)}</section>
+
+    <div class="section-title" id="calendar"><h2>未來 72 小時重大事件</h2><p>高重要性事件會優先影響利率、匯率、台股資金與高估值科技股。</p></div>
     <table>
-      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>題材</th><th>籌碼</th><th>技術</th><th>今日籌碼</th><th>催化劑</th><th>風險</th><th>操作狀態</th></tr></thead>
-      <tbody>{render_candidate_table(candidates)}</tbody>
+      <thead><tr><th>時間</th><th>國家</th><th>事件</th><th>前值</th><th>市場預期</th><th>重要性</th><th>對台股影響</th></tr></thead>
+      <tbody>{render_event_calendar(events)}</tbody>
     </table>
 
-    <div class="section-title"><h2>今日產業主軸</h2><p>把新聞轉成可驗證的市場假設。</p></div>
+    <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>先顯示已接資料與待接資料源，避免用舊資料或假資料冒充即時資料。</p></div>
+    <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot)}</section>
+
+    <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>公開頁僅顯示正式強勢股與機會股；低分、降級與警示名單不列入推薦表。</p></div>
+    <table>
+      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>題材</th><th>法人籌碼</th><th>技術</th><th>今日籌碼</th><th>催化劑</th><th>主要風險</th><th>升級/維持原因</th></tr></thead>
+      <tbody>{render_candidate_table(candidates)}</tbody>
+    </table>
+    <p class="research-note">Macro Regime Score：{environment["score"]} / 100。{html.escape(str(environment["implication"]))} 個股分數仍由基本面、法人籌碼、技術面、估值、產業趨勢與風險扣分獨立計算；市場環境只作為升級/降級門檻。</p>
+
+    <div class="section-title" id="sector"><h2>產業追蹤 Sector Rotation</h2><p>先以新聞主題與市場驗證指標建立產業假設；P1 會加入 1/5/20/60 日報酬、法人買賣超與營收年增率。</p></div>
     <section class="themes">{render_theme_cards(news, analysis)}</section>
 
     <div class="section-title"><h2>投資影響卡</h2><p>每則重點新聞對應受惠族群、台股標的與驗證指標。</p></div>
     <section class="impact-grid">{render_impact_cards(news)}</section>
 
-    <div class="section-title"><h2>未來事件行事曆</h2><p>先追蹤 7/30 天內會影響成長股與法人資金的事件。</p></div>
-    <section class="events">{render_event_calendar(events)}</section>
+    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>本區 P1 會接入 CPI、PCE、非農、ISM、零售銷售、10Y、DXY 的實際值/預期/Surprise。</p></div>
+    <section class="panel"><p>目前首頁已先用 10Y、DXY、Nasdaq、SOX 與 VIX 建立美國總經對台股資金的代理判讀。正式資料源接入後，每筆數據會顯示公布日期、實際值、預期、前值修正、3 個月趨勢與市場反應。</p></section>
+
+    <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>P1 會接入出口、外銷訂單、工業生產、景氣燈號、M1B/M2、台幣、外資與月營收。</p></div>
+    <section class="panel"><p>目前首頁先以台股、櫃買、美元/台幣、候選股法人籌碼與 AI/電子新聞密度作為台灣景氣與資金代理。未接資料會維持待更新狀態，不用舊資料偽裝即時資料。</p></section>
 
     <div class="section-title"><h2>重要新聞清單</h2><p>保留來源連結，避免只留下摘要文字。</p></div>
     <section class="news-list">{render_news_list(news)}</section>
 
-    <div class="section-title"><h2>資料來源分布</h2><p>來源分散度會影響信號品質分數。</p></div>
+    <div class="section-title" id="methodology"><h2>方法論與資料來源 Methodology</h2><p>所有分數、篩選結果與資料狀態必須可追溯。</p></div>
+    <section class="panel">
+      <p><b>資料來源：</b>Yahoo Finance 公開行情、Google News RSS、TWSE 個股三大法人公開資料；MOPS、TPEx、FinMind、台灣主計總處、經濟部、國發會、央行、美國官方總經資料為 P1/P2 接入項目。</p>
+      <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或待接資料源，不顯示假資料；每個主要區塊保留更新時間與資料狀態。</p>
+      <p><b>風險揭露：</b>本網站僅提供公開資料整理、量化篩選與研究輔助，不構成買賣建議或保證獲利。投資人應自行評估風險。</p>
+    </section>
+
+    <div class="section-title"><h2>資料來源分布</h2><p>來源分散度會影響信號品質分數，目前信號品質 {signal_score}，主題分散度 {theme_count}。</p></div>
     <section class="panel sources">{render_source_table(news)}</section>
 
     {analysis_data_html(analysis)}

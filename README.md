@@ -22,12 +22,34 @@ granted only the minimum Actions permission needed to dispatch workflows.
 - This repository owns only the public daily finance page and its news collection helpers.
 - Telegram delivery is owned by the `wusftnt-bot/JT-PM` repository.
 - LINE smart-stock workflows are separate and must not be imported, called, or supplied with credentials here.
+- The candidate stock table is generated inside this repository and is not copied from the LINE smart-stock bot.
+
+## Candidate Stock Selection
+
+The dashboard candidate table is an independent public-market watchlist, not the LINE bot's recommendation list and not a personal portfolio.
+
+Current selection and scoring inputs:
+
+- Candidate universe: a fixed research watchlist in `scripts/publish_daily_finance_report.py`, focused on Taiwan large-cap technology, AI supply chain, semiconductor, and rate-sensitive names.
+- Theme score: daily finance/news themes such as AI, semiconductors, earnings, rates, Taiwan market, FX, and geopolitics.
+- Institutional flow score: TWSE public three-major-institution data when available, including foreign investors, investment trusts, dealers, latest daily total, and recent 5-trading-day trend.
+- Technical score: public Yahoo Finance price movement fallback.
+- Data quality score: reduced when institutional or market data is unavailable.
+
+Rules:
+
+- Strong news themes alone must not create a high total score when institutional flow is clearly negative.
+- Large foreign/institutional selling must downgrade the stock to Watchlist or wait-for-stabilization status.
+- The table is an information dashboard for screening and follow-up, not a guaranteed buy/sell recommendation.
+- LINE bot outputs, LINE cache files, and LINE credentials must not be used here unless a future change explicitly documents a safe cross-repo design.
 
 ## Secret Safety
 
 - `GEMINI_API_KEY` must be stored only in GitHub Actions Secrets and referenced as `${{ secrets.GEMINI_API_KEY }}`.
 - `JT_PM_ACTIONS_TOKEN`, if configured, must be stored only in GitHub Actions Secrets. Never print it, write it to generated HTML, upload it as an artifact, or reuse it for LINE or Telegram bot API calls.
 - Telegram and LINE tokens must never be added to this repository, logs, generated HTML, artifacts, caches, or workflow summaries.
+- No API key, token, chat id, credential, cookie, private path, or personal/private portfolio data may appear in local generated files, committed GitHub files, GitHub Pages HTML, workflow artifacts, workflow cache, workflow summaries, or any external public URL.
+- Public pages may contain only public market/news data and non-sensitive generated analysis.
 - Never print environment variables or use dangerous output such as `print(os.environ["GEMINI_API_KEY"])`, `echo "$GEMINI_API_KEY"`, or a full environment dump.
 - Before changing workflows or scripts, search current files and Git history for `AIza`, token patterns, secret names, and environment dumps.
 

@@ -852,6 +852,62 @@ def latest_twse_t86_rows(today: dt.date) -> dict[str, object]:
     return {"status": "failed", "date": None, "source": "TWSE T86", "records": []}
 
 
+def latest_twse_price_momentum_rows(today: dt.date) -> dict[str, object]:
+    for offset in range(0, 10):
+        day = today - dt.timedelta(days=offset)
+        try:
+            data = fetch_twse_json(
+                "afterTrading/MI_INDEX",
+                {"date": day.strftime("%Y%m%d"), "type": "ALLBUT0999"},
+                timeout=15,
+            )
+        except Exception as exc:
+            print(f"TWSE MI_INDEX stock fallback for {day:%Y-%m-%d}: {exc}")
+            continue
+        if data.get("stat") != "OK" or not data.get("tables"):
+            continue
+        records: list[dict[str, object]] = []
+        for table in data.get("tables", []):
+            fields = table.get("fields") or []
+            if "證券代號" not in fields or "成交金額" not in fields or "收盤價" not in fields:
+                continue
+            index = {str(field): pos for pos, field in enumerate(fields)}
+            for raw_row in table.get("data", []):
+                row = raw_row.get("value") if isinstance(raw_row, dict) else raw_row
+                if not isinstance(row, list):
+                    continue
+                ticker = clean_ticker(row[index["證券代號"]] if index["證券代號"] < len(row) else "")
+                if not re.fullmatch(r"\d{4}", ticker) or ticker.startswith("0"):
+                    continue
+                name = clean_text(row[index["證券名稱"]] if index.get("證券名稱", 999) < len(row) else ticker)
+                close = parse_number(row[index["收盤價"]] if index["收盤價"] < len(row) else None)
+                change_abs = parse_number(row[index.get("漲跌價差", -1)] if index.get("漲跌價差", 999) < len(row) else None)
+                sign_text = clean_text(row[index.get("漲跌(+/-)", -1)] if index.get("漲跌(+/-)", 999) < len(row) else "")
+                if change_abs is None:
+                    change_abs = 0.0
+                sign = -1 if "green" in sign_text or "-" in sign_text else 1
+                signed_change = sign * change_abs
+                previous_close = close - signed_change if isinstance(close, (int, float)) else None
+                change_pct = (signed_change / previous_close * 100) if previous_close and previous_close > 0 else 0.0
+                turnover = parse_number(row[index["成交金額"]] if index["成交金額"] < len(row) else None) or 0.0
+                shares = parse_number(row[index.get("成交股數", -1)] if index.get("成交股數", 999) < len(row) else None) or 0.0
+                records.append(
+                    {
+                        "ticker": ticker,
+                        "name": name,
+                        "close": close,
+                        "change_pct": round(change_pct, 2),
+                        "turnover": turnover,
+                        "volume_lots": int(shares / 1000),
+                        "date": day.isoformat(),
+                        "source": "TWSE MI_INDEX",
+                    }
+                )
+        if records:
+            return {"status": "ok", "date": day.isoformat(), "source": "TWSE MI_INDEX", "records": records}
+    return {"status": "failed", "date": None, "source": "TWSE MI_INDEX", "records": []}
+
+
 def dynamic_candidate_pool(today: dt.date, core_tickers: set[str], limit: int = 10) -> tuple[list[dict[str, object]], dict[str, object]]:
     dataset = latest_twse_t86_rows(today)
     records = dataset.get("records") if isinstance(dataset, dict) else []
@@ -884,6 +940,55 @@ def dynamic_candidate_pool(today: dt.date, core_tickers: set[str], limit: int = 
         )
     selected.sort(key=lambda item: int(item.get("dynamic_momentum", 0)), reverse=True)
     top_selected = selected[:limit]
+    if not top_selected:
+        dataset = latest_twse_price_momentum_rows(today)
+        price_records = dataset.get("records") if isinstance(dataset, dict) else []
+        if not isinstance(price_records, list):
+            price_records = []
+        selected = []
+        for row in price_records:
+            ticker = str(row.get("ticker", ""))
+            if ticker in core_tickers:
+                continue
+            change_pct = float(row.get("change_pct") or 0)
+            turnover = float(row.get("turnover") or 0)
+            volume_lots = int(row.get("volume_lots") or 0)
+            if turnover < 300_000_000 or change_pct < 1.5:
+                continue
+            momentum = int(turnover / 10_000_000 + change_pct * 20 + volume_lots / 1000)
+            selected.append(
+                {
+                    "ticker": ticker,
+                    "name": row.get("name") or ticker,
+                    "themes": ("taiwan", "markets"),
+                    "catalyst": f"動態價量雷達：成交金額{turnover / 100_000_000:.1f}億元、日漲幅{change_pct:+.2f}%",
+                    "risk": "價量動能 fallback 未含法人買賣超，須等待 T86 或個股法人資料確認",
+                    "candidate_source": "dynamic_price",
+                    "price_snapshot": row,
+                    "dynamic_momentum": momentum,
+                }
+            )
+        selected.sort(key=lambda item: int(item.get("dynamic_momentum", 0)), reverse=True)
+        top_selected = selected[:limit]
+        return top_selected, {
+            "status": dataset.get("status", "failed"),
+            "date": dataset.get("date"),
+            "source": "TWSE MI_INDEX fallback",
+            "screened_count": len(price_records),
+            "qualified_count": len(selected),
+            "records": [
+                {
+                    "ticker": item.get("ticker"),
+                    "name": item.get("name"),
+                    "change_pct": (item.get("price_snapshot") or {}).get("change_pct"),
+                    "turnover": (item.get("price_snapshot") or {}).get("turnover"),
+                    "volume_lots": (item.get("price_snapshot") or {}).get("volume_lots"),
+                    "dynamic_momentum": item.get("dynamic_momentum"),
+                    "source": "TWSE MI_INDEX fallback",
+                }
+                for item in top_selected
+            ],
+        }
     return top_selected, {
         "status": dataset.get("status", "failed"),
         "date": dataset.get("date"),
@@ -1383,7 +1488,9 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date,
         if ticker in seen:
             continue
         seen.add(ticker)
-        is_dynamic = stock.get("candidate_source") == "dynamic"
+        candidate_source = str(stock.get("candidate_source") or "core")
+        is_dynamic = candidate_source.startswith("dynamic")
+        source_label = "動態價量雷達" if candidate_source == "dynamic_price" else "動態法人雷達" if is_dynamic else "核心追蹤池"
         theme_score = min(30, sum(theme_strength[theme] for theme in stock["themes"]) * 5)
         mention_bonus = 10 if stock["name"].lower() in all_text or stock["ticker"] in all_text else 0
         theme_component = min(35, theme_score + mention_bonus)
@@ -1422,7 +1529,7 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date,
                 "score": score,
                 "bucket": bucket,
                 "action": action,
-                "candidate_source": "動態法人雷達" if is_dynamic else "核心追蹤池",
+                "candidate_source": source_label,
                 "theme_score": theme_component,
                 "flow_score": institutional["score"],
                 "technical_score": technical["score"],
@@ -1433,7 +1540,7 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date,
                 "inclusion_reason": (
                     f"題材/基本面代理 {theme_component}/35、法人籌碼 {institutional['score']}/30、"
                     f"技術 {technical['score']}/20、資料品質 {data_score}/10；"
-                    f"{institutional['warning']}。來源：{'動態法人雷達' if is_dynamic else '核心追蹤池'}。"
+                    f"{institutional['warning']}。來源：{source_label}。"
                 ),
                 "change_history": f"{today:%Y-%m-%d}：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
                 "data_source": "Google News RSS / TWSE 三大法人公開資料 / Yahoo Finance",

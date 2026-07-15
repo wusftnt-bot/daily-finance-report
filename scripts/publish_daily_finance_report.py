@@ -18,6 +18,7 @@ TW = dt.timezone(dt.timedelta(hours=8))
 DEFAULT_OUTPUT_DIR = Path(os.environ.get("DAILY_FINANCE_REPORT_DIR", "daily-finance-report-site"))
 MAX_NEWS_ITEMS = int(os.environ.get("DAILY_FINANCE_REPORT_NEWS_LIMIT", "18"))
 MIN_NEWS_ITEMS = int(os.environ.get("DAILY_FINANCE_REPORT_MIN_NEWS", "10"))
+LAST_PROCESSED_PAYLOADS: dict[str, dict[str, object]] = {}
 
 
 THEMES = {
@@ -461,6 +462,7 @@ def render_source_table(news: list[dict[str, str]]) -> str:
 
 
 def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str = "") -> str:
+    global LAST_PROCESSED_PAYLOADS
     generated_at = dt.datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S Asia/Taipei")
     source_count = len({item["source"] for item in news})
     previous = extract_previous_analysis(previous_html)
@@ -676,6 +678,21 @@ MARKET_TICKERS = [
 ]
 
 
+MAJOR_EVENT_TEMPLATES = {
+    (7, 15): [
+        ("20:30", "美國", "PPI / 核心 PPI", "高", "通膨、Fed 預期、10Y、美股科技估值"),
+        ("21:15", "美國", "工業生產", "中", "景氣循環、半導體與工業需求"),
+    ],
+    (7, 16): [
+        ("20:30", "美國", "零售銷售", "高", "美國需求、美元、Nasdaq 與台股電子"),
+        ("20:30", "美國", "初領失業救濟金", "中", "就業降溫與利率預期"),
+    ],
+    (7, 17): [
+        ("20:30", "美國", "新屋開工 / 建築許可", "中", "利率敏感資產與景氣需求"),
+    ],
+}
+
+
 STOCK_UNIVERSE = [
     {"ticker": "2330", "name": "台積電", "themes": ("ai", "taiwan"), "catalyst": "AI/HPC 需求、先進製程與法說展望", "risk": "估值偏高、外資調節或先進製程指引下修"},
     {"ticker": "2317", "name": "鴻海", "themes": ("ai", "earnings"), "catalyst": "AI 伺服器出貨與集團電動車/雲端布局", "risk": "毛利率改善速度與大型客戶訂單節奏"},
@@ -810,6 +827,10 @@ def average_score(values: list[int]) -> int:
 
 def market_environment(snapshot: list[dict[str, object]], news: list[dict[str, str]]) -> dict[str, object]:
     by_label = {row["label"]: row for row in snapshot}
+    required_labels = ["台股加權", "Nasdaq", "SOX 費半", "美債10Y", "美元指數", "美元/台幣", "VIX", "WTI 原油"]
+    ok_count = sum(1 for label in required_labels if by_label.get(label, {}).get("ok"))
+    data_quality = round(ok_count / len(required_labels) * 100)
+    quality_penalty = 0 if data_quality >= 75 else 5 if data_quality >= 55 else 10
     growth = average_score(
         [
             metric_score(by_label.get("台股加權", {}).get("change_20d"), 1.5, -2.5),
@@ -843,7 +864,8 @@ def market_environment(snapshot: list[dict[str, object]], news: list[dict[str, s
             metric_score(-(by_label.get("WTI 原油", {}).get("change_5d") or 0), 0.0, -6.0),
         ]
     )
-    total = round(growth * 0.25 + rates * 0.25 + capital * 0.20 + trend * 0.20 + risk * 0.10)
+    total = round(growth * 0.25 + rates * 0.25 + capital * 0.20 + trend * 0.20 + risk * 0.10) - quality_penalty
+    total = clamp(total, 0, 100)
     if total >= 70:
         status = "Risk-On"
     elif total >= 58:
@@ -858,7 +880,9 @@ def market_environment(snapshot: list[dict[str, object]], news: list[dict[str, s
         "status": status,
         "previous_score": "待歷史資料",
         "weekly_change": "待歷史資料",
-        "data_status": "公開行情：收盤/延遲；總經資料：逐步接入",
+        "data_status": f"公開行情：{ok_count}/{len(required_labels)} 已更新；總經預期/實際值逐步接入",
+        "data_quality": data_quality,
+        "provisional": data_quality < 75,
         "components": [
             ("成長動能", growth, "ISM、零售、外銷訂單、工業生產、出口；目前以 AI/電子新聞與股市趨勢代理"),
             ("通膨與利率", rates, "CPI、PCE、非農薪資、美債殖利率、Fed 預期；目前以 10Y 與美元壓力代理"),
@@ -907,7 +931,8 @@ def format_market_value(row: dict[str, object]) -> str:
     if row.get("label") == "美元/台幣":
         return f"{value:.3f}"
     if row.get("label") == "美債10Y":
-        return f"{value / 10:.2f}%"
+        normalized = value / 10 if value > 20 else value
+        return f"{normalized:.2f}%"
     return f"{value:,.2f}"
 
 
@@ -1087,9 +1112,17 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date)
                 "theme_score": theme_component,
                 "flow_score": institutional["score"],
                 "technical_score": technical["score"],
+                "data_quality_score": data_score,
                 "flow_text": institutional["text"],
                 "flow_warning": institutional["warning"],
                 "technical_text": technical["text"],
+                "inclusion_reason": (
+                    f"題材/基本面代理 {theme_component}/35、法人籌碼 {institutional['score']}/30、"
+                    f"技術 {technical['score']}/20、資料品質 {data_score}/10；"
+                    f"{institutional['warning']}。"
+                ),
+                "change_history": f"{today:%Y-%m-%d}：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
+                "data_source": "Google News RSS / TWSE 三大法人公開資料 / Yahoo Finance",
             }
         )
     return sorted(rows, key=lambda item: (-int(item["score"]), item["ticker"]))
@@ -1131,12 +1164,29 @@ def impact_card(item: dict[str, str]) -> dict[str, str]:
 
 
 def event_calendar(today: dt.date) -> list[dict[str, str]]:
-    return [
-        {"time": f"{today:%m/%d} 20:30", "country": "美國", "event": "非農就業 / 平均時薪", "previous": "待接資料源", "forecast": "待接資料源", "importance": "高", "impact": "利率、美元、Nasdaq、SOX 與台股外資"},
-        {"time": "未來 72 小時", "country": "美國", "event": "CPI / PCE / Fed 訊號追蹤", "previous": "待接資料源", "forecast": "待接資料源", "importance": "高", "impact": "高估值科技股、金融、美元資產"},
-        {"time": "未來 7 天", "country": "台灣", "event": "上市櫃月營收公告高峰", "previous": "待接資料源", "forecast": "不適用", "importance": "高", "impact": "AI 伺服器、半導體、電子零組件"},
-        {"time": "未來 7 天", "country": "台灣", "event": "台指期/選擇權籌碼變化", "previous": "待接資料源", "forecast": "不適用", "importance": "中", "impact": "權值股、ETF、期貨避險部位"},
-    ]
+    rows: list[dict[str, str]] = []
+    for offset in range(3):
+        day = today + dt.timedelta(days=offset)
+        for time_text, country, event, importance, impact in MAJOR_EVENT_TEMPLATES.get((day.month, day.day), []):
+            rows.append(
+                {
+                    "time": f"{day:%m/%d} {time_text}",
+                    "country": country,
+                    "event": event,
+                    "previous": "待接資料源",
+                    "forecast": "待接資料源",
+                    "importance": importance,
+                    "impact": impact,
+                }
+            )
+    rows.extend(
+        [
+            {"time": "未來 72 小時", "country": "美國", "event": "CPI / PCE / Fed / 就業資料監控", "previous": "待接資料源", "forecast": "待接資料源", "importance": "中", "impact": "若有臨時公布或修正，影響利率、美元與高估值科技股"},
+            {"time": "未來 7 天", "country": "台灣", "event": "上市櫃月營收與重大公告追蹤", "previous": "待接資料源", "forecast": "不適用", "importance": "高", "impact": "AI 伺服器、半導體、電子零組件"},
+            {"time": "每日", "country": "台灣", "event": "外資、投信、台指期與新台幣", "previous": "待接資料源", "forecast": "不適用", "importance": "高", "impact": "台股資金、權值股、ETF、期貨避險部位"},
+        ]
+    )
+    return rows[:6]
 
 
 def render_market_snapshot(snapshot: list[dict[str, object]]) -> str:
@@ -1266,8 +1316,8 @@ def render_candidate_table(candidates: list[dict[str, object]]) -> str:
           <td>{html.escape(str(item['flow_score']))}</td>
           <td>{html.escape(str(item['technical_score']))}</td>
           <td>{html.escape(str(item['flow_text']))}<br><b>{html.escape(str(item['flow_warning']))}</b></td>
-          <td>{html.escape(str(item['catalyst']))}</td>
-          <td>{html.escape(str(item['risk']))}</td>
+          <td>{html.escape(str(item['inclusion_reason']))}<br><small>{html.escape(str(item['change_history']))}</small></td>
+          <td>{html.escape(str(item['risk']))}<br><small>來源：{html.escape(str(item['data_source']))}</small></td>
           <td>{html.escape(str(item['action']))}</td>
         </tr>
         """
@@ -1375,7 +1425,110 @@ def render_source_table(news: list[dict[str, str]]) -> str:
     )
 
 
+def serializable_snapshot(snapshot: list[dict[str, object]]) -> list[dict[str, object]]:
+    return [
+        {
+            "label": row.get("label"),
+            "symbol": row.get("symbol"),
+            "group": row.get("group"),
+            "value": row.get("value"),
+            "display_value": format_market_value(row),
+            "change_pct": row.get("change_pct"),
+            "change_5d": row.get("change_5d"),
+            "change_20d": row.get("change_20d"),
+            "ytd_change": row.get("ytd_change"),
+            "high_52w_gap": row.get("high_52w_gap"),
+            "data_time": row.get("data_time"),
+            "status": "ok" if row.get("ok") else "failed",
+            "source": "Yahoo Finance",
+        }
+        for row in snapshot
+    ]
+
+
+def build_processed_payloads(
+    *,
+    today: dt.date,
+    generated_at: str,
+    snapshot: list[dict[str, object]],
+    environment: dict[str, object],
+    candidates: list[dict[str, object]],
+    events: list[dict[str, str]],
+    analysis: dict,
+    news: list[dict[str, str]],
+) -> dict[str, dict[str, object]]:
+    base = {
+        "generated_at": generated_at,
+        "data_date": today.isoformat(),
+        "timezone": "Asia/Taipei",
+        "status": "ok",
+    }
+    market_rows = serializable_snapshot(snapshot)
+    stock_rows = [
+        {
+            "ticker": item.get("ticker"),
+            "name": item.get("name"),
+            "bucket": item.get("bucket"),
+            "score": item.get("score"),
+            "theme_score": item.get("theme_score"),
+            "flow_score": item.get("flow_score"),
+            "technical_score": item.get("technical_score"),
+            "data_quality_score": item.get("data_quality_score"),
+            "flow_text": item.get("flow_text"),
+            "flow_warning": item.get("flow_warning"),
+            "technical_text": item.get("technical_text"),
+            "inclusion_reason": item.get("inclusion_reason"),
+            "change_history": item.get("change_history"),
+            "data_source": item.get("data_source"),
+            "risk": item.get("risk"),
+            "action": item.get("action"),
+        }
+        for item in candidates
+    ]
+    data_health_rows = [
+        {
+            "dataset": "market_summary",
+            "status": "ok" if all(row["status"] == "ok" for row in market_rows if row["group"] == "global") else "partial",
+            "source": "Yahoo Finance",
+            "last_successful_update": generated_at,
+        },
+        {
+            "dataset": "stock_radar",
+            "status": "ok" if stock_rows else "empty",
+            "source": "Google News RSS / TWSE / Yahoo Finance",
+            "last_successful_update": generated_at,
+        },
+        {
+            "dataset": "us_macro_actual_forecast",
+            "status": "not_connected",
+            "source": "BLS / BEA / Federal Reserve / FRED",
+            "last_successful_update": None,
+        },
+        {
+            "dataset": "taiwan_macro_actual_forecast",
+            "status": "not_connected",
+            "source": "DGBAS / MOEA / NDC / CBC / TWSE",
+            "last_successful_update": None,
+        },
+    ]
+    return {
+        "market_summary.json": {**base, "source": "Yahoo Finance / Google News RSS", "environment": environment, "markets": market_rows},
+        "stock_radar.json": {**base, "source": "Google News RSS / TWSE / Yahoo Finance", "records": stock_rows},
+        "economic_calendar.json": {**base, "source": "Manual P0 template; official calendar API pending", "records": events},
+        "sector_rotation.json": {**base, "source": "Google News RSS theme classifier; market data pipeline pending", "records": analysis.get("axes", [])},
+        "data_health.json": {**base, "source": "GitHub Actions pipeline", "records": data_health_rows, "news_count": len(news)},
+    }
+
+
+def write_processed_payloads(output_dir: Path, payloads: dict[str, dict[str, object]]) -> None:
+    processed_dir = output_dir / "data" / "processed"
+    processed_dir.mkdir(parents=True, exist_ok=True)
+    for filename, payload in payloads.items():
+        (processed_dir / filename).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str = "") -> str:
+    global LAST_PROCESSED_PAYLOADS
     generated_at = dt.datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S Asia/Taipei")
     previous = extract_previous_analysis(previous_html)
     analysis = build_market_analysis(news, today, previous)
@@ -1385,6 +1538,16 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     all_candidates = score_candidates(news, analysis, today)
     candidates = priority_candidates(all_candidates)
     events = event_calendar(today)
+    LAST_PROCESSED_PAYLOADS = build_processed_payloads(
+        today=today,
+        generated_at=generated_at,
+        snapshot=snapshot,
+        environment=environment,
+        candidates=candidates,
+        events=events,
+        analysis=analysis,
+        news=news,
+    )
     source_count = len({item["source"] for item in news})
     theme_count = len({item["theme"] for item in news})
     signal_score = min(100, 45 + len(news) * 2 + source_count * 3 + theme_count * 4)
@@ -1530,7 +1693,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
 
     <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>公開頁僅顯示正式強勢股與機會股；低分、降級與警示名單不列入推薦表。</p></div>
     <table>
-      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>題材</th><th>法人籌碼</th><th>技術</th><th>今日籌碼</th><th>催化劑</th><th>主要風險</th><th>升級/維持原因</th></tr></thead>
+      <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>題材</th><th>法人籌碼</th><th>技術</th><th>今日籌碼</th><th>進榜原因 / 異動紀錄</th><th>主要風險 / 資料來源</th><th>升級/維持原因</th></tr></thead>
       <tbody>{render_candidate_table(candidates)}</tbody>
     </table>
     <p class="research-note">Macro Regime Score：{environment["score"]} / 100。{html.escape(str(environment["implication"]))} 個股分數仍由基本面、法人籌碼、技術面、估值、產業趨勢與風險扣分獨立計算；市場環境只作為升級/降級門檻。</p>
@@ -1553,7 +1716,8 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     <div class="section-title" id="methodology"><h2>方法論與資料來源 Methodology</h2><p>所有分數、篩選結果與資料狀態必須可追溯。</p></div>
     <section class="panel">
       <p><b>資料來源：</b>Yahoo Finance 公開行情、Google News RSS、TWSE 個股三大法人公開資料；MOPS、TPEx、FinMind、台灣主計總處、經濟部、國發會、央行、美國官方總經資料為 P1/P2 接入項目。</p>
-      <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或待接資料源，不顯示假資料；每個主要區塊保留更新時間與資料狀態。</p>
+      <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
+      <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或待接資料源，不顯示假資料；每個主要區塊保留更新時間與資料狀態；市場環境分數會因必要資料不足而扣分。</p>
       <p><b>風險揭露：</b>本網站僅提供公開資料整理、量化篩選與研究輔助，不構成買賣建議或保證獲利。投資人應自行評估風險。</p>
     </section>
 
@@ -1580,6 +1744,7 @@ def main() -> int:
             f"need at least {MIN_NEWS_ITEMS}"
         )
     (output_dir / "index.html").write_text(render_html(news, today, previous_html), encoding="utf-8")
+    write_processed_payloads(output_dir, LAST_PROCESSED_PAYLOADS)
     print(f"Published dashboard finance report for {today:%Y-%m-%d} with {len(news)} items to {output_dir / 'index.html'}")
     return 0
 

@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/publish-daily-finance-report.yml"
       - "assets/**"
+      - "data/processed/**"
       - "scripts/**"
   schedule:
     # GitHub schedules can be delayed. Poll frequently, then use the Taipei-time
@@ -67,13 +68,13 @@ jobs:
         shell: bash
         run: |
           today="$(TZ=Asia/Taipei date +%F)"
-          if git diff --quiet -- index.html; then
+          if git diff --quiet -- index.html data/processed; then
             echo "No daily finance report changes to publish."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
+          git add index.html data/processed
           git commit -m "Update daily finance report $today"
           if git push; then
             exit 0

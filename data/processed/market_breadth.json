@@ -1,8 +1,364 @@
 {
-  "generated_at": "2026-07-15 18:48:14 Asia/Taipei",
+  "generated_at": "2026-07-15 19:06:48 Asia/Taipei",
   "data_date": "2026-07-15",
   "timezone": "Asia/Taipei",
-  "status": "not_connected",
-  "source": "TWSE / TPEx",
-  "records": []
+  "status": "ok",
+  "source": "TWSE MI_INDEX / FinMind",
+  "date": "2026-07-15",
+  "breadth": {
+    "listed_stock_count": 1082,
+    "advancing": 895,
+    "declining": 127,
+    "unchanged": 60,
+    "advance_decline_ratio": 7.05,
+    "new_20d_high": null,
+    "new_20d_low": null,
+    "new_52w_high": null,
+    "new_52w_low": null,
+    "new_high_low_status": "not_connected"
+  },
+  "margin_records": [
+    {
+      "ticker": "2330",
+      "date": "2026-07-14",
+      "margin_purchase_balance": 33187,
+      "margin_purchase_change": 312,
+      "short_sale_balance": 60,
+      "short_sale_change": 12,
+      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
+    },
+    {
+      "ticker": "2317",
+      "date": "2026-07-14",
+      "margin_purchase_balance": 57187,
+      "margin_purchase_change": 155,
+      "short_sale_balance": 153,
+      "short_sale_change": 53,
+      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
+    },
+    {
+      "ticker": "2308",
+      "date": "2026-07-14",
+      "margin_purchase_balance": 7729,
+      "margin_purchase_change": -236,
+      "short_sale_balance": 13,
+      "short_sale_change": 0,
+      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
+    },
+    {
+      "ticker": "2881",
+      "date": "2026-07-14",
+      "margin_purchase_balance": 7524,
+      "margin_purchase_change": 172,
+      "short_sale_balance": 43,
+      "short_sale_change": -4,
+      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
+    }
+  ],
+  "securities_lending": {
+    "status": "not_connected",
+    "source": "TWSE / TPEx"
+  },
+  "records": [
+    {
+      "ticker": "1101",
+      "name": "台泥",
+      "close": 23.55,
+      "change_pct": 3.74,
+      "turnover": 700296629.0,
+      "volume_lots": 30131,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1102",
+      "name": "亞泥",
+      "close": 34.8,
+      "change_pct": 1.75,
+      "turnover": 875979777.0,
+      "volume_lots": 25410,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1103",
+      "name": "嘉泥",
+      "close": 13.6,
+      "change_pct": 1.49,
+      "turnover": 6012691.0,
+      "volume_lots": 443,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1104",
+      "name": "環泥",
+      "close": 26.85,
+      "change_pct": 0.37,
+      "turnover": 14234128.0,
+      "volume_lots": 531,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1108",
+      "name": "幸福",
+      "close": 13.7,
+      "change_pct": 1.48,
+      "turnover": 17912723.0,
+      "volume_lots": 1314,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1109",
+      "name": "信大",
+      "close": 14.65,
+      "change_pct": 0.69,
+      "turnover": 5370172.0,
+      "volume_lots": 368,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1110",
+      "name": "東泥",
+      "close": 16.15,
+      "change_pct": 2.54,
+      "turnover": 7977760.0,
+      "volume_lots": 497,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1201",
+      "name": "味全",
+      "close": 12.55,
+      "change_pct": 0.0,
+      "turnover": 4548154.0,
+      "volume_lots": 362,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1203",
+      "name": "味王",
+      "close": 44.85,
+      "change_pct": 1.47,
+      "turnover": 3633196.0,
+      "volume_lots": 82,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1210",
+      "name": "大成",
+      "close": 58.0,
+      "change_pct": 1.58,
+      "turnover": 85087771.0,
+      "volume_lots": 1474,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1213",
+      "name": "大飲",
+      "close": 7.7,
+      "change_pct": 2.94,
+      "turnover": 22900.0,
+      "volume_lots": 3,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1215",
+      "name": "卜蜂",
+      "close": 112.0,
+      "change_pct": -0.88,
+      "turnover": 67689729.0,
+      "volume_lots": 604,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1216",
+      "name": "統一",
+      "close": 78.6,
+      "change_pct": 0.13,
+      "turnover": 1900828235.0,
+      "volume_lots": 24165,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1217",
+      "name": "愛之味",
+      "close": 10.0,
+      "change_pct": 1.01,
+      "turnover": 3553982.0,
+      "volume_lots": 356,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1218",
+      "name": "泰山",
+      "close": 16.25,
+      "change_pct": 1.56,
+      "turnover": 21245922.0,
+      "volume_lots": 1318,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1219",
+      "name": "福壽",
+      "close": 12.2,
+      "change_pct": 3.39,
+      "turnover": 12260351.0,
+      "volume_lots": 1019,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1220",
+      "name": "台榮",
+      "close": 11.4,
+      "change_pct": -0.44,
+      "turnover": 1442611.0,
+      "volume_lots": 126,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1225",
+      "name": "福懋油",
+      "close": 27.05,
+      "change_pct": 2.08,
+      "turnover": 3114594.0,
+      "volume_lots": 116,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1227",
+      "name": "佳格",
+      "close": 30.1,
+      "change_pct": 0.84,
+      "turnover": 28471261.0,
+      "volume_lots": 949,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1229",
+      "name": "聯華",
+      "close": 40.5,
+      "change_pct": 1.25,
+      "turnover": 69352598.0,
+      "volume_lots": 1722,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1231",
+      "name": "聯華食",
+      "close": 88.2,
+      "change_pct": 2.8,
+      "turnover": 27249515.0,
+      "volume_lots": 311,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1232",
+      "name": "大統益",
+      "close": 152.0,
+      "change_pct": 0.33,
+      "turnover": 51842528.0,
+      "volume_lots": 342,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1233",
+      "name": "天仁",
+      "close": 28.5,
+      "change_pct": 1.24,
+      "turnover": 495239.0,
+      "volume_lots": 17,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1234",
+      "name": "黑松",
+      "close": 33.8,
+      "change_pct": 1.05,
+      "turnover": 8059519.0,
+      "volume_lots": 239,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1235",
+      "name": "興泰",
+      "close": 37.0,
+      "change_pct": 3.79,
+      "turnover": 769421.0,
+      "volume_lots": 21,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1236",
+      "name": "宏亞",
+      "close": 23.55,
+      "change_pct": 2.61,
+      "turnover": 4948689.0,
+      "volume_lots": 214,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1256",
+      "name": "鮮活果汁-KY",
+      "close": 188.5,
+      "change_pct": 1.34,
+      "turnover": 5278664.0,
+      "volume_lots": 28,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1301",
+      "name": "台塑",
+      "close": 65.7,
+      "change_pct": 3.3,
+      "turnover": 9561434341.0,
+      "volume_lots": 146834,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1303",
+      "name": "南亞",
+      "close": 227.5,
+      "change_pct": 8.33,
+      "turnover": 35268981858.0,
+      "volume_lots": 158308,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "ticker": "1304",
+      "name": "台聚",
+      "close": 13.8,
+      "change_pct": 1.85,
+      "turnover": 70161751.0,
+      "volume_lots": 5133,
+      "date": "2026-07-15",
+      "source": "TWSE MI_INDEX"
+    }
+  ]
 }

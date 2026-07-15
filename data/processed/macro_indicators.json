@@ -1,8 +1,101 @@
 {
-  "generated_at": "2026-07-15 18:48:14 Asia/Taipei",
+  "generated_at": "2026-07-15 19:06:48 Asia/Taipei",
   "data_date": "2026-07-15",
   "timezone": "Asia/Taipei",
-  "status": "not_connected",
-  "source": "BLS / BEA / Census / ISM / FRED / Federal Reserve / DGBAS / MOEA / NDC / CBC",
-  "records": []
+  "status": "failed",
+  "source": "FRED / ISM / MOEA / NDC / CBC",
+  "date": "2026-07-15",
+  "records": [
+    {
+      "series_id": "CPIAUCSL",
+      "name": "US CPI",
+      "category": "US inflation",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "PCEPI",
+      "name": "US PCE Price Index",
+      "category": "US inflation",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "PAYEMS",
+      "name": "US Nonfarm Payrolls",
+      "category": "US employment",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "RSAFS",
+      "name": "US Retail Sales",
+      "category": "US demand",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "FEDFUNDS",
+      "name": "Fed Funds Rate",
+      "category": "US rates",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "DGS2",
+      "name": "US 2Y Treasury Yield",
+      "category": "US rates",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "DGS10",
+      "name": "US 10Y Treasury Yield",
+      "category": "US rates",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "ISM_MANUFACTURING",
+      "name": "ISM Manufacturing PMI",
+      "category": "US demand",
+      "status": "not_connected",
+      "source": "ISM / FRED"
+    },
+    {
+      "series_id": "TW_EXPORTS",
+      "name": "Taiwan exports",
+      "category": "Taiwan macro",
+      "status": "not_connected",
+      "source": "MOEA"
+    },
+    {
+      "series_id": "TW_EXPORT_ORDERS",
+      "name": "Taiwan export orders",
+      "category": "Taiwan macro",
+      "status": "not_connected",
+      "source": "MOEA"
+    },
+    {
+      "series_id": "TW_INDUSTRIAL_PRODUCTION",
+      "name": "Taiwan industrial production",
+      "category": "Taiwan macro",
+      "status": "not_connected",
+      "source": "MOEA"
+    },
+    {
+      "series_id": "TW_NDC_SIGNAL",
+      "name": "Taiwan NDC business cycle signal",
+      "category": "Taiwan macro",
+      "status": "not_connected",
+      "source": "NDC"
+    },
+    {
+      "series_id": "TW_M1B_M2",
+      "name": "Taiwan M1B / M2",
+      "category": "Taiwan liquidity",
+      "status": "not_connected",
+      "source": "CBC"
+    }
+  ]
 }

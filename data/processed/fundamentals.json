@@ -1,8 +1,70 @@
 {
-  "generated_at": "2026-07-15 18:48:14 Asia/Taipei",
+  "generated_at": "2026-07-15 19:06:48 Asia/Taipei",
   "data_date": "2026-07-15",
   "timezone": "Asia/Taipei",
-  "status": "not_connected",
-  "source": "MOPS / TWSE / TPEx / FinMind",
-  "records": []
+  "status": "ok",
+  "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
+  "date": "2026-07-15",
+  "records": [
+    {
+      "ticker": "2330",
+      "name": "台積電",
+      "status": "ok",
+      "source": "FinMind",
+      "latest_month_revenue_date": "2026-07-01",
+      "latest_month_revenue": 442679969000,
+      "latest_quarter": "2026-03-31",
+      "eps": 22.08,
+      "gross_margin_pct": 66.25,
+      "operating_margin_pct": 58.1,
+      "roe_pct_annualized": 38.62,
+      "inventory": 311453459000.0,
+      "accounts_receivable": 357742772000.0
+    },
+    {
+      "ticker": "2317",
+      "name": "鴻海",
+      "status": "ok",
+      "source": "FinMind",
+      "latest_month_revenue_date": "2026-07-01",
+      "latest_month_revenue": 821762936000,
+      "latest_quarter": "2026-03-31",
+      "eps": 3.56,
+      "gross_margin_pct": 6.18,
+      "operating_margin_pct": 3.57,
+      "roe_pct_annualized": 11.46,
+      "inventory": 1209878099000.0,
+      "accounts_receivable": 1149891836000.0
+    },
+    {
+      "ticker": "2308",
+      "name": "台達電",
+      "status": "ok",
+      "source": "FinMind",
+      "latest_month_revenue_date": "2026-07-01",
+      "latest_month_revenue": 65602611000,
+      "latest_quarter": "2026-03-31",
+      "eps": 7.91,
+      "gross_margin_pct": 37.0,
+      "operating_margin_pct": 17.83,
+      "roe_pct_annualized": 26.69,
+      "inventory": 119107625000.0,
+      "accounts_receivable": 126864149000.0
+    },
+    {
+      "ticker": "2881",
+      "name": "富邦金",
+      "status": "ok",
+      "source": "FinMind",
+      "latest_month_revenue_date": "2026-06-01",
+      "latest_month_revenue": 30407516000,
+      "latest_quarter": "2026-03-31",
+      "eps": null,
+      "gross_margin_pct": null,
+      "operating_margin_pct": null,
+      "roe_pct_annualized": null,
+      "inventory": null,
+      "accounts_receivable": null
+    }
+  ]
 }

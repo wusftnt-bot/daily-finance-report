@@ -24,6 +24,7 @@ All processed JSON files must include:
 Current P0 files:
 
 - `data/processed/market_summary.json`
+- `data/processed/capital_flow.json`
 - `data/processed/stock_radar.json`
 - `data/processed/economic_calendar.json`
 - `data/processed/sector_rotation.json`
@@ -35,9 +36,11 @@ Current P0 files:
 | --- | --- | --- | --- | --- | --- |
 | Global markets | S&P 500, Nasdaq, SOX, Dow, Nikkei, TAIEX, OTC, Shanghai, HSCE, Nifty, Bovespa | Yahoo Finance | connected | no | mark row failed |
 | Cross asset | US 10Y, DXY, USD/TWD, USD/JPY, USD/CNY, VIX, gold, WTI, Brent, copper | Yahoo Finance | connected | no | mark row failed |
+| Taiwan capital flow | foreign investors, investment trusts, dealers, total institutional net buy/sell | TWSE BFI82U | connected | no | show failed/partial and keep FX proxy |
+| Sector rotation | TWSE sector index close and daily percentage change | TWSE MI_INDEX | connected | no | fall back to news theme cards |
 | Stock radar | Fixed public research universe, public news themes, TWSE institutional rows, Yahoo price fallback | Google News RSS / TWSE / Yahoo Finance | connected / partial | no | exclude weak or unverified names |
 | Economic calendar | Near-term high-impact event template | Manual P0 template | partial | no | show `待接資料源` for actual/forecast |
-| Sector rotation | News theme classifier | Google News RSS | partial | no | label as proxy until market/fundamental data is connected |
+| Sector news context | News theme classifier | Google News RSS | partial | no | label as qualitative context |
 
 ## P1 Sources
 
@@ -45,9 +48,20 @@ Current P0 files:
 | --- | --- | --- | --- |
 | US macro | CPI, PPI, PCE, payrolls, wages, ISM, retail sales, durable goods | BLS / BEA / Census / ISM / FRED | store actual, forecast, prior, revision, surprise |
 | Taiwan macro | exports, export orders, industrial production, NDC signal, M1B/M2, CPI, unemployment | MOEA / NDC / CBC / DGBAS | monthly cadence; show release date |
-| Taiwan capital flow | foreign/investment trust/dealer, futures net position, margin, securities lending | TWSE / TPEx / TAIFEX | daily cadence |
+| Taiwan capital flow | futures net position, margin, securities lending, market breadth, new high/new low | TWSE / TPEx / TAIFEX | daily cadence |
 | Company fundamentals | monthly revenue, EPS, ROE, gross margin, operating margin | MOPS / TWSE / TPEx / FinMind | do not show incomplete metrics as final |
 | Sector rotation | 1/5/20/60 day return, turnover, institutional flow, revenue growth | TWSE / TPEx / FinMind / Yahoo Finance | build sector heat matrix |
+
+## Remaining Missing Sources
+
+These sources are not yet connected and must be added in small, testable batches:
+
+- US macro actual/forecast/surprise: BLS, BEA, Census, FRED, Federal Reserve.
+- Taiwan macro actual/forecast/surprise: DGBAS, MOEA, NDC, CBC.
+- TAIFEX futures foreign net position and options put/call ratio.
+- TWSE/TPEx margin, short sale, securities lending, market breadth, 20-day/52-week new highs and lows.
+- Company fundamentals: MOPS monthly revenue, quarterly EPS, margins, ROE, inventory, receivables.
+- Sector rotation depth: 5/20/60-day sector returns, sector turnover, institutional flow by sector, revenue growth by sector.
 
 ## Secret Safety Checklist
 

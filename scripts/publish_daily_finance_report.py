@@ -6,6 +6,7 @@ import json
 import os
 import re
 import time
+import urllib.parse
 import urllib.request
 from collections import Counter
 from pathlib import Path
@@ -767,6 +768,169 @@ def fetch_yahoo_quote(symbol: str) -> dict[str, object]:
         return {"value": None, "change_pct": None, "change_5d": None, "change_20d": None, "ytd_change": None, "high_52w_gap": None, "data_time": "資料更新失敗", "ok": False}
 
 
+def parse_number(value: object) -> float | None:
+    text = clean_text(value).replace(",", "").replace("--", "")
+    text = re.sub(r"<[^>]+>", "", text)
+    if not text:
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def format_ntd_billion(value: object) -> str:
+    if not isinstance(value, (int, float)):
+        return "待更新"
+    sign = "+" if value >= 0 else ""
+    return f"{sign}{value / 100_000_000:.1f} 億"
+
+
+def fetch_twse_json(path: str, params: dict[str, str], timeout: int = 12) -> dict[str, object]:
+    url = f"https://www.twse.com.tw/rwd/zh/{path}?" + urllib.parse.urlencode({**params, "response": "json"})
+    request = urllib.request.Request(url, headers={"User-Agent": "daily-finance-report"})
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        return json.loads(response.read().decode("utf-8-sig"))
+
+
+def fetch_taiwan_capital_flow(today: dt.date) -> dict[str, object]:
+    for offset in range(0, 10):
+        day = today - dt.timedelta(days=offset)
+        try:
+            data = fetch_twse_json(
+                "fund/BFI82U",
+                {"dayDate": day.strftime("%Y%m%d"), "type": "day"},
+            )
+        except Exception as exc:
+            print(f"TWSE BFI82U fallback for {day:%Y-%m-%d}: {exc}")
+            continue
+        if data.get("stat") != "OK" or not data.get("data"):
+            continue
+        rows: list[dict[str, object]] = []
+        dealer_net = investment_net = foreign_net = total_net = 0.0
+        for item in data.get("data", []):
+            value = item.get("value", []) if isinstance(item, dict) else item
+            if not isinstance(value, list) or len(value) < 4:
+                continue
+            name = clean_text(value[0])
+            buy = parse_number(value[1]) or 0.0
+            sell = parse_number(value[2]) or 0.0
+            net = parse_number(value[3]) or buy - sell
+            rows.append({"name": name, "buy": buy, "sell": sell, "net": net})
+            if name.startswith("自營商"):
+                dealer_net += net
+            elif name == "投信":
+                investment_net += net
+            elif name.startswith("外資及陸資"):
+                foreign_net += net
+            elif name == "合計":
+                total_net = net
+        if not total_net:
+            total_net = dealer_net + investment_net + foreign_net
+        return {
+            "status": "ok",
+            "source": "TWSE BFI82U",
+            "date": data.get("date") or day.strftime("%Y%m%d"),
+            "title": data.get("title") or f"{day:%Y-%m-%d} 三大法人買賣金額",
+            "foreign_net": foreign_net,
+            "investment_trust_net": investment_net,
+            "dealer_net": dealer_net,
+            "total_net": total_net,
+            "records": rows,
+        }
+    return {
+        "status": "failed",
+        "source": "TWSE BFI82U",
+        "date": None,
+        "title": "三大法人買賣金額",
+        "foreign_net": None,
+        "investment_trust_net": None,
+        "dealer_net": None,
+        "total_net": None,
+        "records": [],
+    }
+
+
+SECTOR_INDEX_NAMES = {
+    "半導體類指數",
+    "電腦及週邊設備類指數",
+    "通信網路類指數",
+    "電子零組件類指數",
+    "其他電子類指數",
+    "金融保險類指數",
+    "航運類指數",
+    "鋼鐵類指數",
+    "生技醫療類指數",
+    "塑膠類指數",
+    "電機機械類指數",
+    "油電燃氣類指數",
+}
+
+
+def fetch_twse_sector_rotation(today: dt.date) -> dict[str, object]:
+    for offset in range(0, 10):
+        day = today - dt.timedelta(days=offset)
+        try:
+            data = fetch_twse_json(
+                "afterTrading/MI_INDEX",
+                {"date": day.strftime("%Y%m%d"), "type": "ALLBUT0999"},
+                timeout=15,
+            )
+        except Exception as exc:
+            print(f"TWSE MI_INDEX fallback for {day:%Y-%m-%d}: {exc}")
+            continue
+        if data.get("stat") != "OK" or not data.get("tables"):
+            continue
+        records: list[dict[str, object]] = []
+        for table in data.get("tables", []):
+            title = str(table.get("title", ""))
+            if "價格指數(臺灣證券交易所)" not in title:
+                continue
+            for row in table.get("data", []):
+                if not isinstance(row, list) or len(row) < 5:
+                    continue
+                name = clean_text(row[0])
+                if name not in SECTOR_INDEX_NAMES:
+                    continue
+                value = parse_number(row[1])
+                point_change = parse_number(row[3])
+                pct = parse_number(row[4])
+                records.append(
+                    {
+                        "sector": name.replace("類指數", ""),
+                        "index_name": name,
+                        "close": value,
+                        "change_points": point_change,
+                        "change_pct": pct,
+                        "stage": sector_stage(pct),
+                        "source": "TWSE MI_INDEX",
+                    }
+                )
+        if records:
+            records.sort(key=lambda item: item.get("change_pct") if isinstance(item.get("change_pct"), (int, float)) else -999, reverse=True)
+            return {
+                "status": "ok",
+                "source": "TWSE MI_INDEX",
+                "date": data.get("date") or day.strftime("%Y%m%d"),
+                "records": records,
+            }
+    return {"status": "failed", "source": "TWSE MI_INDEX", "date": None, "records": []}
+
+
+def sector_stage(change_pct: object) -> str:
+    if not isinstance(change_pct, (int, float)):
+        return "待更新"
+    if change_pct >= 3:
+        return "強勢擴張"
+    if change_pct >= 1:
+        return "復甦偏多"
+    if change_pct <= -2:
+        return "降溫警戒"
+    if change_pct < 0:
+        return "整理偏弱"
+    return "中性整理"
+
+
 def pct_change(current: float | None, previous: float | None) -> float | None:
     if not isinstance(current, (int, float)) or not isinstance(previous, (int, float)) or previous == 0:
         return None
@@ -825,7 +989,7 @@ def average_score(values: list[int]) -> int:
     return int(round(sum(values) / len(values))) if values else 50
 
 
-def market_environment(snapshot: list[dict[str, object]], news: list[dict[str, str]]) -> dict[str, object]:
+def market_environment(snapshot: list[dict[str, object]], news: list[dict[str, str]], capital_flow: dict[str, object] | None = None) -> dict[str, object]:
     by_label = {row["label"]: row for row in snapshot}
     required_labels = ["台股加權", "Nasdaq", "SOX 費半", "美債10Y", "美元指數", "美元/台幣", "VIX", "WTI 原油"]
     ok_count = sum(1 for label in required_labels if by_label.get(label, {}).get("ok"))
@@ -849,6 +1013,8 @@ def market_environment(snapshot: list[dict[str, object]], news: list[dict[str, s
             metric_score(-(by_label.get("美元/台幣", {}).get("change_5d") or 0), 0.0, -0.8),
             metric_score(-(by_label.get("美元指數", {}).get("change_5d") or 0), 0.0, -0.8),
             metric_score(by_label.get("台股加權", {}).get("change_5d"), 0.5, -1.5),
+            metric_score((capital_flow or {}).get("foreign_net"), 0.0, -8_000_000_000),
+            metric_score((capital_flow or {}).get("investment_trust_net"), 0.0, -2_000_000_000),
         ]
     )
     trend = average_score(
@@ -1277,12 +1443,16 @@ def render_cross_asset_cards(snapshot: list[dict[str, object]]) -> str:
     )
 
 
-def render_capital_flow_summary(candidates: list[dict[str, object]], snapshot: list[dict[str, object]]) -> str:
+def render_capital_flow_summary(candidates: list[dict[str, object]], snapshot: list[dict[str, object]], capital_flow: dict[str, object]) -> str:
     buy_count = sum(1 for item in candidates if int(item.get("flow_score", 0)) >= 20)
     neutral_count = sum(1 for item in candidates if 14 <= int(item.get("flow_score", 0)) < 20)
     twd = next((row for row in snapshot if row["label"] == "美元/台幣"), {})
+    flow_date = str(capital_flow.get("date") or "待更新")
     rows = [
         ("候選股法人支持", f"{buy_count} 檔強、{neutral_count} 檔中性", "來自 TWSE 個股三大法人資料"),
+        ("三大法人合計", format_ntd_billion(capital_flow.get("total_net")), f"TWSE BFI82U｜{flow_date}"),
+        ("外資買賣超", format_ntd_billion(capital_flow.get("foreign_net")), "外資及陸資買賣差額"),
+        ("投信買賣超", format_ntd_billion(capital_flow.get("investment_trust_net")), "本國投信買賣差額"),
         ("新台幣匯率", f"{format_market_value(twd)} / 5日 {format_pct(twd.get('change_5d'))}", "美元/台幣作為外資資金壓力代理"),
         ("台指期外資淨部位", "待接資料源", "P1 接入期交所公開資料"),
         ("融資融券與借券", "待接資料源", "P1 接入 TWSE/TPEx 公開資料"),
@@ -1392,6 +1562,33 @@ def render_theme_cards(news: list[dict[str, str]], analysis: dict) -> str:
     return "\n".join(cards)
 
 
+def render_sector_rotation(sector_rotation: dict[str, object], news: list[dict[str, str]], analysis: dict) -> str:
+    records = sector_rotation.get("records") if isinstance(sector_rotation, dict) else []
+    cards: list[str] = []
+    if isinstance(records, list) and records:
+        for item in records[:6]:
+            change = item.get("change_pct")
+            change_text = format_pct(change)
+            cards.append(
+                f"""
+                <article class="theme-card">
+                  <div class="axis-rank">TWSE</div>
+                  <div class="theme-topline">
+                    <h3>{html.escape(str(item.get("sector", "產業")))}</h3>
+                    <strong>{html.escape(change_text)}</strong>
+                  </div>
+                  <dl>
+                    <dt>景氣定位</dt><dd>{html.escape(str(item.get("stage", "待更新")))}</dd>
+                    <dt>收盤指數</dt><dd>{html.escape(format_market_value({"value": item.get("close")}))}</dd>
+                    <dt>資料來源</dt><dd>{html.escape(str(item.get("source", "TWSE MI_INDEX")))}</dd>
+                  </dl>
+                </article>
+                """
+            )
+        return "\n".join(cards)
+    return render_theme_cards(news, analysis)
+
+
 def render_news_list(news: list[dict[str, str]]) -> str:
     if not news:
         return '<div class="empty">今日新聞數量不足，系統保留不完整報告以避免誤導。</div>'
@@ -1452,6 +1649,8 @@ def build_processed_payloads(
     generated_at: str,
     snapshot: list[dict[str, object]],
     environment: dict[str, object],
+    capital_flow: dict[str, object],
+    sector_rotation: dict[str, object],
     candidates: list[dict[str, object]],
     events: list[dict[str, str]],
     analysis: dict,
@@ -1499,6 +1698,18 @@ def build_processed_payloads(
             "last_successful_update": generated_at,
         },
         {
+            "dataset": "capital_flow",
+            "status": capital_flow.get("status", "failed"),
+            "source": capital_flow.get("source", "TWSE BFI82U"),
+            "last_successful_update": generated_at if capital_flow.get("status") == "ok" else None,
+        },
+        {
+            "dataset": "sector_rotation",
+            "status": sector_rotation.get("status", "failed"),
+            "source": sector_rotation.get("source", "TWSE MI_INDEX"),
+            "last_successful_update": generated_at if sector_rotation.get("status") == "ok" else None,
+        },
+        {
             "dataset": "us_macro_actual_forecast",
             "status": "not_connected",
             "source": "BLS / BEA / Federal Reserve / FRED",
@@ -1513,9 +1724,10 @@ def build_processed_payloads(
     ]
     return {
         "market_summary.json": {**base, "source": "Yahoo Finance / Google News RSS", "environment": environment, "markets": market_rows},
+        "capital_flow.json": {**base, "source": "TWSE BFI82U", **capital_flow},
         "stock_radar.json": {**base, "source": "Google News RSS / TWSE / Yahoo Finance", "records": stock_rows},
         "economic_calendar.json": {**base, "source": "Manual P0 template; official calendar API pending", "records": events},
-        "sector_rotation.json": {**base, "source": "Google News RSS theme classifier; market data pipeline pending", "records": analysis.get("axes", [])},
+        "sector_rotation.json": {**base, "source": "TWSE MI_INDEX", **sector_rotation, "news_axes": analysis.get("axes", [])},
         "data_health.json": {**base, "source": "GitHub Actions pipeline", "records": data_health_rows, "news_count": len(news)},
     }
 
@@ -1533,8 +1745,10 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     previous = extract_previous_analysis(previous_html)
     analysis = build_market_analysis(news, today, previous)
     snapshot = market_snapshot()
+    capital_flow = fetch_taiwan_capital_flow(today)
+    sector_rotation = fetch_twse_sector_rotation(today)
     temperature = market_temperature(snapshot)
-    environment = market_environment(snapshot, news)
+    environment = market_environment(snapshot, news, capital_flow)
     all_candidates = score_candidates(news, analysis, today)
     candidates = priority_candidates(all_candidates)
     events = event_calendar(today)
@@ -1543,6 +1757,8 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
         generated_at=generated_at,
         snapshot=snapshot,
         environment=environment,
+        capital_flow=capital_flow,
+        sector_rotation=sector_rotation,
         candidates=candidates,
         events=events,
         analysis=analysis,
@@ -1689,7 +1905,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     </table>
 
     <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>先顯示已接資料與待接資料源，避免用舊資料或假資料冒充即時資料。</p></div>
-    <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot)}</section>
+    <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot, capital_flow)}</section>
 
     <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>公開頁僅顯示正式強勢股與機會股；低分、降級與警示名單不列入推薦表。</p></div>
     <table>
@@ -1698,8 +1914,8 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     </table>
     <p class="research-note">Macro Regime Score：{environment["score"]} / 100。{html.escape(str(environment["implication"]))} 個股分數仍由基本面、法人籌碼、技術面、估值、產業趨勢與風險扣分獨立計算；市場環境只作為升級/降級門檻。</p>
 
-    <div class="section-title" id="sector"><h2>產業追蹤 Sector Rotation</h2><p>先以新聞主題與市場驗證指標建立產業假設；P1 會加入 1/5/20/60 日報酬、法人買賣超與營收年增率。</p></div>
-    <section class="themes">{render_theme_cards(news, analysis)}</section>
+    <div class="section-title" id="sector"><h2>產業追蹤 Sector Rotation</h2><p>優先顯示 TWSE 產業指數當日輪動；後續再補 5/20/60 日報酬、法人買賣超與營收年增率。</p></div>
+    <section class="themes">{render_sector_rotation(sector_rotation, news, analysis)}</section>
 
     <div class="section-title"><h2>投資影響卡</h2><p>每則重點新聞對應受惠族群、台股標的與驗證指標。</p></div>
     <section class="impact-grid">{render_impact_cards(news)}</section>
@@ -1715,8 +1931,8 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
 
     <div class="section-title" id="methodology"><h2>方法論與資料來源 Methodology</h2><p>所有分數、篩選結果與資料狀態必須可追溯。</p></div>
     <section class="panel">
-      <p><b>資料來源：</b>Yahoo Finance 公開行情、Google News RSS、TWSE 個股三大法人公開資料；MOPS、TPEx、FinMind、台灣主計總處、經濟部、國發會、央行、美國官方總經資料為 P1/P2 接入項目。</p>
-      <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
+      <p><b>資料來源：</b>Yahoo Finance 公開行情、Google News RSS、TWSE BFI82U 三大法人買賣金額、TWSE MI_INDEX 產業指數、TWSE 個股三大法人公開資料；MOPS、TPEx、FinMind、台灣主計總處、經濟部、國發會、央行、美國官方總經資料為 P1/P2 接入項目。</p>
+      <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>capital_flow.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
       <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或待接資料源，不顯示假資料；每個主要區塊保留更新時間與資料狀態；市場環境分數會因必要資料不足而扣分。</p>
       <p><b>風險揭露：</b>本網站僅提供公開資料整理、量化篩選與研究輔助，不構成買賣建議或保證獲利。投資人應自行評估風險。</p>
     </section>

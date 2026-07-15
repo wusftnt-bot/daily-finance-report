@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import csv
 import html
+import io
 import json
 import os
 import re
@@ -776,6 +777,11 @@ def parse_number(value: object) -> float | None:
         return None
 
 
+def parse_int(value: object) -> int | None:
+    number = parse_number(value)
+    return int(number) if number is not None else None
+
+
 def format_ntd_billion(value: object) -> str:
     if not isinstance(value, (int, float)):
         return "待更新"
@@ -804,6 +810,19 @@ def fetch_twse_csv(path: str, params: dict[str, str], timeout: int = 15) -> str:
     request = urllib.request.Request(url, headers={"User-Agent": "daily-finance-report"})
     with urllib.request.urlopen(request, timeout=timeout) as response:
         return decode_twse_text(response.read())
+
+
+def fetch_text_url(url: str, timeout: int = 15, user_agent: str = "daily-finance-report") -> str:
+    request = urllib.request.Request(url, headers={"User-Agent": user_agent})
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        raw = response.read()
+    return decode_twse_text(raw)
+
+
+def fetch_json_url(url: str, timeout: int = 15) -> dict[str, object]:
+    request = urllib.request.Request(url, headers={"User-Agent": "daily-finance-report"})
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        return json.loads(response.read().decode("utf-8-sig"))
 
 
 def clean_ticker(value: object) -> str:
@@ -1066,6 +1085,168 @@ def fetch_taiwan_capital_flow(today: dt.date) -> dict[str, object]:
         "dealer_net": None,
         "total_net": None,
         "records": [],
+    }
+
+
+def html_cells(row_html: str) -> list[str]:
+    cells = re.findall(r"<t[dh][^>]*>([\s\S]*?)</t[dh]>", row_html, flags=re.I)
+    cleaned = []
+    for cell in cells:
+        text = re.sub(r"<[^>]+>", "", cell)
+        cleaned.append(clean_text(html.unescape(text)))
+    return cleaned
+
+
+def fetch_taifex_futures_foreign_position(day: dt.date) -> dict[str, object] | None:
+    params = urllib.parse.urlencode(
+        {
+            "queryType": "1",
+            "doQuery": "1",
+            "dateaddcnt": "",
+            "queryDate": day.strftime("%Y/%m/%d"),
+            "commodityId": "TXF",
+        }
+    )
+    url = f"https://www.taifex.com.tw/cht/3/futContractsDate?{params}"
+    text = fetch_text_url(url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+    current_product = ""
+    for row_html in re.findall(r"<tr[\s\S]*?</tr>", text, flags=re.I):
+        cells = html_cells(row_html)
+        if not cells:
+            continue
+        if "臺股期貨" in cells or "台股期貨" in cells:
+            current_product = "TXF"
+        identity_index = 2 if len(cells) >= 15 else 0
+        identity = cells[identity_index] if identity_index < len(cells) else ""
+        if current_product != "TXF" or identity != "外資":
+            continue
+        values = cells[identity_index + 1 :]
+        if len(values) < 12:
+            continue
+        return {
+            "date": day.isoformat(),
+            "contract": "TXF",
+            "investor": "foreign",
+            "trading_long_lots": parse_int(values[0]),
+            "trading_short_lots": parse_int(values[2]),
+            "trading_net_lots": parse_int(values[4]),
+            "open_interest_long_lots": parse_int(values[6]),
+            "open_interest_short_lots": parse_int(values[8]),
+            "open_interest_net_lots": parse_int(values[10]),
+            "source_url": url,
+        }
+    return None
+
+
+def fetch_taifex_put_call_ratio(day: dt.date) -> dict[str, object] | None:
+    params = urllib.parse.urlencode({"queryStartDate": day.strftime("%Y/%m/%d"), "queryEndDate": day.strftime("%Y/%m/%d")})
+    url = f"https://www.taifex.com.tw/cht/3/pcRatio?{params}"
+    text = fetch_text_url(url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+    for row_html in re.findall(r"<tr[\s\S]*?</tr>", text, flags=re.I):
+        cells = html_cells(row_html)
+        if len(cells) < 7 or not re.match(r"\d{4}/\d{1,2}/\d{1,2}", cells[0]):
+            continue
+        return {
+            "date": day.isoformat(),
+            "put_volume": parse_int(cells[1]),
+            "call_volume": parse_int(cells[2]),
+            "put_call_volume_ratio": parse_number(cells[3]),
+            "put_open_interest": parse_int(cells[4]),
+            "call_open_interest": parse_int(cells[5]),
+            "put_call_open_interest_ratio": parse_number(cells[6]),
+            "source_url": url,
+        }
+    return None
+
+
+def fetch_derivatives_flow(today: dt.date) -> dict[str, object]:
+    for offset in range(0, 10):
+        day = today - dt.timedelta(days=offset)
+        try:
+            futures = fetch_taifex_futures_foreign_position(day)
+            put_call = fetch_taifex_put_call_ratio(day)
+        except Exception as exc:
+            print(f"TAIFEX derivatives fallback for {day:%Y-%m-%d}: {exc}")
+            continue
+        records = []
+        if futures:
+            records.append({"dataset": "foreign_taiex_futures_net_position", **futures})
+        if put_call:
+            records.append({"dataset": "txo_put_call_ratio", **put_call})
+        if records:
+            return {
+                "status": "ok" if futures and put_call else "partial",
+                "source": "TAIFEX",
+                "date": day.isoformat(),
+                "records": records,
+            }
+    return {"status": "failed", "source": "TAIFEX", "date": None, "records": []}
+
+
+def finmind_dataset(dataset: str, *, data_id: str | None = None, start_date: str | None = None, timeout: int = 18) -> list[dict[str, object]]:
+    params = {"dataset": dataset}
+    if data_id:
+        params["data_id"] = data_id
+    if start_date:
+        params["start_date"] = start_date
+    url = "https://api.finmindtrade.com/api/v4/data?" + urllib.parse.urlencode(params)
+    data = fetch_json_url(url, timeout=timeout)
+    if data.get("status") != 200:
+        raise RuntimeError(f"FinMind {dataset} returned {data.get('status')}: {data.get('msg')}")
+    rows = data.get("data") or []
+    return rows if isinstance(rows, list) else []
+
+
+def fetch_market_breadth(today: dt.date, tickers: list[str]) -> dict[str, object]:
+    price_dataset = latest_twse_price_momentum_rows(today)
+    price_records = price_dataset.get("records") if isinstance(price_dataset, dict) else []
+    if not isinstance(price_records, list):
+        price_records = []
+    advancing = sum(1 for row in price_records if float(row.get("change_pct") or 0) > 0)
+    declining = sum(1 for row in price_records if float(row.get("change_pct") or 0) < 0)
+    unchanged = sum(1 for row in price_records if float(row.get("change_pct") or 0) == 0)
+    margin_records = []
+    start_date = (today - dt.timedelta(days=20)).isoformat()
+    for ticker in tickers:
+        try:
+            rows = finmind_dataset("TaiwanStockMarginPurchaseShortSale", data_id=ticker, start_date=start_date)
+        except Exception as exc:
+            print(f"FinMind margin fallback for {ticker}: {exc}")
+            continue
+        if not rows:
+            continue
+        latest = max(rows, key=lambda item: str(item.get("date", "")))
+        margin_records.append(
+            {
+                "ticker": ticker,
+                "date": latest.get("date"),
+                "margin_purchase_balance": latest.get("MarginPurchaseTodayBalance"),
+                "margin_purchase_change": (latest.get("MarginPurchaseTodayBalance") or 0) - (latest.get("MarginPurchaseYesterdayBalance") or 0),
+                "short_sale_balance": latest.get("ShortSaleTodayBalance"),
+                "short_sale_change": (latest.get("ShortSaleTodayBalance") or 0) - (latest.get("ShortSaleYesterdayBalance") or 0),
+                "source": "FinMind TaiwanStockMarginPurchaseShortSale",
+            }
+        )
+    status = "ok" if price_dataset.get("status") == "ok" and margin_records else "partial" if price_records or margin_records else "failed"
+    return {
+        "status": status,
+        "source": "TWSE MI_INDEX / FinMind",
+        "date": price_dataset.get("date"),
+        "breadth": {
+            "listed_stock_count": len(price_records),
+            "advancing": advancing,
+            "declining": declining,
+            "unchanged": unchanged,
+            "advance_decline_ratio": round(advancing / declining, 2) if declining else None,
+            "new_20d_high": None,
+            "new_20d_low": None,
+            "new_52w_high": None,
+            "new_52w_low": None,
+            "new_high_low_status": "not_connected",
+        },
+        "margin_records": margin_records,
+        "securities_lending": {"status": "not_connected", "source": "TWSE / TPEx"},
+        "records": price_records[:30],
     }
 
 
@@ -1724,6 +1905,89 @@ def render_capital_flow_summary(candidates: list[dict[str, object]], snapshot: l
     )
 
 
+def format_plain_number(value: object, suffix: str = "") -> str:
+    if isinstance(value, int):
+        return f"{value:,}{suffix}"
+    if isinstance(value, float):
+        return f"{value:,.2f}{suffix}"
+    return "待接資料源"
+
+
+def render_derivatives_and_breadth(derivatives_flow: dict[str, object], market_breadth: dict[str, object]) -> str:
+    futures = next((row for row in derivatives_flow.get("records", []) if row.get("dataset") == "foreign_taiex_futures_net_position"), {})
+    put_call = next((row for row in derivatives_flow.get("records", []) if row.get("dataset") == "txo_put_call_ratio"), {})
+    breadth = market_breadth.get("breadth") if isinstance(market_breadth.get("breadth"), dict) else {}
+    rows = [
+        ("外資台指期淨部位", format_plain_number(futures.get("open_interest_net_lots"), " 口"), f"TAIFEX {derivatives_flow.get('date') or '資料更新失敗'}"),
+        ("TXO Put/Call Ratio", format_plain_number(put_call.get("put_call_volume_ratio"), "%"), "成交量 Put/Call；>100 代表賣權成交量高於買權"),
+        ("上市上漲/下跌家數", f"{format_plain_number(breadth.get('advancing'))} / {format_plain_number(breadth.get('declining'))}", f"A/D Ratio {format_plain_number(breadth.get('advance_decline_ratio'))}"),
+        ("核心股融資融券", f"{len(market_breadth.get('margin_records', []))} 檔已更新", "FinMind 公開融資融券資料；借券/新高新低仍分階段接入"),
+    ]
+    return "\n".join(
+        f"""
+        <article class="capital-card">
+          <span>{html.escape(title)}</span>
+          <strong>{html.escape(value)}</strong>
+          <p>{html.escape(note)}</p>
+        </article>
+        """
+        for title, value, note in rows
+    )
+
+
+def render_macro_table(macro_indicators: dict[str, object], prefix: str) -> str:
+    records = [row for row in macro_indicators.get("records", []) if str(row.get("category", "")).startswith(prefix)]
+    if not records:
+        return "<p>待接資料源</p>"
+    body = []
+    for row in records:
+        body.append(
+            f"""
+            <tr>
+              <td>{html.escape(str(row.get('name')))}</td>
+              <td>{html.escape(str(row.get('status')))}</td>
+              <td>{html.escape(format_plain_number(row.get('actual')))}</td>
+              <td>{html.escape(str(row.get('date') or '待接資料源'))}</td>
+              <td>{html.escape(format_plain_number(row.get('mom_pct'), '%'))}</td>
+              <td>{html.escape(format_plain_number(row.get('yoy_pct'), '%'))}</td>
+              <td>{html.escape(str(row.get('source')))}</td>
+            </tr>
+            """
+        )
+    return f"""
+    <table>
+      <thead><tr><th>指標</th><th>狀態</th><th>最新值</th><th>日期</th><th>MoM</th><th>YoY</th><th>來源</th></tr></thead>
+      <tbody>{''.join(body)}</tbody>
+    </table>
+    """
+
+
+def render_fundamentals_table(fundamentals: dict[str, object]) -> str:
+    rows = []
+    for row in fundamentals.get("records", []):
+        rows.append(
+            f"""
+            <tr>
+              <td>{html.escape(str(row.get('ticker')))} {html.escape(str(row.get('name')))}</td>
+              <td>{html.escape(str(row.get('status')))}</td>
+              <td>{html.escape(format_plain_number(row.get('latest_month_revenue')))}</td>
+              <td>{html.escape(str(row.get('latest_quarter') or '待接資料源'))}</td>
+              <td>{html.escape(format_plain_number(row.get('eps')))}</td>
+              <td>{html.escape(format_plain_number(row.get('gross_margin_pct'), '%'))}</td>
+              <td>{html.escape(format_plain_number(row.get('roe_pct_annualized'), '%'))}</td>
+              <td>{html.escape(format_plain_number(row.get('inventory')))}</td>
+              <td>{html.escape(format_plain_number(row.get('accounts_receivable')))}</td>
+            </tr>
+            """
+        )
+    return f"""
+    <table>
+      <thead><tr><th>股票</th><th>狀態</th><th>月營收</th><th>季度</th><th>EPS</th><th>毛利率</th><th>ROE</th><th>存貨</th><th>應收帳款</th></tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table>
+    """
+
+
 def render_candidate_table(candidates: list[dict[str, object]]) -> str:
     if not candidates:
         return """
@@ -1898,6 +2162,159 @@ def serializable_snapshot(snapshot: list[dict[str, object]]) -> list[dict[str, o
     ]
 
 
+FRED_SERIES = {
+    "CPIAUCSL": {"name": "US CPI", "category": "US inflation", "unit": "index"},
+    "PCEPI": {"name": "US PCE Price Index", "category": "US inflation", "unit": "index"},
+    "PAYEMS": {"name": "US Nonfarm Payrolls", "category": "US employment", "unit": "thousand persons"},
+    "RSAFS": {"name": "US Retail Sales", "category": "US demand", "unit": "million USD"},
+    "FEDFUNDS": {"name": "Fed Funds Rate", "category": "US rates", "unit": "%"},
+    "DGS2": {"name": "US 2Y Treasury Yield", "category": "US rates", "unit": "%"},
+    "DGS10": {"name": "US 10Y Treasury Yield", "category": "US rates", "unit": "%"},
+}
+
+
+def fetch_fred_series(series_id: str) -> dict[str, object]:
+    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={urllib.parse.quote(series_id)}"
+    text = fetch_text_url(url, timeout=20)
+    reader = csv.DictReader(io.StringIO(text))
+    rows = []
+    for row in reader:
+        date = row.get("observation_date")
+        raw_value = row.get(series_id)
+        if not date or raw_value in (None, ".", ""):
+            continue
+        value = parse_number(raw_value)
+        if value is None:
+            continue
+        rows.append({"date": date, "value": value})
+    if not rows:
+        raise RuntimeError(f"FRED {series_id} has no numeric observations")
+    latest = rows[-1]
+    previous = rows[-2] if len(rows) >= 2 else None
+    yoy = None
+    if len(rows) >= 13:
+        prior_year = rows[-13]
+        if prior_year["value"]:
+            yoy = (latest["value"] / prior_year["value"] - 1) * 100
+    mom = None
+    if previous and previous["value"]:
+        mom = (latest["value"] / previous["value"] - 1) * 100
+    meta = FRED_SERIES.get(series_id, {})
+    return {
+        "series_id": series_id,
+        "name": meta.get("name", series_id),
+        "category": meta.get("category", "US macro"),
+        "date": latest["date"],
+        "actual": latest["value"],
+        "previous": previous["value"] if previous else None,
+        "mom_pct": round(mom, 2) if mom is not None else None,
+        "yoy_pct": round(yoy, 2) if yoy is not None else None,
+        "forecast": None,
+        "surprise": None,
+        "unit": meta.get("unit"),
+        "source": "FRED",
+        "status": "ok",
+    }
+
+
+def fetch_macro_indicators(today: dt.date) -> dict[str, object]:
+    records = []
+    for series_id in FRED_SERIES:
+        try:
+            records.append(fetch_fred_series(series_id))
+        except Exception as exc:
+            print(f"FRED fallback for {series_id}: {exc}")
+            records.append(
+                {
+                    "series_id": series_id,
+                    "name": FRED_SERIES[series_id]["name"],
+                    "category": FRED_SERIES[series_id]["category"],
+                    "status": "failed",
+                    "source": "FRED",
+                }
+            )
+    records.extend(
+        [
+            {"series_id": "ISM_MANUFACTURING", "name": "ISM Manufacturing PMI", "category": "US demand", "status": "not_connected", "source": "ISM / FRED"},
+            {"series_id": "TW_EXPORTS", "name": "Taiwan exports", "category": "Taiwan macro", "status": "not_connected", "source": "MOEA"},
+            {"series_id": "TW_EXPORT_ORDERS", "name": "Taiwan export orders", "category": "Taiwan macro", "status": "not_connected", "source": "MOEA"},
+            {"series_id": "TW_INDUSTRIAL_PRODUCTION", "name": "Taiwan industrial production", "category": "Taiwan macro", "status": "not_connected", "source": "MOEA"},
+            {"series_id": "TW_NDC_SIGNAL", "name": "Taiwan NDC business cycle signal", "category": "Taiwan macro", "status": "not_connected", "source": "NDC"},
+            {"series_id": "TW_M1B_M2", "name": "Taiwan M1B / M2", "category": "Taiwan liquidity", "status": "not_connected", "source": "CBC"},
+        ]
+    )
+    ok_count = sum(1 for row in records if row.get("status") == "ok")
+    return {
+        "status": "ok" if ok_count >= len(FRED_SERIES) else "partial" if ok_count else "failed",
+        "source": "FRED / ISM / MOEA / NDC / CBC",
+        "date": today.isoformat(),
+        "records": records,
+    }
+
+
+def latest_record(rows: list[dict[str, object]]) -> dict[str, object] | None:
+    if not rows:
+        return None
+    return max(rows, key=lambda item: str(item.get("date", "")))
+
+
+def value_by_type(rows: list[dict[str, object]], type_name: str) -> float | None:
+    for row in rows:
+        if row.get("type") == type_name:
+            value = row.get("value")
+            return float(value) if isinstance(value, (int, float)) else parse_number(value)
+    return None
+
+
+def fetch_company_fundamentals(today: dt.date, stocks: list[dict[str, object]]) -> dict[str, object]:
+    start_date = (today - dt.timedelta(days=550)).isoformat()
+    records = []
+    for stock in stocks:
+        ticker = str(stock.get("ticker"))
+        try:
+            revenue_rows = finmind_dataset("TaiwanStockMonthRevenue", data_id=ticker, start_date=start_date)
+            statement_rows = finmind_dataset("TaiwanStockFinancialStatements", data_id=ticker, start_date=start_date)
+            balance_rows = finmind_dataset("TaiwanStockBalanceSheet", data_id=ticker, start_date=start_date)
+        except Exception as exc:
+            print(f"FinMind fundamentals fallback for {ticker}: {exc}")
+            records.append({"ticker": ticker, "name": stock.get("name"), "status": "failed", "source": "FinMind", "error": str(exc)[:120]})
+            continue
+        latest_revenue = latest_record(revenue_rows)
+        latest_statement_date = max((str(row.get("date", "")) for row in statement_rows), default="")
+        latest_balance_date = max((str(row.get("date", "")) for row in balance_rows), default="")
+        statement_latest = [row for row in statement_rows if str(row.get("date", "")) == latest_statement_date]
+        balance_latest = [row for row in balance_rows if str(row.get("date", "")) == latest_balance_date]
+        revenue = value_by_type(statement_latest, "Revenue")
+        gross_profit = value_by_type(statement_latest, "GrossProfit")
+        operating_income = value_by_type(statement_latest, "OperatingIncome")
+        income_after_tax = value_by_type(statement_latest, "IncomeAfterTaxes")
+        equity = value_by_type(balance_latest, "Equity") or value_by_type(balance_latest, "EquityAttributableToOwnersOfParent")
+        records.append(
+            {
+                "ticker": ticker,
+                "name": stock.get("name"),
+                "status": "ok",
+                "source": "FinMind",
+                "latest_month_revenue_date": latest_revenue.get("date") if latest_revenue else None,
+                "latest_month_revenue": latest_revenue.get("revenue") if latest_revenue else None,
+                "latest_quarter": latest_statement_date or None,
+                "eps": value_by_type(statement_latest, "EPS"),
+                "gross_margin_pct": round(gross_profit / revenue * 100, 2) if revenue and gross_profit is not None else None,
+                "operating_margin_pct": round(operating_income / revenue * 100, 2) if revenue and operating_income is not None else None,
+                "roe_pct_annualized": round(income_after_tax / equity * 4 * 100, 2) if income_after_tax is not None and equity else None,
+                "inventory": value_by_type(balance_latest, "Inventories"),
+                "accounts_receivable": value_by_type(balance_latest, "AccountsReceivableNet"),
+            }
+        )
+    ok_count = sum(1 for row in records if row.get("status") == "ok")
+    return {
+        "status": "ok" if ok_count == len(stocks) else "partial" if ok_count else "failed",
+        "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
+        "date": today.isoformat(),
+        "records": records,
+    }
+
+
 def build_processed_payloads(
     *,
     today: dt.date,
@@ -1907,6 +2324,10 @@ def build_processed_payloads(
     capital_flow: dict[str, object],
     sector_rotation: dict[str, object],
     dynamic_stock_pool: dict[str, object],
+    derivatives_flow: dict[str, object],
+    market_breadth: dict[str, object],
+    macro_indicators: dict[str, object],
+    fundamentals: dict[str, object],
     candidates: list[dict[str, object]],
     events: list[dict[str, str]],
     analysis: dict,
@@ -1974,21 +2395,21 @@ def build_processed_payloads(
         },
         {
             "dataset": "derivatives_flow",
-            "status": "not_connected",
-            "source": "TAIFEX",
-            "last_successful_update": None,
+            "status": derivatives_flow.get("status", "failed"),
+            "source": derivatives_flow.get("source", "TAIFEX"),
+            "last_successful_update": generated_at if derivatives_flow.get("status") in ("ok", "partial") else None,
         },
         {
             "dataset": "market_breadth_margin_lending",
-            "status": "not_connected",
-            "source": "TWSE / TPEx",
-            "last_successful_update": None,
+            "status": market_breadth.get("status", "failed"),
+            "source": market_breadth.get("source", "TWSE / TPEx"),
+            "last_successful_update": generated_at if market_breadth.get("status") in ("ok", "partial") else None,
         },
         {
             "dataset": "us_macro_actual_forecast",
-            "status": "not_connected",
-            "source": "BLS / BEA / Census / ISM / FRED / Federal Reserve",
-            "last_successful_update": None,
+            "status": macro_indicators.get("status", "failed"),
+            "source": macro_indicators.get("source", "FRED / official macro sources"),
+            "last_successful_update": generated_at if macro_indicators.get("status") in ("ok", "partial") else None,
         },
         {
             "dataset": "taiwan_macro_actual_forecast",
@@ -1998,9 +2419,9 @@ def build_processed_payloads(
         },
         {
             "dataset": "company_fundamentals",
-            "status": "not_connected",
-            "source": "MOPS / TWSE / TPEx / FinMind",
-            "last_successful_update": None,
+            "status": fundamentals.get("status", "failed"),
+            "source": fundamentals.get("source", "MOPS / TWSE / TPEx / FinMind"),
+            "last_successful_update": generated_at if fundamentals.get("status") in ("ok", "partial") else None,
         },
     ]
     return {
@@ -2010,15 +2431,10 @@ def build_processed_payloads(
         "stock_radar.json": {**base, "source": "Google News RSS / TWSE / Yahoo Finance", "records": stock_rows},
         "economic_calendar.json": {**base, "source": "Manual P0 template; official calendar API pending", "records": events},
         "sector_rotation.json": {**base, "source": "TWSE MI_INDEX", **sector_rotation, "news_axes": analysis.get("axes", [])},
-        "derivatives_flow.json": {**base, "source": "TAIFEX", "status": "not_connected", "records": []},
-        "market_breadth.json": {**base, "source": "TWSE / TPEx", "status": "not_connected", "records": []},
-        "macro_indicators.json": {
-            **base,
-            "source": "BLS / BEA / Census / ISM / FRED / Federal Reserve / DGBAS / MOEA / NDC / CBC",
-            "status": "not_connected",
-            "records": [],
-        },
-        "fundamentals.json": {**base, "source": "MOPS / TWSE / TPEx / FinMind", "status": "not_connected", "records": []},
+        "derivatives_flow.json": {**base, "source": "TAIFEX", **derivatives_flow},
+        "market_breadth.json": {**base, "source": "TWSE / TPEx / FinMind", **market_breadth},
+        "macro_indicators.json": {**base, "source": "FRED / ISM / MOEA / NDC / CBC", **macro_indicators},
+        "fundamentals.json": {**base, "source": "FinMind / MOPS-derived public data", **fundamentals},
         "data_health.json": {**base, "source": "GitHub Actions pipeline", "records": data_health_rows, "news_count": len(news)},
     }
 
@@ -2039,6 +2455,11 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     capital_flow = fetch_taiwan_capital_flow(today)
     sector_rotation = fetch_twse_sector_rotation(today)
     dynamic_candidates, dynamic_stock_pool = dynamic_candidate_pool(today, {str(item["ticker"]) for item in CORE_STOCK_UNIVERSE})
+    core_tickers = [str(item["ticker"]) for item in CORE_STOCK_UNIVERSE]
+    derivatives_flow = fetch_derivatives_flow(today)
+    market_breadth = fetch_market_breadth(today, core_tickers)
+    macro_indicators = fetch_macro_indicators(today)
+    fundamentals = fetch_company_fundamentals(today, CORE_STOCK_UNIVERSE)
     temperature = market_temperature(snapshot)
     environment = market_environment(snapshot, news, capital_flow)
     all_candidates = score_candidates(news, analysis, today, dynamic_candidates)
@@ -2052,6 +2473,10 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
         capital_flow=capital_flow,
         sector_rotation=sector_rotation,
         dynamic_stock_pool=dynamic_stock_pool,
+        derivatives_flow=derivatives_flow,
+        market_breadth=market_breadth,
+        macro_indicators=macro_indicators,
+        fundamentals=fundamentals,
         candidates=candidates,
         events=events,
         analysis=analysis,
@@ -2198,7 +2623,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     </table>
 
     <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>先顯示已接資料與待接資料源，避免用舊資料或假資料冒充即時資料。</p></div>
-    <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot, capital_flow)}</section>
+    <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot, capital_flow)}{render_derivatives_and_breadth(derivatives_flow, market_breadth)}</section>
 
     <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>核心追蹤池僅保留鴻海、富邦金、台積電、台達電；其他標的須由 TWSE T86 動態法人雷達進入候選。</p></div>
     <table>
@@ -2213,11 +2638,14 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     <div class="section-title"><h2>投資影響卡</h2><p>每則重點新聞對應受惠族群、台股標的與驗證指標。</p></div>
     <section class="impact-grid">{render_impact_cards(news)}</section>
 
-    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>本區 P1 會接入 CPI、PCE、非農、ISM、零售銷售、10Y、DXY 的實際值/預期/Surprise。</p></div>
-    <section class="panel"><p>目前首頁已先用 10Y、DXY、Nasdaq、SOX 與 VIX 建立美國總經對台股資金的代理判讀。正式資料源接入後，每筆數據會顯示公布日期、實際值、預期、前值修正、3 個月趨勢與市場反應。</p></section>
+    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>FRED 已接 CPI、PCE、非農、零售銷售、Fed Funds、2Y/10Y；ISM 與市場預期/Surprise 仍保留待接狀態。</p></div>
+    <section class="panel">{render_macro_table(macro_indicators, "US")}</section>
 
-    <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>P1 會接入出口、外銷訂單、工業生產、景氣燈號、M1B/M2、台幣、外資與月營收。</p></div>
-    <section class="panel"><p>目前首頁先以台股、櫃買、美元/台幣、候選股法人籌碼與 AI/電子新聞密度作為台灣景氣與資金代理。未接資料會維持待更新狀態，不用舊資料偽裝即時資料。</p></section>
+    <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>台灣出口、外銷訂單、工業生產、景氣燈號、M1B/M2 已列入資料層契約；待官方端點驗證後逐一接入。</p></div>
+    <section class="panel">{render_macro_table(macro_indicators, "Taiwan")}</section>
+
+    <div class="section-title"><h2>核心股基本面 Company Fundamentals</h2><p>核心追蹤池月營收、EPS、毛利率、ROE、存貨、應收帳款先以 FinMind 公開資料接入；金融股部分財報欄位可能不適用，會顯示待接資料源。</p></div>
+    <section class="panel">{render_fundamentals_table(fundamentals)}</section>
 
     <div class="section-title"><h2>重要新聞清單</h2><p>保留來源連結，避免只留下摘要文字。</p></div>
     <section class="news-list">{render_news_list(news)}</section>

@@ -92,6 +92,13 @@ New data sources must be integrated through the data layer first, not directly h
 - Telegram should read only summary-ready public data and must not be blocked by cosmetic website section-title changes.
 - LINE smart-stock bot data and credentials must stay separate from this public dashboard repository.
 
+Current connected expansion batch:
+
+- `derivatives_flow.json`: TAIFEX foreign TAIEX futures net position and TXO Put/Call Ratio.
+- `market_breadth.json`: TWSE listed-stock advance/decline breadth plus fixed-core-stock margin and short-sale balances through public FinMind data.
+- `macro_indicators.json`: FRED public actuals for US CPI, PCE, nonfarm payrolls, retail sales, Fed Funds, US 2Y, and US 10Y. ISM, official forecast, surprise, and Taiwan macro rows remain explicitly marked `not_connected`.
+- `fundamentals.json`: fixed core pool monthly revenue, EPS, gross margin, ROE, inventory, and receivables through FinMind public datasets. Direct MOPS/TWSE/TPEx validation remains a follow-up item.
+
 ## Development Priorities
 
 P0:

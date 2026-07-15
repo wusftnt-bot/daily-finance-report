@@ -47,10 +47,10 @@ Current P0 files:
 | Stock radar | 4 fixed core names plus dynamic TWSE T86 candidates, public news themes, institutional rows, Yahoo price fallback | Google News RSS / TWSE / Yahoo Finance | connected / partial | no | exclude weak or unverified names |
 | Economic calendar | Near-term high-impact event template | Manual P0 template | partial | no | show `待接資料源` for actual/forecast |
 | Sector news context | News theme classifier | Google News RSS | partial | no | label as qualitative context |
-| TAIFEX derivatives flow | foreign TAIEX futures net position, Put/Call Ratio | TAIFEX | not_connected | no | show `not_connected` |
-| TWSE/TPEx breadth and margin | margin, short sale, securities lending, advance/decline, new highs/lows | TWSE / TPEx | not_connected | no | show `not_connected` |
-| Macro indicators | US/Taiwan actual, forecast, prior, surprise | Official macro sources / FRED | not_connected | maybe FRED optional | show `not_connected` |
-| Company fundamentals | monthly revenue, EPS, margins, ROE, inventory, receivables | MOPS / TWSE / TPEx / FinMind | not_connected | optional FinMind | show `not_connected` |
+| TAIFEX derivatives flow | foreign TAIEX futures net position, TXO Put/Call Ratio | TAIFEX HTML public pages | connected | no | mark failed/partial |
+| TWSE/TPEx breadth and margin | advance/decline, core-stock margin and short-sale balance; lending and new highs/lows pending | TWSE MI_INDEX / FinMind | partial | no | show partial and pending subfields |
+| Macro indicators | US CPI, PCE, payrolls, retail sales, Fed Funds, 2Y/10Y; Taiwan macro pending | FRED / official macro sources | partial | no | show connected rows and not_connected rows |
+| Company fundamentals | monthly revenue, EPS, margins, ROE, inventory, receivables for fixed core pool | FinMind public datasets | connected / partial by ticker | no | show failed ticker rows |
 
 ## P1 Sources
 
@@ -66,11 +66,11 @@ Current P0 files:
 
 These sources are not yet connected and must be added in small, testable batches:
 
-- US macro actual/forecast/surprise: BLS, BEA, Census, FRED, Federal Reserve.
-- Taiwan macro actual/forecast/surprise: DGBAS, MOEA, NDC, CBC.
-- TAIFEX futures foreign net position and options put/call ratio.
-- TWSE/TPEx margin, short sale, securities lending, market breadth, 20-day/52-week new highs and lows.
-- Company fundamentals: MOPS monthly revenue, quarterly EPS, margins, ROE, inventory, receivables.
+- US macro actual/forecast/surprise: FRED actuals are connected; forecast/surprise, ISM direct source, BLS/BEA/Census official release metadata remain pending.
+- Taiwan macro actual/forecast/surprise: DGBAS, MOEA, NDC, CBC remain pending.
+- TAIFEX futures foreign net position and options put/call ratio are connected.
+- TWSE/TPEx market breadth and core-stock margin are connected/partial; securities lending and 20-day/52-week new highs/lows remain pending.
+- Company fundamentals: FinMind monthly revenue, quarterly EPS, margins, ROE, inventory, receivables are connected for the fixed core pool; direct MOPS/TWSE/TPEx source validation remains pending.
 - Sector rotation depth: 5/20/60-day sector returns, sector turnover, institutional flow by sector, revenue growth by sector.
 
 ## Secret Safety Checklist

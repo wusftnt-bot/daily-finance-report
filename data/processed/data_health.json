@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15 17:10:43 Asia/Taipei",
+  "generated_at": "2026-07-15 18:40:06 Asia/Taipei",
   "data_date": "2026-07-15",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -9,36 +9,60 @@
       "dataset": "market_summary",
       "status": "partial",
       "source": "Yahoo Finance",
-      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
+      "last_successful_update": "2026-07-15 18:40:06 Asia/Taipei"
     },
     {
       "dataset": "stock_radar",
       "status": "ok",
       "source": "Google News RSS / TWSE / Yahoo Finance",
-      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
+      "last_successful_update": "2026-07-15 18:40:06 Asia/Taipei"
+    },
+    {
+      "dataset": "dynamic_stock_pool",
+      "status": "failed",
+      "source": "TWSE T86",
+      "last_successful_update": null
     },
     {
       "dataset": "capital_flow",
       "status": "ok",
       "source": "TWSE BFI82U",
-      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
+      "last_successful_update": "2026-07-15 18:40:06 Asia/Taipei"
     },
     {
       "dataset": "sector_rotation",
       "status": "ok",
       "source": "TWSE MI_INDEX",
-      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
+      "last_successful_update": "2026-07-15 18:40:06 Asia/Taipei"
+    },
+    {
+      "dataset": "derivatives_flow",
+      "status": "not_connected",
+      "source": "TAIFEX",
+      "last_successful_update": null
+    },
+    {
+      "dataset": "market_breadth_margin_lending",
+      "status": "not_connected",
+      "source": "TWSE / TPEx",
+      "last_successful_update": null
     },
     {
       "dataset": "us_macro_actual_forecast",
       "status": "not_connected",
-      "source": "BLS / BEA / Federal Reserve / FRED",
+      "source": "BLS / BEA / Census / ISM / FRED / Federal Reserve",
       "last_successful_update": null
     },
     {
       "dataset": "taiwan_macro_actual_forecast",
       "status": "not_connected",
       "source": "DGBAS / MOEA / NDC / CBC / TWSE",
+      "last_successful_update": null
+    },
+    {
+      "dataset": "company_fundamentals",
+      "status": "not_connected",
+      "source": "MOPS / TWSE / TPEx / FinMind",
       "last_successful_update": null
     }
   ],

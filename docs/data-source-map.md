@@ -25,9 +25,14 @@ Current P0 files:
 
 - `data/processed/market_summary.json`
 - `data/processed/capital_flow.json`
+- `data/processed/dynamic_stock_pool.json`
 - `data/processed/stock_radar.json`
 - `data/processed/economic_calendar.json`
 - `data/processed/sector_rotation.json`
+- `data/processed/derivatives_flow.json`
+- `data/processed/market_breadth.json`
+- `data/processed/macro_indicators.json`
+- `data/processed/fundamentals.json`
 - `data/processed/data_health.json`
 
 ## P0 Sources
@@ -37,10 +42,15 @@ Current P0 files:
 | Global markets | S&P 500, Nasdaq, SOX, Dow, Nikkei, TAIEX, OTC, Shanghai, HSCE, Nifty, Bovespa | Yahoo Finance | connected | no | mark row failed |
 | Cross asset | US 10Y, DXY, USD/TWD, USD/JPY, USD/CNY, VIX, gold, WTI, Brent, copper | Yahoo Finance | connected | no | mark row failed |
 | Taiwan capital flow | foreign investors, investment trusts, dealers, total institutional net buy/sell | TWSE BFI82U | connected | no | show failed/partial and keep FX proxy |
+| Dynamic stock pool | full-market institutional buy/sell candidates | TWSE T86 | connected | no | only include names passing institutional thresholds |
 | Sector rotation | TWSE sector index close and daily percentage change | TWSE MI_INDEX | connected | no | fall back to news theme cards |
-| Stock radar | Fixed public research universe, public news themes, TWSE institutional rows, Yahoo price fallback | Google News RSS / TWSE / Yahoo Finance | connected / partial | no | exclude weak or unverified names |
+| Stock radar | 4 fixed core names plus dynamic TWSE T86 candidates, public news themes, institutional rows, Yahoo price fallback | Google News RSS / TWSE / Yahoo Finance | connected / partial | no | exclude weak or unverified names |
 | Economic calendar | Near-term high-impact event template | Manual P0 template | partial | no | show `待接資料源` for actual/forecast |
 | Sector news context | News theme classifier | Google News RSS | partial | no | label as qualitative context |
+| TAIFEX derivatives flow | foreign TAIEX futures net position, Put/Call Ratio | TAIFEX | not_connected | no | show `not_connected` |
+| TWSE/TPEx breadth and margin | margin, short sale, securities lending, advance/decline, new highs/lows | TWSE / TPEx | not_connected | no | show `not_connected` |
+| Macro indicators | US/Taiwan actual, forecast, prior, surprise | Official macro sources / FRED | not_connected | maybe FRED optional | show `not_connected` |
+| Company fundamentals | monthly revenue, EPS, margins, ROE, inventory, receivables | MOPS / TWSE / TPEx / FinMind | not_connected | optional FinMind | show `not_connected` |
 
 ## P1 Sources
 

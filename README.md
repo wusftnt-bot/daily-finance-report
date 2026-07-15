@@ -45,7 +45,8 @@ The dashboard candidate table is an independent public-market watchlist, not the
 
 Current selection and scoring inputs:
 
-- Candidate universe: a fixed research watchlist in `scripts/publish_daily_finance_report.py`, focused on Taiwan large-cap technology, AI supply chain, semiconductor, and rate-sensitive names.
+- Core candidate universe: only `2317 鴻海`, `2881 富邦金`, `2330 台積電`, and `2308 台達電` remain as fixed core-tracking names.
+- Dynamic candidate universe: additional names must come from public-market data, currently TWSE T86 institutional flow, and must pass the public priority thresholds before display.
 - Theme score: daily finance/news themes such as AI, semiconductors, earnings, rates, Taiwan market, FX, and geopolitics.
 - Institutional flow score: TWSE public three-major-institution data when available, including foreign investors, investment trusts, dealers, latest daily total, and recent 5-trading-day trend.
 - Technical score: public Yahoo Finance price movement fallback.
@@ -85,7 +86,7 @@ New data sources must be integrated through the data layer first, not directly h
 
 - Source map: `docs/data-source-map.md`.
 - Processed data path: `data/processed/*.json`.
-- Current P0 processed files: `market_summary.json`, `capital_flow.json`, `stock_radar.json`, `economic_calendar.json`, `sector_rotation.json`, and `data_health.json`.
+- Current P0 processed files: `market_summary.json`, `capital_flow.json`, `dynamic_stock_pool.json`, `stock_radar.json`, `economic_calendar.json`, `sector_rotation.json`, `derivatives_flow.json`, `market_breadth.json`, `macro_indicators.json`, `fundamentals.json`, and `data_health.json`.
 - Required fields: `generated_at`, `data_date`, `timezone`, `source`, `status`, and `records` or an equivalent named object.
 - If a source fails, show `資料更新失敗`, `待接資料源`, or `not_connected`; do not show stale data as current.
 - Telegram should read only summary-ready public data and must not be blocked by cosmetic website section-title changes.

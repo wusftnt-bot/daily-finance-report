@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import csv
 import html
 import json
 import os
@@ -694,18 +695,14 @@ MAJOR_EVENT_TEMPLATES = {
 }
 
 
-STOCK_UNIVERSE = [
+CORE_STOCK_UNIVERSE = [
     {"ticker": "2330", "name": "台積電", "themes": ("ai", "taiwan"), "catalyst": "AI/HPC 需求、先進製程與法說展望", "risk": "估值偏高、外資調節或先進製程指引下修"},
     {"ticker": "2317", "name": "鴻海", "themes": ("ai", "earnings"), "catalyst": "AI 伺服器出貨與集團電動車/雲端布局", "risk": "毛利率改善速度與大型客戶訂單節奏"},
-    {"ticker": "2382", "name": "廣達", "themes": ("ai", "earnings"), "catalyst": "AI 伺服器與資料中心資本支出", "risk": "題材擁擠、出貨延後或毛利率不如預期"},
-    {"ticker": "3231", "name": "緯創", "themes": ("ai", "earnings"), "catalyst": "AI 伺服器訂單與營收成長", "risk": "短線漲幅過大、營收未能連續驗證"},
-    {"ticker": "6669", "name": "緯穎", "themes": ("ai", "earnings"), "catalyst": "雲端客戶拉貨與高階伺服器需求", "risk": "客戶集中與估值敏感度"},
     {"ticker": "2308", "name": "台達電", "themes": ("ai", "energy"), "catalyst": "電源、散熱、資料中心能源管理", "risk": "匯率、毛利率與資本支出循環"},
-    {"ticker": "3661", "name": "世芯-KY", "themes": ("ai", "earnings"), "catalyst": "ASIC 與客製化 AI 晶片需求", "risk": "單一客戶與高本益比修正"},
-    {"ticker": "2454", "name": "聯發科", "themes": ("ai", "earnings"), "catalyst": "手機復甦、邊緣 AI 與高階晶片", "risk": "中國手機需求與競爭壓力"},
-    {"ticker": "6488", "name": "環球晶", "themes": ("taiwan", "earnings"), "catalyst": "半導體景氣復甦與矽晶圓報價", "risk": "庫存去化速度與資本支出保守"},
     {"ticker": "2881", "name": "富邦金", "themes": ("rates", "taiwan"), "catalyst": "利率環境、股債評價回升與金融股防禦性", "risk": "殖利率急升、匯損或信用風險"},
 ]
+
+STOCK_UNIVERSE = CORE_STOCK_UNIVERSE
 
 
 PRIORITY_CANDIDATE_MIN_SCORE = 82
@@ -791,6 +788,122 @@ def fetch_twse_json(path: str, params: dict[str, str], timeout: int = 12) -> dic
     request = urllib.request.Request(url, headers={"User-Agent": "daily-finance-report"})
     with urllib.request.urlopen(request, timeout=timeout) as response:
         return json.loads(response.read().decode("utf-8-sig"))
+
+
+def decode_twse_text(raw: bytes) -> str:
+    for encoding in ("utf-8-sig", "cp950", "big5"):
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return raw.decode("utf-8", errors="replace")
+
+
+def fetch_twse_csv(path: str, params: dict[str, str], timeout: int = 15) -> str:
+    url = f"https://www.twse.com.tw/rwd/zh/{path}?" + urllib.parse.urlencode({**params, "response": "csv"})
+    request = urllib.request.Request(url, headers={"User-Agent": "daily-finance-report"})
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        return decode_twse_text(response.read())
+
+
+def clean_ticker(value: object) -> str:
+    text = clean_text(value).strip().strip('="')
+    return re.sub(r"[^0-9A-Z]", "", text)
+
+
+def latest_twse_t86_rows(today: dt.date) -> dict[str, object]:
+    for offset in range(0, 10):
+        day = today - dt.timedelta(days=offset)
+        try:
+            text = fetch_twse_csv(
+                "fund/T86",
+                {"date": day.strftime("%Y%m%d"), "selectType": "ALLBUT0999"},
+            )
+        except Exception as exc:
+            print(f"TWSE T86 fallback for {day:%Y-%m-%d}: {exc}")
+            continue
+        records: list[dict[str, object]] = []
+        for row in csv.reader(text.splitlines()):
+            clean = [cell.strip().strip('="') for cell in row]
+            if len(clean) <= 18:
+                continue
+            ticker = clean_ticker(clean[0])
+            if not re.fullmatch(r"\d{4}", ticker) or ticker.startswith("0"):
+                continue
+            name = clean_text(clean[1])
+            foreign = telegram.lots(clean[4])
+            investment = telegram.lots(clean[10])
+            dealer = telegram.lots(clean[11])
+            total = telegram.lots(clean[18])
+            records.append(
+                {
+                    "ticker": ticker,
+                    "name": name,
+                    "foreign_lots": foreign,
+                    "investment_lots": investment,
+                    "dealer_lots": dealer,
+                    "total_lots": total,
+                    "date": day.isoformat(),
+                    "source": "TWSE T86",
+                }
+            )
+        if records:
+            return {"status": "ok", "date": day.isoformat(), "source": "TWSE T86", "records": records}
+    return {"status": "failed", "date": None, "source": "TWSE T86", "records": []}
+
+
+def dynamic_candidate_pool(today: dt.date, core_tickers: set[str], limit: int = 10) -> tuple[list[dict[str, object]], dict[str, object]]:
+    dataset = latest_twse_t86_rows(today)
+    records = dataset.get("records") if isinstance(dataset, dict) else []
+    if not isinstance(records, list):
+        records = []
+    selected: list[dict[str, object]] = []
+    for row in records:
+        ticker = str(row.get("ticker", ""))
+        if ticker in core_tickers:
+            continue
+        foreign = int(row.get("foreign_lots") or 0)
+        investment = int(row.get("investment_lots") or 0)
+        total = int(row.get("total_lots") or 0)
+        if total < 2500 and foreign < 2000 and investment < 800:
+            continue
+        if total <= 0:
+            continue
+        momentum = total + max(foreign, 0) + max(investment, 0) * 2
+        selected.append(
+            {
+                "ticker": ticker,
+                "name": row.get("name") or ticker,
+                "themes": ("taiwan", "markets"),
+                "catalyst": f"動態法人雷達：三大法人{total:+,}張、外資{foreign:+,}張、投信{investment:+,}張",
+                "risk": "動態候選須再確認基本面、成交量與是否短線過熱",
+                "candidate_source": "dynamic",
+                "institutional_snapshot": row,
+                "dynamic_momentum": momentum,
+            }
+        )
+    selected.sort(key=lambda item: int(item.get("dynamic_momentum", 0)), reverse=True)
+    top_selected = selected[:limit]
+    return top_selected, {
+        "status": dataset.get("status", "failed"),
+        "date": dataset.get("date"),
+        "source": dataset.get("source", "TWSE T86"),
+        "screened_count": len(records),
+        "qualified_count": len(selected),
+        "records": [
+            {
+                "ticker": item.get("ticker"),
+                "name": item.get("name"),
+                "foreign_lots": (item.get("institutional_snapshot") or {}).get("foreign_lots"),
+                "investment_lots": (item.get("institutional_snapshot") or {}).get("investment_lots"),
+                "dealer_lots": (item.get("institutional_snapshot") or {}).get("dealer_lots"),
+                "total_lots": (item.get("institutional_snapshot") or {}).get("total_lots"),
+                "dynamic_momentum": item.get("dynamic_momentum"),
+                "source": "TWSE T86",
+            }
+            for item in top_selected
+        ],
+    }
 
 
 def fetch_taiwan_capital_flow(today: dt.date) -> dict[str, object]:
@@ -1184,7 +1297,31 @@ def clamp(value: int, low: int, high: int) -> int:
     return max(low, min(high, value))
 
 
-def candidate_institutional_signal(ticker: str, today: dt.date) -> dict[str, object]:
+def candidate_institutional_signal(ticker: str, today: dt.date, prefetched: dict[str, object] | None = None) -> dict[str, object]:
+    if prefetched:
+        latest_date = dt.date.fromisoformat(str(prefetched.get("date") or today.isoformat()))
+        foreign = int(prefetched.get("foreign_lots") or 0)
+        investment = int(prefetched.get("investment_lots") or 0)
+        dealer = int(prefetched.get("dealer_lots") or 0)
+        total = int(prefetched.get("total_lots") or 0)
+        score = 15
+        score += 5 if total > 0 else -6 if total < 0 else 0
+        score += 5 if foreign > 0 else -8 if foreign <= -10000 else -4 if foreign < 0 else 0
+        score += 5 if investment > 0 else -3 if investment < 0 else 0
+        warning = "法人偏買，題材較有延續條件"
+        if foreign <= -10000 or total <= -10000:
+            warning = "外資/法人明顯賣超，降分並避免追價"
+        elif total < 0:
+            warning = "法人偏賣，需等籌碼止穩"
+        return {
+            "score": clamp(score, 0, 30),
+            "text": (
+                f"{latest_date:%m/%d} 外資{foreign:+,}張、投信{investment:+,}張、"
+                f"自營商{dealer:+,}張；三大法人{total:+,}張"
+            ),
+            "warning": warning,
+            "latest_total": total,
+        }
     try:
         rows = telegram.latest_institutional_rows(today, ticker, 5)
     except Exception as exc:
@@ -1234,21 +1371,31 @@ def candidate_technical_signal(ticker: str) -> dict[str, object]:
     return {"score": clamp(score, 0, 20), "text": f"近一日股價變化 {change:+.2f}%"}
 
 
-def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date) -> list[dict[str, object]]:
+def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date, dynamic_candidates: list[dict[str, object]] | None = None) -> list[dict[str, object]]:
     theme_strength = Counter(item["theme"] for item in news)
     source_count = len({item["source"] for item in news}) or 1
     rows = []
     all_text = " ".join(f"{item['headline']} {item['original_headline']}" for item in news).lower()
-    for stock in STOCK_UNIVERSE:
+    candidate_pool = [*CORE_STOCK_UNIVERSE, *(dynamic_candidates or [])]
+    seen: set[str] = set()
+    for stock in candidate_pool:
+        ticker = str(stock["ticker"])
+        if ticker in seen:
+            continue
+        seen.add(ticker)
+        is_dynamic = stock.get("candidate_source") == "dynamic"
         theme_score = min(30, sum(theme_strength[theme] for theme in stock["themes"]) * 5)
         mention_bonus = 10 if stock["name"].lower() in all_text or stock["ticker"] in all_text else 0
         theme_component = min(35, theme_score + mention_bonus)
-        institutional = candidate_institutional_signal(str(stock["ticker"]), today)
+        if is_dynamic:
+            theme_component = max(theme_component, 18)
+        institutional = candidate_institutional_signal(ticker, today, stock.get("institutional_snapshot") if isinstance(stock.get("institutional_snapshot"), dict) else None)
         technical = candidate_technical_signal(str(stock["ticker"]))
         quality = min(10, source_count)
         data_score = 10 if institutional["latest_total"] is not None else 4
+        dynamic_bonus = 6 if is_dynamic else 0
         score = clamp(
-            int(theme_component) + int(institutional["score"]) + int(technical["score"]) + quality + data_score,
+            int(theme_component) + int(institutional["score"]) + int(technical["score"]) + quality + data_score + dynamic_bonus,
             0,
             95,
         )
@@ -1275,6 +1422,7 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date)
                 "score": score,
                 "bucket": bucket,
                 "action": action,
+                "candidate_source": "動態法人雷達" if is_dynamic else "核心追蹤池",
                 "theme_score": theme_component,
                 "flow_score": institutional["score"],
                 "technical_score": technical["score"],
@@ -1285,7 +1433,7 @@ def score_candidates(news: list[dict[str, str]], analysis: dict, today: dt.date)
                 "inclusion_reason": (
                     f"題材/基本面代理 {theme_component}/35、法人籌碼 {institutional['score']}/30、"
                     f"技術 {technical['score']}/20、資料品質 {data_score}/10；"
-                    f"{institutional['warning']}。"
+                    f"{institutional['warning']}。來源：{'動態法人雷達' if is_dynamic else '核心追蹤池'}。"
                 ),
                 "change_history": f"{today:%Y-%m-%d}：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
                 "data_source": "Google News RSS / TWSE 三大法人公開資料 / Yahoo Finance",
@@ -1480,7 +1628,7 @@ def render_candidate_table(candidates: list[dict[str, object]]) -> str:
         f"""
         <tr>
           <td><b>{html.escape(str(item['bucket']))}</b></td>
-          <td>{html.escape(str(item['ticker']))} {html.escape(str(item['name']))}</td>
+          <td>{html.escape(str(item['ticker']))} {html.escape(str(item['name']))}<br><small>{html.escape(str(item.get('candidate_source', '核心追蹤池')))}</small></td>
           <td><strong>{item['score']}</strong></td>
           <td>{html.escape(str(item['theme_score']))}</td>
           <td>{html.escape(str(item['flow_score']))}</td>
@@ -1651,6 +1799,7 @@ def build_processed_payloads(
     environment: dict[str, object],
     capital_flow: dict[str, object],
     sector_rotation: dict[str, object],
+    dynamic_stock_pool: dict[str, object],
     candidates: list[dict[str, object]],
     events: list[dict[str, str]],
     analysis: dict,
@@ -1668,6 +1817,7 @@ def build_processed_payloads(
             "ticker": item.get("ticker"),
             "name": item.get("name"),
             "bucket": item.get("bucket"),
+            "candidate_source": item.get("candidate_source"),
             "score": item.get("score"),
             "theme_score": item.get("theme_score"),
             "flow_score": item.get("flow_score"),
@@ -1698,6 +1848,12 @@ def build_processed_payloads(
             "last_successful_update": generated_at,
         },
         {
+            "dataset": "dynamic_stock_pool",
+            "status": dynamic_stock_pool.get("status", "failed"),
+            "source": dynamic_stock_pool.get("source", "TWSE T86"),
+            "last_successful_update": generated_at if dynamic_stock_pool.get("status") == "ok" else None,
+        },
+        {
             "dataset": "capital_flow",
             "status": capital_flow.get("status", "failed"),
             "source": capital_flow.get("source", "TWSE BFI82U"),
@@ -1710,9 +1866,21 @@ def build_processed_payloads(
             "last_successful_update": generated_at if sector_rotation.get("status") == "ok" else None,
         },
         {
+            "dataset": "derivatives_flow",
+            "status": "not_connected",
+            "source": "TAIFEX",
+            "last_successful_update": None,
+        },
+        {
+            "dataset": "market_breadth_margin_lending",
+            "status": "not_connected",
+            "source": "TWSE / TPEx",
+            "last_successful_update": None,
+        },
+        {
             "dataset": "us_macro_actual_forecast",
             "status": "not_connected",
-            "source": "BLS / BEA / Federal Reserve / FRED",
+            "source": "BLS / BEA / Census / ISM / FRED / Federal Reserve",
             "last_successful_update": None,
         },
         {
@@ -1721,13 +1889,29 @@ def build_processed_payloads(
             "source": "DGBAS / MOEA / NDC / CBC / TWSE",
             "last_successful_update": None,
         },
+        {
+            "dataset": "company_fundamentals",
+            "status": "not_connected",
+            "source": "MOPS / TWSE / TPEx / FinMind",
+            "last_successful_update": None,
+        },
     ]
     return {
         "market_summary.json": {**base, "source": "Yahoo Finance / Google News RSS", "environment": environment, "markets": market_rows},
         "capital_flow.json": {**base, "source": "TWSE BFI82U", **capital_flow},
+        "dynamic_stock_pool.json": {**base, "source": "TWSE T86", **dynamic_stock_pool},
         "stock_radar.json": {**base, "source": "Google News RSS / TWSE / Yahoo Finance", "records": stock_rows},
         "economic_calendar.json": {**base, "source": "Manual P0 template; official calendar API pending", "records": events},
         "sector_rotation.json": {**base, "source": "TWSE MI_INDEX", **sector_rotation, "news_axes": analysis.get("axes", [])},
+        "derivatives_flow.json": {**base, "source": "TAIFEX", "status": "not_connected", "records": []},
+        "market_breadth.json": {**base, "source": "TWSE / TPEx", "status": "not_connected", "records": []},
+        "macro_indicators.json": {
+            **base,
+            "source": "BLS / BEA / Census / ISM / FRED / Federal Reserve / DGBAS / MOEA / NDC / CBC",
+            "status": "not_connected",
+            "records": [],
+        },
+        "fundamentals.json": {**base, "source": "MOPS / TWSE / TPEx / FinMind", "status": "not_connected", "records": []},
         "data_health.json": {**base, "source": "GitHub Actions pipeline", "records": data_health_rows, "news_count": len(news)},
     }
 
@@ -1747,9 +1931,10 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     snapshot = market_snapshot()
     capital_flow = fetch_taiwan_capital_flow(today)
     sector_rotation = fetch_twse_sector_rotation(today)
+    dynamic_candidates, dynamic_stock_pool = dynamic_candidate_pool(today, {str(item["ticker"]) for item in CORE_STOCK_UNIVERSE})
     temperature = market_temperature(snapshot)
     environment = market_environment(snapshot, news, capital_flow)
-    all_candidates = score_candidates(news, analysis, today)
+    all_candidates = score_candidates(news, analysis, today, dynamic_candidates)
     candidates = priority_candidates(all_candidates)
     events = event_calendar(today)
     LAST_PROCESSED_PAYLOADS = build_processed_payloads(
@@ -1759,6 +1944,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
         environment=environment,
         capital_flow=capital_flow,
         sector_rotation=sector_rotation,
+        dynamic_stock_pool=dynamic_stock_pool,
         candidates=candidates,
         events=events,
         analysis=analysis,
@@ -1907,7 +2093,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>先顯示已接資料與待接資料源，避免用舊資料或假資料冒充即時資料。</p></div>
     <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot, capital_flow)}</section>
 
-    <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>公開頁僅顯示正式強勢股與機會股；低分、降級與警示名單不列入推薦表。</p></div>
+    <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>核心追蹤池僅保留鴻海、富邦金、台積電、台達電；其他標的須由 TWSE T86 動態法人雷達進入候選。</p></div>
     <table>
       <thead><tr><th>分層</th><th>股票</th><th>總分</th><th>題材</th><th>法人籌碼</th><th>技術</th><th>今日籌碼</th><th>進榜原因 / 異動紀錄</th><th>主要風險 / 資料來源</th><th>升級/維持原因</th></tr></thead>
       <tbody>{render_candidate_table(candidates)}</tbody>
@@ -1932,7 +2118,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     <div class="section-title" id="methodology"><h2>方法論與資料來源 Methodology</h2><p>所有分數、篩選結果與資料狀態必須可追溯。</p></div>
     <section class="panel">
       <p><b>資料來源：</b>Yahoo Finance 公開行情、Google News RSS、TWSE BFI82U 三大法人買賣金額、TWSE MI_INDEX 產業指數、TWSE 個股三大法人公開資料；MOPS、TPEx、FinMind、台灣主計總處、經濟部、國發會、央行、美國官方總經資料為 P1/P2 接入項目。</p>
-      <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>capital_flow.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
+      <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>capital_flow.json</code>、<code>dynamic_stock_pool.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code>、<code>derivatives_flow.json</code>、<code>market_breadth.json</code>、<code>macro_indicators.json</code>、<code>fundamentals.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
       <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或待接資料源，不顯示假資料；每個主要區塊保留更新時間與資料狀態；市場環境分數會因必要資料不足而扣分。</p>
       <p><b>風險揭露：</b>本網站僅提供公開資料整理、量化篩選與研究輔助，不構成買賣建議或保證獲利。投資人應自行評估風險。</p>
     </section>

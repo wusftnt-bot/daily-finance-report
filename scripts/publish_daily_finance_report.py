@@ -2174,7 +2174,8 @@ FRED_SERIES = {
 
 
 def fetch_fred_series(series_id: str) -> dict[str, object]:
-    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={urllib.parse.quote(series_id)}"
+    start_date = (dt.datetime.now(TW).date() - dt.timedelta(days=560)).isoformat()
+    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?{urllib.parse.urlencode({'id': series_id, 'cosd': start_date})}"
     text = fetch_text_url(url, timeout=20)
     reader = csv.DictReader(io.StringIO(text))
     rows = []

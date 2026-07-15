@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-15 19:06:48 Asia/Taipei",
-  "data_date": "2026-07-15",
+  "generated_at": "2026-07-16 06:15:47 Asia/Taipei",
+  "data_date": "2026-07-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE T86",
   "date": "2026-07-15",
   "screened_count": 1075,
-  "qualified_count": 64,
+  "qualified_count": 65,
   "records": [
     {
       "ticker": "6770",

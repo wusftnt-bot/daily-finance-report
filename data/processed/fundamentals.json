@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-15 19:06:48 Asia/Taipei",
-  "data_date": "2026-07-15",
+  "generated_at": "2026-07-16 06:15:47 Asia/Taipei",
+  "data_date": "2026-07-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
-  "date": "2026-07-15",
+  "date": "2026-07-16",
   "records": [
     {
       "ticker": "2330",
@@ -56,8 +56,8 @@
       "name": "富邦金",
       "status": "ok",
       "source": "FinMind",
-      "latest_month_revenue_date": "2026-06-01",
-      "latest_month_revenue": 30407516000,
+      "latest_month_revenue_date": "2026-07-01",
+      "latest_month_revenue": 22157770000,
       "latest_quarter": "2026-03-31",
       "eps": null,
       "gross_margin_pct": null,

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-15 19:06:48 Asia/Taipei",
-  "data_date": "2026-07-15",
+  "generated_at": "2026-07-16 06:15:47 Asia/Taipei",
+  "data_date": "2026-07-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX / FinMind",
@@ -20,38 +20,38 @@
   "margin_records": [
     {
       "ticker": "2330",
-      "date": "2026-07-14",
-      "margin_purchase_balance": 33187,
-      "margin_purchase_change": 312,
-      "short_sale_balance": 60,
-      "short_sale_change": 12,
+      "date": "2026-07-15",
+      "margin_purchase_balance": 33293,
+      "margin_purchase_change": 106,
+      "short_sale_balance": 19,
+      "short_sale_change": -41,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     },
     {
       "ticker": "2317",
-      "date": "2026-07-14",
-      "margin_purchase_balance": 57187,
-      "margin_purchase_change": 155,
-      "short_sale_balance": 153,
-      "short_sale_change": 53,
+      "date": "2026-07-15",
+      "margin_purchase_balance": 57181,
+      "margin_purchase_change": -6,
+      "short_sale_balance": 207,
+      "short_sale_change": 54,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     },
     {
       "ticker": "2308",
-      "date": "2026-07-14",
-      "margin_purchase_balance": 7729,
-      "margin_purchase_change": -236,
-      "short_sale_balance": 13,
-      "short_sale_change": 0,
+      "date": "2026-07-15",
+      "margin_purchase_balance": 7792,
+      "margin_purchase_change": 63,
+      "short_sale_balance": 21,
+      "short_sale_change": 8,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     },
     {
       "ticker": "2881",
-      "date": "2026-07-14",
-      "margin_purchase_balance": 7524,
-      "margin_purchase_change": 172,
-      "short_sale_balance": 43,
-      "short_sale_change": -4,
+      "date": "2026-07-15",
+      "margin_purchase_balance": 7466,
+      "margin_purchase_change": -58,
+      "short_sale_balance": 78,
+      "short_sale_change": 35,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     }
   ],

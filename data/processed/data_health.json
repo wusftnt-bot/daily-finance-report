@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15 11:50:40 Asia/Taipei",
+  "generated_at": "2026-07-15 17:10:43 Asia/Taipei",
   "data_date": "2026-07-15",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -9,13 +9,25 @@
       "dataset": "market_summary",
       "status": "partial",
       "source": "Yahoo Finance",
-      "last_successful_update": "2026-07-15 11:50:40 Asia/Taipei"
+      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
     },
     {
       "dataset": "stock_radar",
       "status": "ok",
       "source": "Google News RSS / TWSE / Yahoo Finance",
-      "last_successful_update": "2026-07-15 11:50:40 Asia/Taipei"
+      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
+    },
+    {
+      "dataset": "capital_flow",
+      "status": "ok",
+      "source": "TWSE BFI82U",
+      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
+    },
+    {
+      "dataset": "sector_rotation",
+      "status": "ok",
+      "source": "TWSE MI_INDEX",
+      "last_successful_update": "2026-07-15 17:10:43 Asia/Taipei"
     },
     {
       "dataset": "us_macro_actual_forecast",

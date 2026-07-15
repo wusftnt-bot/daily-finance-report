@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-07-15 11:50:40 Asia/Taipei",
+  "data_date": "2026-07-15",
+  "timezone": "Asia/Taipei",
+  "status": "ok",
+  "source": "Manual P0 template; official calendar API pending",
+  "records": [
+    {
+      "time": "07/15 20:30",
+      "country": "美國",
+      "event": "PPI / 核心 PPI",
+      "previous": "待接資料源",
+      "forecast": "待接資料源",
+      "importance": "高",
+      "impact": "通膨、Fed 預期、10Y、美股科技估值"
+    },
+    {
+      "time": "07/15 21:15",
+      "country": "美國",
+      "event": "工業生產",
+      "previous": "待接資料源",
+      "forecast": "待接資料源",
+      "importance": "中",
+      "impact": "景氣循環、半導體與工業需求"
+    },
+    {
+      "time": "07/16 20:30",
+      "country": "美國",
+      "event": "零售銷售",
+      "previous": "待接資料源",
+      "forecast": "待接資料源",
+      "importance": "高",
+      "impact": "美國需求、美元、Nasdaq 與台股電子"
+    },
+    {
+      "time": "07/16 20:30",
+      "country": "美國",
+      "event": "初領失業救濟金",
+      "previous": "待接資料源",
+      "forecast": "待接資料源",
+      "importance": "中",
+      "impact": "就業降溫與利率預期"
+    },
+    {
+      "time": "07/17 20:30",
+      "country": "美國",
+      "event": "新屋開工 / 建築許可",
+      "previous": "待接資料源",
+      "forecast": "待接資料源",
+      "importance": "中",
+      "impact": "利率敏感資產與景氣需求"
+    },
+    {
+      "time": "未來 72 小時",
+      "country": "美國",
+      "event": "CPI / PCE / Fed / 就業資料監控",
+      "previous": "待接資料源",
+      "forecast": "待接資料源",
+      "importance": "中",
+      "impact": "若有臨時公布或修正，影響利率、美元與高估值科技股"
+    }
+  ]
+}

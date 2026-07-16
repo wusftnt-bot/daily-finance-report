@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-16 06:15:47 Asia/Taipei",
+  "generated_at": "2026-07-16 16:15:21 Asia/Taipei",
   "data_date": "2026-07-16",
   "timezone": "Asia/Taipei",
   "status": "failed",
@@ -28,8 +28,29 @@
       "source": "FRED"
     },
     {
+      "series_id": "ICSA",
+      "name": "US Initial Jobless Claims",
+      "category": "US employment",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
       "series_id": "RSAFS",
       "name": "US Retail Sales",
+      "category": "US demand",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "HOUST",
+      "name": "US Housing Starts",
+      "category": "US demand",
+      "status": "failed",
+      "source": "FRED"
+    },
+    {
+      "series_id": "PERMIT",
+      "name": "US Building Permits",
       "category": "US demand",
       "status": "failed",
       "source": "FRED"

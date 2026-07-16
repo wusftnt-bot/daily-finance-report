@@ -2227,18 +2227,20 @@ def fetch_fred_series(series_id: str) -> dict[str, object]:
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?{urllib.parse.urlencode({'id': series_id, 'cosd': start_date})}"
     last_error: Exception | None = None
     text = ""
+    timeout = 6 if os.environ.get("GITHUB_ACTIONS") else 20
+    user_agents = ("Mozilla/5.0 daily-finance-report",) if os.environ.get("GITHUB_ACTIONS") else ("Mozilla/5.0 daily-finance-report", "daily-finance-report")
     for candidate_url in (
         url,
         f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={urllib.parse.quote(series_id)}",
     ):
-        for user_agent in ("Mozilla/5.0 daily-finance-report", "daily-finance-report"):
+        for user_agent in user_agents:
             try:
-                text = fetch_text_url(candidate_url, timeout=20, user_agent=user_agent)
+                text = fetch_text_url(candidate_url, timeout=timeout, user_agent=user_agent)
                 last_error = None
                 break
             except Exception as exc:
                 last_error = exc
-                time.sleep(0.5)
+                time.sleep(0.2)
         if text:
             break
     if not text and last_error:
@@ -2286,11 +2288,25 @@ def fetch_fred_series(series_id: str) -> dict[str, object]:
 
 def fetch_macro_indicators(today: dt.date) -> dict[str, object]:
     records = []
+    fred_failures = 0
     for series_id in FRED_SERIES:
+        if os.environ.get("GITHUB_ACTIONS") and fred_failures >= 3:
+            records.append(
+                {
+                    "series_id": series_id,
+                    "name": FRED_SERIES[series_id]["name"],
+                    "category": FRED_SERIES[series_id]["category"],
+                    "status": "failed",
+                    "source": "FRED",
+                    "error": "skipped after repeated FRED failures",
+                }
+            )
+            continue
         try:
             records.append(fetch_fred_series(series_id))
         except Exception as exc:
             print(f"FRED fallback for {series_id}: {exc}")
+            fred_failures += 1
             records.append(
                 {
                     "series_id": series_id,

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-16 16:42:52 Asia/Taipei",
+  "generated_at": "2026-07-16 16:45:32 Asia/Taipei",
   "data_date": "2026-07-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -9,55 +9,55 @@
       "dataset": "market_summary",
       "status": "partial",
       "source": "Yahoo Finance",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "market_history",
       "status": "ok",
       "source": "Generated market_summary history",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "stock_radar",
       "status": "ok",
       "source": "Google News RSS / TWSE / Yahoo Finance",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "dynamic_stock_pool",
       "status": "ok",
       "source": "TWSE T86",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "capital_flow",
       "status": "ok",
       "source": "TWSE BFI82U",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "sector_rotation",
       "status": "ok",
       "source": "TWSE MI_INDEX",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "derivatives_flow",
       "status": "ok",
       "source": "TAIFEX",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "market_breadth_margin_lending",
       "status": "ok",
       "source": "TWSE MI_INDEX / FinMind",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "us_macro_actual_forecast",
       "status": "ok",
-      "source": "FRED / ISM / MOEA / NDC / CBC",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "source": "FRED / ISM / MOEA / NDC / CBC / cached fallback",
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     },
     {
       "dataset": "taiwan_macro_actual_forecast",
@@ -69,7 +69,7 @@
       "dataset": "company_fundamentals",
       "status": "ok",
       "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
-      "last_successful_update": "2026-07-16 16:42:52 Asia/Taipei"
+      "last_successful_update": "2026-07-16 16:45:32 Asia/Taipei"
     }
   ],
   "news_count": 18

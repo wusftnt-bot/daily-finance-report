@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-16 17:00:52 Asia/Taipei",
+  "generated_at": "2026-07-16 17:15:46 Asia/Taipei",
   "data_date": "2026-07-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -119,15 +119,15 @@
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：英偉達黃仁勳用豬肉串吸引日本人工智慧供應商；反AI浪潮令科技高管擔憂人身安全",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：日本將購買 Nvidia Rubin 晶片為機器人建構主權人工智慧；反AI浪潮令科技高管擔憂人身安全",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 6
+      "count": 5
     },
     {
       "theme_key": "energy",
       "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：Nasdaq US Benchmark Oil, Gas an (^NQUSB601010JPYN) 圖表、數據和新聞；由於伊朗衝突導致供應風險升高，油價連續三天上漲後下滑",
+      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：Nasdaq US Benchmark Oil, Gas an (^NQUSB601010JPYN) 圖表、數據和新聞；地球吸收能量的速度令氣候科學家感到震驚",
       "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
       "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
       "count": 4

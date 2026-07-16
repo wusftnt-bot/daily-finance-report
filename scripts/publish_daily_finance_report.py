@@ -1937,8 +1937,6 @@ def render_capital_flow_summary(candidates: list[dict[str, object]], snapshot: l
         ("外資買賣超", format_ntd_billion(capital_flow.get("foreign_net")), "外資及陸資買賣差額"),
         ("投信買賣超", format_ntd_billion(capital_flow.get("investment_trust_net")), "本國投信買賣差額"),
         ("新台幣匯率", f"{format_market_value(twd)} / 5日 {format_pct(twd.get('change_5d'))}", "美元/台幣作為外資資金壓力代理"),
-        ("台指期外資淨部位", "待接資料源", "P1 接入期交所公開資料"),
-        ("融資融券與借券", "待接資料源", "P1 接入 TWSE/TPEx 公開資料"),
     ]
     return "\n".join(
         f"""
@@ -2203,7 +2201,7 @@ def serializable_snapshot(snapshot: list[dict[str, object]]) -> list[dict[str, o
             "high_52w_gap": row.get("high_52w_gap"),
             "data_time": row.get("data_time"),
             "status": "ok" if row.get("ok") else "failed",
-            "source": "Yahoo Finance",
+            "source": row.get("source") or "Yahoo Finance",
         }
         for row in snapshot
     ]
@@ -2488,6 +2486,7 @@ def enrich_snapshot_with_macro(snapshot: list[dict[str, object]], macro_indicato
             "high_52w_gap": None,
             "data_time": dgs2.get("date"),
             "ok": True,
+            "source": "FRED",
         }
     )
     return filtered
@@ -2545,7 +2544,7 @@ def build_processed_payloads(
         {
             "dataset": "market_summary",
             "status": "ok" if all(row["status"] == "ok" for row in market_rows if row["group"] == "global") else "partial",
-            "source": "Yahoo Finance",
+            "source": "Yahoo Finance / FRED",
             "last_successful_update": generated_at,
         },
         {

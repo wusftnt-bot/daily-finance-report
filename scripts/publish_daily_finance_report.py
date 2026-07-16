@@ -464,7 +464,13 @@ def render_source_table(news: list[dict[str, str]]) -> str:
     )
 
 
-def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str = "") -> str:
+def render_html(
+    news: list[dict[str, str]],
+    today: dt.date,
+    previous_html: str = "",
+    previous_market: dict[str, object] | None = None,
+    previous_history: dict[str, object] | None = None,
+) -> str:
     global LAST_PROCESSED_PAYLOADS
     generated_at = dt.datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S Asia/Taipei")
     source_count = len({item["source"] for item in news})
@@ -1791,6 +1797,47 @@ def event_calendar(today: dt.date) -> list[dict[str, str]]:
     return rows[:6]
 
 
+def macro_record_value(macro_indicators: dict[str, object], series_id: str) -> str | None:
+    row = next((item for item in macro_indicators.get("records", []) if item.get("series_id") == series_id and item.get("status") == "ok"), None)
+    if not row:
+        return None
+    value = row.get("actual")
+    date = row.get("date")
+    unit = row.get("unit") or ""
+    if value is None:
+        return None
+    if isinstance(value, float):
+        value_text = f"{value:,.2f}"
+    else:
+        value_text = f"{value:,}" if isinstance(value, int) else str(value)
+    return f"{value_text} {unit} ({date})".strip()
+
+
+def enrich_event_calendar(events: list[dict[str, str]], macro_indicators: dict[str, object]) -> list[dict[str, str]]:
+    enriched = []
+    for event in events:
+        item = dict(event)
+        name = item.get("event", "")
+        previous = None
+        if "零售銷售" in name:
+            previous = macro_record_value(macro_indicators, "RSAFS")
+        elif "初領失業救濟金" in name:
+            previous = macro_record_value(macro_indicators, "ICSA")
+        elif "新屋開工" in name or "建築許可" in name:
+            housing = macro_record_value(macro_indicators, "HOUST")
+            permit = macro_record_value(macro_indicators, "PERMIT")
+            if housing or permit:
+                previous = f"HOUST {housing or '待接'} / PERMIT {permit or '待接'}"
+        elif "Fed" in name or "利率" in name:
+            previous = macro_record_value(macro_indicators, "FEDFUNDS")
+        if previous:
+            item["previous"] = previous
+            if item.get("forecast") == "待接資料源":
+                item["forecast"] = "市場預期待接"
+        enriched.append(item)
+    return enriched
+
+
 def render_market_snapshot(snapshot: list[dict[str, object]]) -> str:
     return "\n".join(
         f"""
@@ -1860,8 +1907,7 @@ def render_global_market_cards(snapshot: list[dict[str, object]]) -> str:
 
 
 def render_cross_asset_cards(snapshot: list[dict[str, object]]) -> str:
-    rows = [{"label": "美債2Y", "value": None, "change_pct": None, "change_5d": None, "change_20d": None, "data_time": "待接資料源", "group": "cross"}]
-    rows.extend(row for row in snapshot if row.get("group") == "cross")
+    rows = [row for row in snapshot if row.get("group") == "cross"]
     return "\n".join(
         f"""
         <article class="asset-card">
@@ -2166,7 +2212,10 @@ FRED_SERIES = {
     "CPIAUCSL": {"name": "US CPI", "category": "US inflation", "unit": "index"},
     "PCEPI": {"name": "US PCE Price Index", "category": "US inflation", "unit": "index"},
     "PAYEMS": {"name": "US Nonfarm Payrolls", "category": "US employment", "unit": "thousand persons"},
+    "ICSA": {"name": "US Initial Jobless Claims", "category": "US employment", "unit": "persons"},
     "RSAFS": {"name": "US Retail Sales", "category": "US demand", "unit": "million USD"},
+    "HOUST": {"name": "US Housing Starts", "category": "US demand", "unit": "thousand units"},
+    "PERMIT": {"name": "US Building Permits", "category": "US demand", "unit": "thousand units"},
     "FEDFUNDS": {"name": "Fed Funds Rate", "category": "US rates", "unit": "%"},
     "DGS2": {"name": "US 2Y Treasury Yield", "category": "US rates", "unit": "%"},
     "DGS10": {"name": "US 10Y Treasury Yield", "category": "US rates", "unit": "%"},
@@ -2176,7 +2225,24 @@ FRED_SERIES = {
 def fetch_fred_series(series_id: str) -> dict[str, object]:
     start_date = (dt.datetime.now(TW).date() - dt.timedelta(days=560)).isoformat()
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?{urllib.parse.urlencode({'id': series_id, 'cosd': start_date})}"
-    text = fetch_text_url(url, timeout=20)
+    last_error: Exception | None = None
+    text = ""
+    for candidate_url in (
+        url,
+        f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={urllib.parse.quote(series_id)}",
+    ):
+        for user_agent in ("Mozilla/5.0 daily-finance-report", "daily-finance-report"):
+            try:
+                text = fetch_text_url(candidate_url, timeout=20, user_agent=user_agent)
+                last_error = None
+                break
+            except Exception as exc:
+                last_error = exc
+                time.sleep(0.5)
+        if text:
+            break
+    if not text and last_error:
+        raise last_error
     reader = csv.DictReader(io.StringIO(text))
     rows = []
     for row in reader:
@@ -2316,6 +2382,74 @@ def fetch_company_fundamentals(today: dt.date, stocks: list[dict[str, object]]) 
     }
 
 
+def read_json_file(path: Path) -> dict[str, object]:
+    try:
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+            return data if isinstance(data, dict) else {}
+    except Exception as exc:
+        print(f"Previous JSON fallback for {path.name}: {exc}")
+    return {}
+
+
+def build_market_history(today: dt.date, environment: dict[str, object], previous_market: dict[str, object], previous_history: dict[str, object]) -> dict[str, object]:
+    records = previous_history.get("records") if isinstance(previous_history, dict) else []
+    if not isinstance(records, list):
+        records = []
+    previous_environment = previous_market.get("environment") if isinstance(previous_market.get("environment"), dict) else {}
+    previous_date = previous_market.get("data_date")
+    previous_score = previous_environment.get("score")
+    if previous_score is not None and previous_date and not any(row.get("date") == previous_date for row in records if isinstance(row, dict)):
+        records.append({"date": previous_date, "score": previous_score, "status": previous_environment.get("status")})
+    records = [row for row in records if isinstance(row, dict) and row.get("date")]
+    records = [row for row in records if str(row.get("date")) != today.isoformat()]
+    records.append({"date": today.isoformat(), "score": environment.get("score"), "status": environment.get("status")})
+    dedup: dict[str, dict[str, object]] = {}
+    for row in records:
+        dedup[str(row.get("date"))] = row
+    records = [dedup[key] for key in sorted(dedup)][-45:]
+    prev_rows = [row for row in records if str(row.get("date")) < today.isoformat() and isinstance(row.get("score"), int)]
+    previous_row = prev_rows[-1] if prev_rows else None
+    week_cutoff = today - dt.timedelta(days=7)
+    week_rows = [row for row in prev_rows if str(row.get("date")) <= week_cutoff.isoformat()]
+    week_row = week_rows[-1] if week_rows else (prev_rows[0] if prev_rows else None)
+    current_score = environment.get("score")
+    previous_display = previous_row.get("score") if previous_row else "待歷史資料"
+    weekly_display: object = "待歷史資料"
+    if isinstance(current_score, int) and week_row and isinstance(week_row.get("score"), int):
+        weekly_display = f"{current_score - int(week_row['score']):+d}"
+    environment["previous_score"] = previous_display
+    environment["weekly_change"] = weekly_display
+    return {
+        "status": "ok",
+        "source": "Generated market_summary history",
+        "records": records,
+    }
+
+
+def enrich_snapshot_with_macro(snapshot: list[dict[str, object]], macro_indicators: dict[str, object]) -> list[dict[str, object]]:
+    dgs2 = next((row for row in macro_indicators.get("records", []) if row.get("series_id") == "DGS2" and row.get("status") == "ok"), None)
+    if not dgs2 or not isinstance(dgs2.get("actual"), (int, float)):
+        return snapshot
+    filtered = [row for row in snapshot if row.get("label") != "美債2Y"]
+    filtered.append(
+        {
+            "label": "美債2Y",
+            "symbol": "FRED:DGS2",
+            "group": "cross",
+            "value": dgs2.get("actual"),
+            "change_pct": None,
+            "change_5d": None,
+            "change_20d": dgs2.get("mom_pct"),
+            "ytd_change": None,
+            "high_52w_gap": None,
+            "data_time": dgs2.get("date"),
+            "ok": True,
+        }
+    )
+    return filtered
+
+
 def build_processed_payloads(
     *,
     today: dt.date,
@@ -2329,6 +2463,7 @@ def build_processed_payloads(
     market_breadth: dict[str, object],
     macro_indicators: dict[str, object],
     fundamentals: dict[str, object],
+    market_history: dict[str, object],
     candidates: list[dict[str, object]],
     events: list[dict[str, str]],
     analysis: dict,
@@ -2369,6 +2504,12 @@ def build_processed_payloads(
             "status": "ok" if all(row["status"] == "ok" for row in market_rows if row["group"] == "global") else "partial",
             "source": "Yahoo Finance",
             "last_successful_update": generated_at,
+        },
+        {
+            "dataset": "market_history",
+            "status": market_history.get("status", "failed"),
+            "source": market_history.get("source", "Generated market_summary history"),
+            "last_successful_update": generated_at if market_history.get("status") == "ok" else None,
         },
         {
             "dataset": "stock_radar",
@@ -2427,6 +2568,7 @@ def build_processed_payloads(
     ]
     return {
         "market_summary.json": {**base, "source": "Yahoo Finance / Google News RSS", "environment": environment, "markets": market_rows},
+        "market_history.json": {**base, "source": "Generated market_summary history", **market_history},
         "capital_flow.json": {**base, "source": "TWSE BFI82U", **capital_flow},
         "dynamic_stock_pool.json": {**base, "source": "TWSE T86", **dynamic_stock_pool},
         "stock_radar.json": {**base, "source": "Google News RSS / TWSE / Yahoo Finance", "records": stock_rows},
@@ -2447,7 +2589,13 @@ def write_processed_payloads(output_dir: Path, payloads: dict[str, dict[str, obj
         (processed_dir / filename).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str = "") -> str:
+def render_html(
+    news: list[dict[str, str]],
+    today: dt.date,
+    previous_html: str = "",
+    previous_market: dict[str, object] | None = None,
+    previous_history: dict[str, object] | None = None,
+) -> str:
     global LAST_PROCESSED_PAYLOADS
     generated_at = dt.datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S Asia/Taipei")
     previous = extract_previous_analysis(previous_html)
@@ -2460,12 +2608,14 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     derivatives_flow = fetch_derivatives_flow(today)
     market_breadth = fetch_market_breadth(today, core_tickers)
     macro_indicators = fetch_macro_indicators(today)
+    snapshot = enrich_snapshot_with_macro(snapshot, macro_indicators)
     fundamentals = fetch_company_fundamentals(today, CORE_STOCK_UNIVERSE)
     temperature = market_temperature(snapshot)
     environment = market_environment(snapshot, news, capital_flow)
+    market_history = build_market_history(today, environment, previous_market or {}, previous_history or {})
     all_candidates = score_candidates(news, analysis, today, dynamic_candidates)
     candidates = priority_candidates(all_candidates)
-    events = event_calendar(today)
+    events = enrich_event_calendar(event_calendar(today), macro_indicators)
     LAST_PROCESSED_PAYLOADS = build_processed_payloads(
         today=today,
         generated_at=generated_at,
@@ -2478,6 +2628,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
         market_breadth=market_breadth,
         macro_indicators=macro_indicators,
         fundamentals=fundamentals,
+        market_history=market_history,
         candidates=candidates,
         events=events,
         analysis=analysis,
@@ -2654,7 +2805,7 @@ def render_html(news: list[dict[str, str]], today: dt.date, previous_html: str =
     <div class="section-title" id="methodology"><h2>方法論與資料來源 Methodology</h2><p>所有分數、篩選結果與資料狀態必須可追溯。</p></div>
     <section class="panel">
       <p><b>資料來源：</b>Yahoo Finance 公開行情、Google News RSS、TWSE BFI82U 三大法人買賣金額、TWSE MI_INDEX 產業指數、TWSE 個股三大法人公開資料；MOPS、TPEx、FinMind、台灣主計總處、經濟部、國發會、央行、美國官方總經資料為 P1/P2 接入項目。</p>
-      <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>capital_flow.json</code>、<code>dynamic_stock_pool.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code>、<code>derivatives_flow.json</code>、<code>market_breadth.json</code>、<code>macro_indicators.json</code>、<code>fundamentals.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
+      <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>market_history.json</code>、<code>capital_flow.json</code>、<code>dynamic_stock_pool.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code>、<code>derivatives_flow.json</code>、<code>market_breadth.json</code>、<code>macro_indicators.json</code>、<code>fundamentals.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
       <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或待接資料源，不顯示假資料；每個主要區塊保留更新時間與資料狀態；市場環境分數會因必要資料不足而扣分。</p>
       <p><b>風險揭露：</b>本網站僅提供公開資料整理、量化篩選與研究輔助，不構成買賣建議或保證獲利。投資人應自行評估風險。</p>
     </section>
@@ -2675,13 +2826,18 @@ def main() -> int:
     output_dir = DEFAULT_OUTPUT_DIR
     output_dir.mkdir(parents=True, exist_ok=True)
     previous_html = (output_dir / "index.html").read_text(encoding="utf-8") if (output_dir / "index.html").exists() else ""
+    previous_market = read_json_file(output_dir / "data" / "processed" / "market_summary.json")
+    previous_history = read_json_file(output_dir / "data" / "processed" / "market_history.json")
     news = collect_news(today)
     if len(news) < MIN_NEWS_ITEMS:
         raise RuntimeError(
             f"Refusing to publish an incomplete report: got {len(news)} news items, "
             f"need at least {MIN_NEWS_ITEMS}"
         )
-    (output_dir / "index.html").write_text(render_html(news, today, previous_html), encoding="utf-8")
+    (output_dir / "index.html").write_text(
+        render_html(news, today, previous_html, previous_market=previous_market, previous_history=previous_history),
+        encoding="utf-8",
+    )
     write_processed_payloads(output_dir, LAST_PROCESSED_PAYLOADS)
     print(f"Published dashboard finance report for {today:%Y-%m-%d} with {len(news)} items to {output_dir / 'index.html'}")
     return 0

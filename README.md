@@ -86,7 +86,7 @@ New data sources must be integrated through the data layer first, not directly h
 
 - Source map: `docs/data-source-map.md`.
 - Processed data path: `data/processed/*.json`.
-- Current P0 processed files: `market_summary.json`, `capital_flow.json`, `dynamic_stock_pool.json`, `stock_radar.json`, `economic_calendar.json`, `sector_rotation.json`, `derivatives_flow.json`, `market_breadth.json`, `macro_indicators.json`, `fundamentals.json`, and `data_health.json`.
+- Current P0 processed files: `market_summary.json`, `market_history.json`, `capital_flow.json`, `dynamic_stock_pool.json`, `stock_radar.json`, `economic_calendar.json`, `sector_rotation.json`, `derivatives_flow.json`, `market_breadth.json`, `macro_indicators.json`, `fundamentals.json`, and `data_health.json`.
 - Required fields: `generated_at`, `data_date`, `timezone`, `source`, `status`, and `records` or an equivalent named object.
 - If a source fails, show `資料更新失敗`, `待接資料源`, or `not_connected`; do not show stale data as current.
 - Telegram should read only summary-ready public data and must not be blocked by cosmetic website section-title changes.
@@ -95,6 +95,7 @@ New data sources must be integrated through the data layer first, not directly h
 Current connected expansion batch:
 
 - `derivatives_flow.json`: TAIFEX foreign TAIEX futures net position and TXO Put/Call Ratio.
+- `market_history.json`: generated daily market-regime score history used for previous-day score and weekly change.
 - `market_breadth.json`: TWSE listed-stock advance/decline breadth plus fixed-core-stock margin and short-sale balances through public FinMind data.
 - `macro_indicators.json`: FRED public actuals for US CPI, PCE, nonfarm payrolls, retail sales, Fed Funds, US 2Y, and US 10Y. ISM, official forecast, surprise, and Taiwan macro rows remain explicitly marked `not_connected`.
 - `fundamentals.json`: fixed core pool monthly revenue, EPS, gross margin, ROE, inventory, and receivables through FinMind public datasets. Direct MOPS/TWSE/TPEx validation remains a follow-up item.

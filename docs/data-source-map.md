@@ -24,6 +24,7 @@ All processed JSON files must include:
 Current P0 files:
 
 - `data/processed/market_summary.json`
+- `data/processed/market_history.json`
 - `data/processed/capital_flow.json`
 - `data/processed/dynamic_stock_pool.json`
 - `data/processed/stock_radar.json`
@@ -41,6 +42,7 @@ Current P0 files:
 | --- | --- | --- | --- | --- | --- |
 | Global markets | S&P 500, Nasdaq, SOX, Dow, Nikkei, TAIEX, OTC, Shanghai, HSCE, Nifty, Bovespa | Yahoo Finance | connected | no | mark row failed |
 | Cross asset | US 10Y, DXY, USD/TWD, USD/JPY, USD/CNY, VIX, gold, WTI, Brent, copper | Yahoo Finance | connected | no | mark row failed |
+| Market score history | previous-day score and weekly change | Generated `market_history.json` | connected | no | show `待歷史資料` until enough records exist |
 | Taiwan capital flow | foreign investors, investment trusts, dealers, total institutional net buy/sell | TWSE BFI82U | connected | no | show failed/partial and keep FX proxy |
 | Dynamic stock pool | full-market institutional buy/sell candidates | TWSE T86 | connected | no | only include names passing institutional thresholds |
 | Sector rotation | TWSE sector index close and daily percentage change | TWSE MI_INDEX | connected | no | fall back to news theme cards |

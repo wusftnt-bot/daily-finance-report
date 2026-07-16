@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-16 17:15:46 Asia/Taipei",
-  "data_date": "2026-07-16",
+  "generated_at": "2026-07-17 05:40:10 Asia/Taipei",
+  "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE T86",
   "date": "2026-07-16",
   "screened_count": 1073,
-  "qualified_count": 47,
+  "qualified_count": 48,
   "records": [
     {
       "ticker": "6770",
@@ -72,10 +72,10 @@
       "ticker": "2883",
       "name": "凱基金",
       "foreign_lots": 13739,
-      "investment_lots": -567,
+      "investment_lots": -639,
       "dealer_lots": 930,
-      "total_lots": 14102,
-      "dynamic_momentum": 27841,
+      "total_lots": 14030,
+      "dynamic_momentum": 27769,
       "source": "TWSE T86"
     },
     {
@@ -92,20 +92,20 @@
       "ticker": "2412",
       "name": "中華電",
       "foreign_lots": 13609,
-      "investment_lots": -301,
+      "investment_lots": -308,
       "dealer_lots": 102,
-      "total_lots": 13410,
-      "dynamic_momentum": 27019,
+      "total_lots": 13403,
+      "dynamic_momentum": 27012,
       "source": "TWSE T86"
     },
     {
       "ticker": "2891",
       "name": "中信金",
       "foreign_lots": 16718,
-      "investment_lots": -9750,
+      "investment_lots": -9782,
       "dealer_lots": 491,
-      "total_lots": 7459,
-      "dynamic_momentum": 24177,
+      "total_lots": 7427,
+      "dynamic_momentum": 24145,
       "source": "TWSE T86"
     }
   ]

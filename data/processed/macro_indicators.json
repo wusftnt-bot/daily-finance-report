@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-16 17:15:46 Asia/Taipei",
-  "data_date": "2026-07-16",
+  "generated_at": "2026-07-17 05:40:10 Asia/Taipei",
+  "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "FRED / ISM / MOEA / NDC / CBC / cached fallback",
-  "date": "2026-07-16",
+  "date": "2026-07-17",
   "records": [
     {
       "series_id": "CPIAUCSL",
@@ -18,7 +18,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -34,7 +34,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -50,7 +50,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "thousand persons",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -66,7 +66,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "persons",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -82,7 +82,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "million USD",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -98,7 +98,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "thousand units",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -114,7 +114,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "thousand units",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -130,7 +130,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -146,7 +146,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
@@ -162,7 +162,7 @@
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED cached fallback",
+      "source": "FRED cached fallback cached fallback",
       "status": "ok",
       "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },

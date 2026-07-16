@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-16 17:15:46 Asia/Taipei",
-  "data_date": "2026-07-16",
+  "generated_at": "2026-07-17 05:40:10 Asia/Taipei",
+  "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Google News RSS / TWSE / Yahoo Finance",
@@ -15,11 +15,11 @@
       "flow_score": 30,
       "technical_score": 14,
       "data_quality_score": 10,
-      "flow_text": "07/16 外資+6,699張、投信-1,077張、自營商+1,345張；三大法人+6,966張，近5日合計+13,060張",
+      "flow_text": "07/16 外資+6,699張、投信-1,056張、自營商+1,345張；三大法人+6,987張，近5日合計+13,081張",
       "flow_warning": "法人偏買，題材較有延續條件",
       "technical_text": "近一日股價變化 +1.46%",
       "inclusion_reason": "題材/基本面代理 30/35、法人籌碼 30/30、技術 14/20、資料品質 10/10；法人偏買，題材較有延續條件。來源：核心追蹤池。",
-      "change_history": "2026-07-16：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
+      "change_history": "2026-07-17：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
       "data_source": "Google News RSS / TWSE 三大法人公開資料 / Yahoo Finance",
       "risk": "毛利率改善速度與大型客戶訂單節奏",
       "action": "追蹤延續"
@@ -38,7 +38,7 @@
       "flow_warning": "法人偏買，題材較有延續條件",
       "technical_text": "近一日股價變化 +0.91%",
       "inclusion_reason": "題材/基本面代理 18/35、法人籌碼 30/30、技術 12/20、資料品質 10/10；法人偏買，題材較有延續條件。來源：動態法人雷達。",
-      "change_history": "2026-07-16：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
+      "change_history": "2026-07-17：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
       "data_source": "Google News RSS / TWSE 三大法人公開資料 / Yahoo Finance",
       "risk": "動態候選須再確認基本面、成交量與是否短線過熱",
       "action": "追蹤延續"
@@ -57,7 +57,7 @@
       "flow_warning": "法人偏買，題材較有延續條件",
       "technical_text": "近一日股價變化 +0.53%",
       "inclusion_reason": "題材/基本面代理 18/35、法人籌碼 30/30、技術 12/20、資料品質 10/10；法人偏買，題材較有延續條件。來源：動態法人雷達。",
-      "change_history": "2026-07-16：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
+      "change_history": "2026-07-17：依公開新聞主題、TWSE 法人資料與 Yahoo 價格資料重新評分。",
       "data_source": "Google News RSS / TWSE 三大法人公開資料 / Yahoo Finance",
       "risk": "動態候選須再確認基本面、成交量與是否短線過熱",
       "action": "追蹤延續"

@@ -1,28 +1,10 @@
 {
-  "generated_at": "2026-07-16 17:15:46 Asia/Taipei",
-  "data_date": "2026-07-16",
+  "generated_at": "2026-07-17 05:40:10 Asia/Taipei",
+  "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Manual P0 template; official calendar API pending",
   "records": [
-    {
-      "time": "07/16 20:30",
-      "country": "美國",
-      "event": "零售銷售",
-      "previous": "763,705.00 million USD (2026-05-01)",
-      "forecast": "市場預期待接",
-      "importance": "高",
-      "impact": "美國需求、美元、Nasdaq 與台股電子"
-    },
-    {
-      "time": "07/16 20:30",
-      "country": "美國",
-      "event": "初領失業救濟金",
-      "previous": "215,000.00 persons (2026-07-04)",
-      "forecast": "市場預期待接",
-      "importance": "中",
-      "impact": "就業降溫與利率預期"
-    },
     {
       "time": "07/17 20:30",
       "country": "美國",

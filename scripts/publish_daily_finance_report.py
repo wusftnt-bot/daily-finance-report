@@ -470,6 +470,7 @@ def render_html(
     previous_html: str = "",
     previous_market: dict[str, object] | None = None,
     previous_history: dict[str, object] | None = None,
+    previous_macro: dict[str, object] | None = None,
 ) -> str:
     global LAST_PROCESSED_PAYLOADS
     generated_at = dt.datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S Asia/Taipei")
@@ -2335,6 +2336,32 @@ def fetch_macro_indicators(today: dt.date) -> dict[str, object]:
     }
 
 
+def merge_macro_fallback(macro_indicators: dict[str, object], previous_macro: dict[str, object]) -> dict[str, object]:
+    previous_records = previous_macro.get("records") if isinstance(previous_macro, dict) else []
+    if not isinstance(previous_records, list):
+        previous_records = []
+    previous_by_id = {row.get("series_id"): row for row in previous_records if isinstance(row, dict) and row.get("status") == "ok"}
+    records = []
+    reused = 0
+    for row in macro_indicators.get("records", []):
+        if isinstance(row, dict) and row.get("status") == "failed" and row.get("series_id") in previous_by_id:
+            cached = dict(previous_by_id[row.get("series_id")])
+            cached["status"] = "ok"
+            cached["source"] = f"{cached.get('source', 'FRED')} cached fallback"
+            cached["fallback_note"] = "Current FRED fetch failed; reused last successful public value."
+            records.append(cached)
+            reused += 1
+        else:
+            records.append(row)
+    if reused:
+        macro_indicators = dict(macro_indicators)
+        macro_indicators["records"] = records
+        ok_count = sum(1 for row in records if isinstance(row, dict) and row.get("status") == "ok")
+        macro_indicators["status"] = "ok" if ok_count >= len(FRED_SERIES) else "partial" if ok_count else "failed"
+        macro_indicators["source"] = f"{macro_indicators.get('source', 'FRED')} / cached fallback"
+    return macro_indicators
+
+
 def latest_record(rows: list[dict[str, object]]) -> dict[str, object] | None:
     if not rows:
         return None
@@ -2611,6 +2638,7 @@ def render_html(
     previous_html: str = "",
     previous_market: dict[str, object] | None = None,
     previous_history: dict[str, object] | None = None,
+    previous_macro: dict[str, object] | None = None,
 ) -> str:
     global LAST_PROCESSED_PAYLOADS
     generated_at = dt.datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S Asia/Taipei")
@@ -2624,6 +2652,7 @@ def render_html(
     derivatives_flow = fetch_derivatives_flow(today)
     market_breadth = fetch_market_breadth(today, core_tickers)
     macro_indicators = fetch_macro_indicators(today)
+    macro_indicators = merge_macro_fallback(macro_indicators, previous_macro or {})
     snapshot = enrich_snapshot_with_macro(snapshot, macro_indicators)
     fundamentals = fetch_company_fundamentals(today, CORE_STOCK_UNIVERSE)
     temperature = market_temperature(snapshot)
@@ -2844,6 +2873,7 @@ def main() -> int:
     previous_html = (output_dir / "index.html").read_text(encoding="utf-8") if (output_dir / "index.html").exists() else ""
     previous_market = read_json_file(output_dir / "data" / "processed" / "market_summary.json")
     previous_history = read_json_file(output_dir / "data" / "processed" / "market_history.json")
+    previous_macro = read_json_file(output_dir / "data" / "processed" / "macro_indicators.json")
     news = collect_news(today)
     if len(news) < MIN_NEWS_ITEMS:
         raise RuntimeError(
@@ -2851,7 +2881,14 @@ def main() -> int:
             f"need at least {MIN_NEWS_ITEMS}"
         )
     (output_dir / "index.html").write_text(
-        render_html(news, today, previous_html, previous_market=previous_market, previous_history=previous_history),
+        render_html(
+            news,
+            today,
+            previous_html,
+            previous_market=previous_market,
+            previous_history=previous_history,
+            previous_macro=previous_macro,
+        ),
         encoding="utf-8",
     )
     write_processed_payloads(output_dir, LAST_PROCESSED_PAYLOADS)

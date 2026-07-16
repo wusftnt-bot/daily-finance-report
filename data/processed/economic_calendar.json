@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-16 16:15:21 Asia/Taipei",
+  "generated_at": "2026-07-16 16:42:52 Asia/Taipei",
   "data_date": "2026-07-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -9,8 +9,8 @@
       "time": "07/16 20:30",
       "country": "美國",
       "event": "零售銷售",
-      "previous": "待接資料源",
-      "forecast": "待接資料源",
+      "previous": "763,705.00 million USD (2026-05-01)",
+      "forecast": "市場預期待接",
       "importance": "高",
       "impact": "美國需求、美元、Nasdaq 與台股電子"
     },
@@ -18,8 +18,8 @@
       "time": "07/16 20:30",
       "country": "美國",
       "event": "初領失業救濟金",
-      "previous": "待接資料源",
-      "forecast": "待接資料源",
+      "previous": "215,000.00 persons (2026-07-04)",
+      "forecast": "市場預期待接",
       "importance": "中",
       "impact": "就業降溫與利率預期"
     },
@@ -27,8 +27,8 @@
       "time": "07/17 20:30",
       "country": "美國",
       "event": "新屋開工 / 建築許可",
-      "previous": "待接資料源",
-      "forecast": "待接資料源",
+      "previous": "HOUST 1,177.00 thousand units (2026-05-01) / PERMIT 1,410.00 thousand units (2026-05-01)",
+      "forecast": "市場預期待接",
       "importance": "中",
       "impact": "利率敏感資產與景氣需求"
     },
@@ -36,8 +36,8 @@
       "time": "未來 72 小時",
       "country": "美國",
       "event": "CPI / PCE / Fed / 就業資料監控",
-      "previous": "待接資料源",
-      "forecast": "待接資料源",
+      "previous": "3.63 % (2026-06-01)",
+      "forecast": "市場預期待接",
       "importance": "中",
       "impact": "若有臨時公布或修正，影響利率、美元與高估值科技股"
     },

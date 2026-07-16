@@ -79,7 +79,7 @@ jobs:
           if git push; then
             exit 0
           fi
-          git fetch origin main
+          git fetch origin main:refs/remotes/origin/main
           if git show origin/main:index.html | grep -q "<meta name=\"report-date\" content=\"$today\">"; then
             echo "Another scheduled run already published $today. Treating this fallback run as successful."
             exit 0

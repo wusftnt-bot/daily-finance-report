@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import datetime as dt
 import csv
 import html
@@ -10,6 +11,7 @@ import re
 import time
 import urllib.parse
 import urllib.request
+import zipfile
 from collections import Counter
 from pathlib import Path
 from urllib.parse import urlparse
@@ -1204,6 +1206,313 @@ def finmind_dataset(dataset: str, *, data_id: str | None = None, start_date: str
     return rows if isinstance(rows, list) else []
 
 
+def fetch_bytes_url(url: str, timeout: int = 20, user_agent: str = "daily-finance-report") -> bytes:
+    request = urllib.request.Request(url, headers={"User-Agent": user_agent})
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        return response.read()
+
+
+def decode_public_csv(data: bytes) -> str:
+    candidates = ("utf-8-sig", "utf-8", "cp950", "big5")
+    best_text = ""
+    best_score = -1
+    for encoding in candidates:
+        for raw in (data, data[3:] if data.startswith(b"\xef\xbb\xbf") else data):
+            try:
+                text = raw.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+            score = sum(1 for marker in ("統計", "資料", "年月", "期間", "年度", "月份") if marker in text)
+            if score > best_score:
+                best_text = text
+                best_score = score
+    return best_text or data.decode("utf-8", errors="replace")
+
+
+def csv_rows_from_url(url: str, timeout: int = 20) -> list[list[str]]:
+    data = fetch_bytes_url(url, timeout=timeout, user_agent="Mozilla/5.0 daily-finance-report")
+    text = decode_public_csv(data)
+    return [[cell.strip().strip('"') for cell in row] for row in csv.reader(io.StringIO(text)) if any(cell.strip() for cell in row)]
+
+
+def parse_roc_month(value: object) -> str | None:
+    text = clean_text(value)
+    match = re.search(r"(\d{2,3})\D?(\d{1,2})", text)
+    if not match:
+        return None
+    year = int(match.group(1)) + 1911
+    month = int(match.group(2))
+    if not 1 <= month <= 12:
+        return None
+    return f"{year:04d}-{month:02d}-01"
+
+
+def parse_iso_month(value: object) -> str | None:
+    text = clean_text(value)
+    match = re.search(r"(\d{4})\D?M?(\d{1,2})", text)
+    if not match:
+        return parse_roc_month(text)
+    year = int(match.group(1))
+    month = int(match.group(2))
+    if not 1 <= month <= 12:
+        return None
+    return f"{year:04d}-{month:02d}-01"
+
+
+def build_macro_record(
+    *,
+    series_id: str,
+    name: str,
+    category: str,
+    date: str | None,
+    actual: object,
+    previous: object = None,
+    unit: str,
+    source: str,
+    source_url: str,
+    yoy_pct: object = None,
+    mom_pct: object = None,
+) -> dict[str, object]:
+    actual_value = parse_number(actual)
+    previous_value = parse_number(previous)
+    mom_value = parse_number(mom_pct)
+    if mom_value is None and actual_value is not None and previous_value:
+        mom_value = (actual_value / previous_value - 1) * 100
+    yoy_value = parse_number(yoy_pct)
+    return {
+        "series_id": series_id,
+        "name": name,
+        "category": category,
+        "date": date,
+        "actual": actual_value,
+        "previous": previous_value,
+        "mom_pct": round(mom_value, 2) if mom_value is not None else None,
+        "yoy_pct": round(yoy_value, 2) if yoy_value is not None else None,
+        "forecast": None,
+        "surprise": None,
+        "unit": unit,
+        "source": source,
+        "source_url": source_url,
+        "status": "ok" if actual_value is not None and date else "failed",
+        "forecast_note": "Free official source does not include market consensus; surprise is left blank instead of estimated.",
+    }
+
+
+def latest_by_date(rows: list[dict[str, object]]) -> dict[str, object] | None:
+    valid = [row for row in rows if row.get("date") and row.get("actual") is not None]
+    return max(valid, key=lambda row: str(row.get("date"))) if valid else None
+
+
+def fetch_taiwan_export_orders() -> dict[str, object]:
+    url = "https://service.moea.gov.tw/EE520/opendata/b.csv"
+    rows = csv_rows_from_url(url, timeout=20)[1:]
+    parsed = []
+    for row in rows:
+        if len(row) < 5:
+            continue
+        date = parse_roc_month(row[1])
+        parsed.append({"date": date, "actual": parse_number(row[2]), "twd_100m": parse_number(row[4])})
+    parsed = sorted([row for row in parsed if row["date"]], key=lambda row: str(row["date"]))
+    latest = latest_by_date(parsed)
+    if not latest:
+        raise RuntimeError("MOEA export orders CSV has no usable rows")
+    previous = parsed[-2] if len(parsed) >= 2 else {}
+    return build_macro_record(
+        series_id="TW_EXPORT_ORDERS",
+        name="Taiwan export orders",
+        category="Taiwan macro",
+        date=str(latest["date"]),
+        actual=latest.get("actual"),
+        previous=previous.get("actual"),
+        unit="million USD",
+        source="MOEA open data",
+        source_url=url,
+    )
+
+
+def fetch_taiwan_industrial_production() -> dict[str, object]:
+    url = "https://service.moea.gov.tw/EE520/opendata/d.csv"
+    rows = csv_rows_from_url(url, timeout=20)[1:]
+    parsed = []
+    for row in rows:
+        if len(row) < 5:
+            continue
+        code = clean_text(row[1])
+        if code and code.strip().upper() != "Z":
+            continue
+        parsed.append({"date": parse_roc_month(row[3]), "actual": parse_number(row[4])})
+    parsed = sorted([row for row in parsed if row["date"]], key=lambda row: str(row["date"]))
+    latest = latest_by_date(parsed)
+    if not latest:
+        raise RuntimeError("MOEA industrial production CSV has no usable total-industry rows")
+    previous = parsed[-2] if len(parsed) >= 2 else {}
+    yoy = None
+    if len(parsed) >= 13 and parsed[-13].get("actual"):
+        yoy = (float(latest["actual"]) / float(parsed[-13]["actual"]) - 1) * 100
+    return build_macro_record(
+        series_id="TW_INDUSTRIAL_PRODUCTION",
+        name="Taiwan industrial production index",
+        category="Taiwan macro",
+        date=str(latest["date"]),
+        actual=latest.get("actual"),
+        previous=previous.get("actual"),
+        unit="index, 2021=100",
+        source="MOEA open data",
+        source_url=url,
+        yoy_pct=yoy,
+    )
+
+
+def fetch_taiwan_exports() -> dict[str, object]:
+    url = "https://opendata.customs.gov.tw/data/6053/csv.csv"
+    rows = csv_rows_from_url(url, timeout=20)[1:]
+    parsed = []
+    for row in rows:
+        if len(row) < 3:
+            continue
+        year = parse_int(row[0])
+        month = parse_int(row[1])
+        if year is None or month is None:
+            continue
+        date = f"{year + 1911:04d}-{month:02d}-01"
+        export_total_ntd_thousand = parse_number(row[2])
+        parsed.append({"date": date, "actual": export_total_ntd_thousand / 1_000_000 if export_total_ntd_thousand is not None else None})
+    parsed = sorted([row for row in parsed if row["date"]], key=lambda row: str(row["date"]))
+    latest = latest_by_date(parsed)
+    if not latest:
+        raise RuntimeError("Customs exports CSV has no usable rows")
+    previous = parsed[-2] if len(parsed) >= 2 else {}
+    yoy = None
+    if len(parsed) >= 13 and parsed[-13].get("actual"):
+        yoy = (float(latest["actual"]) / float(parsed[-13]["actual"]) - 1) * 100
+    return build_macro_record(
+        series_id="TW_EXPORTS",
+        name="Taiwan exports",
+        category="Taiwan macro",
+        date=str(latest["date"]),
+        actual=latest.get("actual"),
+        previous=previous.get("actual"),
+        unit="billion TWD",
+        source="Customs Administration open data",
+        source_url=url,
+        yoy_pct=yoy,
+    )
+
+
+def fetch_taiwan_monetary_aggregates() -> list[dict[str, object]]:
+    url = "https://www.cbc.gov.tw/public/data/OpenData/%E7%B6%93%E7%A0%94%E8%99%95/EF17M01.csv"
+    rows = csv_rows_from_url(url, timeout=20)[1:]
+    parsed = []
+    for row in rows:
+        if len(row) < 6:
+            continue
+        parsed.append(
+            {
+                "date": parse_iso_month(row[0]),
+                "m1b": parse_number(row[-4]),
+                "m1b_yoy": parse_number(row[-3]),
+                "m2": parse_number(row[-2]),
+                "m2_yoy": parse_number(row[-1]),
+            }
+        )
+    parsed = sorted([row for row in parsed if row["date"]], key=lambda row: str(row["date"]))
+    latest = parsed[-1] if parsed else None
+    previous = parsed[-2] if len(parsed) >= 2 else {}
+    if not latest:
+        raise RuntimeError("CBC monetary aggregates CSV has no usable rows")
+    return [
+        build_macro_record(
+            series_id="TW_M1B",
+            name="Taiwan M1B",
+            category="Taiwan liquidity",
+            date=str(latest["date"]),
+            actual=latest.get("m1b"),
+            previous=previous.get("m1b"),
+            unit="million TWD",
+            source="CBC open data",
+            source_url=url,
+            yoy_pct=latest.get("m1b_yoy"),
+        ),
+        build_macro_record(
+            series_id="TW_M2",
+            name="Taiwan M2",
+            category="Taiwan liquidity",
+            date=str(latest["date"]),
+            actual=latest.get("m2"),
+            previous=previous.get("m2"),
+            unit="million TWD",
+            source="CBC open data",
+            source_url=url,
+            yoy_pct=latest.get("m2_yoy"),
+        ),
+    ]
+
+
+def fetch_taiwan_ndc_signal() -> dict[str, object]:
+    url = "https://ws.ndc.gov.tw/Download.ashx?u=LzAwMS9hZG1pbmlzdHJhdG9yLzEwL3JlbGZpbGUvNTc4MS82MzkyL2VhMjM1YmQ5LWQwNTItNGE2OS1hYmZjLWQ1Yzc4NWQzZDBlMi56aXA%3d&n=5pmv5rCj5oyH5qiZ5Y%2bK54eI6JmfLnppcA%3d%3d&icon=.zip"
+    data = fetch_bytes_url(url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+    with zipfile.ZipFile(io.BytesIO(data)) as zf:
+        candidates = []
+        for name in zf.namelist():
+            if not name.lower().endswith(".csv") or name.startswith("schema") or name == "manifest.csv":
+                continue
+            text = decode_public_csv(zf.read(name))
+            rows = [[cell.strip() for cell in row] for row in csv.reader(io.StringIO(text)) if row]
+            if rows and rows[0] and rows[0][0].lower() == "date" and len(rows[0]) >= 9:
+                candidates.append(rows)
+        if not candidates:
+            raise RuntimeError("NDC ZIP has no usable indicator CSV")
+        rows = max(candidates, key=len)[1:]
+    parsed = []
+    for row in rows:
+        if len(row) < 9:
+            continue
+        date = parse_iso_month(row[0])
+        score = parse_number(row[-2])
+        if date and score is not None:
+            parsed.append({"date": date, "actual": score, "signal": clean_text(row[-1])})
+    parsed = sorted(parsed, key=lambda row: str(row["date"]))
+    latest = parsed[-1] if parsed else None
+    previous = parsed[-2] if len(parsed) >= 2 else {}
+    if not latest:
+        raise RuntimeError("NDC signal CSV has no usable rows")
+    record = build_macro_record(
+        series_id="TW_NDC_SIGNAL",
+        name="Taiwan NDC business cycle signal",
+        category="Taiwan macro",
+        date=str(latest["date"]),
+        actual=latest.get("actual"),
+        previous=previous.get("actual"),
+        unit="score",
+        source="NDC open data",
+        source_url=url,
+    )
+    record["signal"] = latest.get("signal")
+    return record
+
+
+def fetch_taiwan_macro_records() -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+    fetchers = [
+        ("TW_EXPORTS", fetch_taiwan_exports, "Customs Administration open data"),
+        ("TW_EXPORT_ORDERS", fetch_taiwan_export_orders, "MOEA open data"),
+        ("TW_INDUSTRIAL_PRODUCTION", fetch_taiwan_industrial_production, "MOEA open data"),
+        ("TW_NDC_SIGNAL", fetch_taiwan_ndc_signal, "NDC open data"),
+        ("TW_M1B_M2", fetch_taiwan_monetary_aggregates, "CBC open data"),
+    ]
+    for series_id, fetcher, source in fetchers:
+        try:
+            result = fetcher()
+            if isinstance(result, list):
+                records.extend(result)
+            else:
+                records.append(result)
+        except Exception as exc:
+            print(f"Taiwan macro fallback for {series_id}: {exc}")
+            records.append({"series_id": series_id, "name": series_id, "category": "Taiwan macro", "status": "failed", "source": source, "error": str(exc)[:160]})
+    return records
+
+
 def fetch_market_breadth(today: dt.date, tickers: list[str]) -> dict[str, object]:
     price_dataset = latest_twse_price_momentum_rows(today)
     price_records = price_dataset.get("records") if isinstance(price_dataset, dict) else []
@@ -1234,6 +1543,58 @@ def fetch_market_breadth(today: dt.date, tickers: list[str]) -> dict[str, object
                 "source": "FinMind TaiwanStockMarginPurchaseShortSale",
             }
         )
+    securities_lending_records = []
+    for ticker in tickers:
+        try:
+            rows = finmind_dataset("TaiwanStockSecuritiesLending", data_id=ticker, start_date=start_date)
+        except Exception as exc:
+            print(f"FinMind securities lending fallback for {ticker}: {exc}")
+            continue
+        if not rows:
+            continue
+        latest_date = max(str(row.get("date", "")) for row in rows)
+        same_day = [row for row in rows if str(row.get("date")) == latest_date]
+        total_volume = sum(int(row.get("volume") or 0) for row in same_day)
+        fee_rates = [float(row.get("fee_rate")) for row in same_day if isinstance(row.get("fee_rate"), (int, float))]
+        securities_lending_records.append(
+            {
+                "ticker": ticker,
+                "date": latest_date,
+                "transaction_count": len(same_day),
+                "lending_volume": total_volume,
+                "avg_fee_rate": round(sum(fee_rates) / len(fee_rates), 3) if fee_rates else None,
+                "source": "FinMind TaiwanStockSecuritiesLending",
+            }
+        )
+    history_by_date: dict[str, list[dict[str, object]]] = {}
+    for offset in range(0, 45):
+        if len(history_by_date) >= 22:
+            break
+        dataset = latest_twse_price_momentum_rows(today - dt.timedelta(days=offset))
+        records = dataset.get("records") if isinstance(dataset, dict) else []
+        dataset_date = str(dataset.get("date") or "")
+        if dataset_date and isinstance(records, list) and records and dataset_date not in history_by_date:
+            history_by_date[dataset_date] = records
+    closes_by_ticker: dict[str, list[float]] = {}
+    for date_key in sorted(history_by_date):
+        for row in history_by_date[date_key]:
+            ticker = str(row.get("ticker") or "")
+            close = row.get("close")
+            if ticker and isinstance(close, (int, float)):
+                closes_by_ticker.setdefault(ticker, []).append(float(close))
+    new_20d_high = 0
+    new_20d_low = 0
+    for row in price_records:
+        ticker = str(row.get("ticker") or "")
+        close = row.get("close")
+        history = closes_by_ticker.get(ticker, [])
+        if not isinstance(close, (int, float)) or len(history) < 15:
+            continue
+        window = history[-20:]
+        if close >= max(window):
+            new_20d_high += 1
+        if close <= min(window):
+            new_20d_low += 1
     status = "ok" if price_dataset.get("status") == "ok" and margin_records else "partial" if price_records or margin_records else "failed"
     return {
         "status": status,
@@ -1245,14 +1606,18 @@ def fetch_market_breadth(today: dt.date, tickers: list[str]) -> dict[str, object
             "declining": declining,
             "unchanged": unchanged,
             "advance_decline_ratio": round(advancing / declining, 2) if declining else None,
-            "new_20d_high": None,
-            "new_20d_low": None,
+            "new_20d_high": new_20d_high,
+            "new_20d_low": new_20d_low,
             "new_52w_high": None,
             "new_52w_low": None,
-            "new_high_low_status": "not_connected",
+            "new_high_low_status": "partial_20d_connected_52w_pending",
         },
         "margin_records": margin_records,
-        "securities_lending": {"status": "not_connected", "source": "TWSE / TPEx"},
+        "securities_lending": {
+            "status": "ok" if securities_lending_records else "failed",
+            "source": "FinMind TaiwanStockSecuritiesLending",
+            "records": securities_lending_records,
+        },
         "records": price_records[:30],
     }
 
@@ -1980,6 +2345,31 @@ def render_derivatives_and_breadth(derivatives_flow: dict[str, object], market_b
     )
 
 
+def render_derivatives_and_breadth_v2(derivatives_flow: dict[str, object], market_breadth: dict[str, object]) -> str:
+    futures = next((row for row in derivatives_flow.get("records", []) if row.get("dataset") == "foreign_taiex_futures_net_position"), {})
+    put_call = next((row for row in derivatives_flow.get("records", []) if row.get("dataset") == "txo_put_call_ratio"), {})
+    breadth = market_breadth.get("breadth") if isinstance(market_breadth.get("breadth"), dict) else {}
+    lending = market_breadth.get("securities_lending") if isinstance(market_breadth.get("securities_lending"), dict) else {}
+    rows = [
+        ("外資台指期淨部位", format_plain_number(futures.get("open_interest_net_lots"), " 口"), f"TAIFEX {derivatives_flow.get('date') or '資料更新失敗'}"),
+        ("TXO Put/Call Ratio", format_plain_number(put_call.get("put_call_volume_ratio"), "%"), "成交量 Put/Call；>100 代表賣權成交量高於買權"),
+        ("上市股上漲/下跌家數", f"{format_plain_number(breadth.get('advancing'))} / {format_plain_number(breadth.get('declining'))}", f"A/D Ratio {format_plain_number(breadth.get('advance_decline_ratio'))}"),
+        ("20日新高/新低", f"{format_plain_number(breadth.get('new_20d_high'))} / {format_plain_number(breadth.get('new_20d_low'))}", "TWSE MI_INDEX 近20個交易日；52週新高低仍待長週期資料"),
+        ("核心股融資融券", f"{len(market_breadth.get('margin_records', []))} 檔已更新", "FinMind 公開融資融券資料"),
+        ("核心股借券交易", f"{len(lending.get('records', []))} 檔已更新", "FinMind TaiwanStockSecuritiesLending"),
+    ]
+    return "\n".join(
+        f"""
+        <article class="capital-card">
+          <span>{html.escape(title)}</span>
+          <strong>{html.escape(value)}</strong>
+          <p>{html.escape(note)}</p>
+        </article>
+        """
+        for title, value, note in rows
+    )
+
+
 def render_macro_table(macro_indicators: dict[str, object], prefix: str) -> str:
     records = [row for row in macro_indicators.get("records", []) if str(row.get("category", "")).startswith(prefix)]
     if not records:
@@ -2221,6 +2611,161 @@ FRED_SERIES = {
 }
 
 
+ISM_INDEX_URL = "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/"
+MONTH_NUMBER = {
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+}
+
+
+def html_text_lines(raw_html: str) -> list[str]:
+    text = html.unescape(re.sub(r"<[^>]+>", "\n", raw_html))
+    return [re.sub(r"\s+", " ", line).strip() for line in text.splitlines() if line.strip()]
+
+
+def parse_ism_report_date(lines: list[str]) -> str | None:
+    for line in lines:
+        match = re.search(r"\b([A-Z][a-z]+)\s+(\d{4})\s+ISM.*Manufacturing PMI", line)
+        if not match:
+            continue
+        month = MONTH_NUMBER.get(match.group(1).lower())
+        if month:
+            return f"{int(match.group(2)):04d}-{month:02d}-01"
+    return None
+
+
+def parse_ism_table_row(lines: list[str], label: str) -> tuple[float | None, float | None, float | None]:
+    for line in lines:
+        if label not in line:
+            continue
+        values = [parse_number(value) for value in re.findall(r"(?<![A-Za-z0-9])[+-]?\d+(?:\.\d+)?(?![A-Za-z0-9])", line)]
+        values = [value for value in values if value is not None]
+        if len(values) >= 3:
+            return values[0], values[1], values[2]
+    return None, None, None
+
+
+def fetch_ism_manufacturing() -> list[dict[str, object]]:
+    index_html = fetch_text_url(ISM_INDEX_URL, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+    report_url = None
+    report_html = None
+    for href in re.findall(r'href=["\']([^"\']*?/ism-pmi-reports/pmi/[^"\']+/?)["\']', index_html):
+        if href.startswith("/"):
+            href = "https://www.ismworld.org" + href
+        if href.startswith("https://www.ismworld.org/"):
+            report_url = href
+            break
+    if not report_url:
+        today = dt.datetime.now(TW).date().replace(day=15)
+        candidate_months: list[str] = []
+        for offset in range(0, 5):
+            candidate = today - dt.timedelta(days=31 * offset)
+            month_name = candidate.strftime("%B").lower()
+            if month_name not in candidate_months:
+                candidate_months.append(month_name)
+        for month_name in candidate_months:
+            candidate_url = f"{ISM_INDEX_URL.rstrip('/')}/pmi/{month_name}/"
+            try:
+                candidate_html = fetch_text_url(candidate_url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+            except Exception:
+                continue
+            if "Manufacturing PMI" in candidate_html and "MANUFACTURING AT A GLANCE" in candidate_html:
+                report_url = candidate_url
+                report_html = candidate_html
+                break
+    if not report_url:
+        raise RuntimeError("ISM report link not found")
+    if report_html is None:
+        report_html = fetch_text_url(report_url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+    lines = html_text_lines(report_html)
+    report_date = parse_ism_report_date(lines)
+    records = []
+    for series_id, name, label in (
+        ("US_ISM_MANUFACTURING", "ISM Manufacturing PMI", "Manufacturing PMI"),
+        ("US_ISM_NEW_ORDERS", "ISM Manufacturing New Orders", "New Orders"),
+    ):
+        actual, previous, change = parse_ism_table_row(lines, label)
+        if actual is None and label == "Manufacturing PMI":
+            title_match = re.search(r"Manufacturing PMI[^0-9]{0,30}([0-9]+(?:\.[0-9]+)?)\s*%", report_html, re.I)
+            actual = parse_number(title_match.group(1)) if title_match else None
+        record = build_macro_record(
+            series_id=series_id,
+            name=name,
+            category="US demand",
+            date=report_date,
+            actual=actual,
+            previous=previous,
+            unit="index",
+            source="ISM official report",
+            source_url=report_url,
+        )
+        if change is not None:
+            record["mom_pct"] = round(change, 2)
+            record["point_change"] = round(change, 2)
+        record["forecast_note"] = "ISM official report does not publish market consensus; surprise is left blank instead of estimated."
+        records.append(record)
+    return records
+
+
+def fetch_macromicro_ism_records() -> list[dict[str, object]]:
+    series = [
+        ("US_ISM_MANUFACTURING", "ISM Manufacturing PMI", "https://en.macromicro.me/series/265/ism-pmi"),
+        ("US_ISM_NEW_ORDERS", "ISM Manufacturing New Orders", "https://en.macromicro.me/series/267/ism-manufacturing-neworders"),
+    ]
+    records: list[dict[str, object]] = []
+    for series_id, name, url in series:
+        page = fetch_text_url(url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+        match = re.search(r'data:JSON\.parse\(atob\("([A-Za-z0-9+/=]+)"\)\)', page)
+        if not match:
+            raise RuntimeError(f"MacroMicro embedded data not found for {series_id}")
+        points = json.loads(base64.b64decode(match.group(1)).decode("utf-8"))
+        values = []
+        for point in points:
+            if not isinstance(point, list) or len(point) < 2:
+                continue
+            timestamp = parse_number(point[0])
+            value = parse_number(point[1])
+            if timestamp is None or value is None:
+                continue
+            date = (dt.date(1970, 1, 1) + dt.timedelta(milliseconds=timestamp)).replace(day=1).isoformat()
+            values.append({"date": date, "value": value})
+        values = sorted(values, key=lambda row: row["date"])
+        if not values:
+            raise RuntimeError(f"MacroMicro embedded data empty for {series_id}")
+        latest = values[-1]
+        previous = values[-2] if len(values) >= 2 else {}
+        point_change = None
+        if previous.get("value") is not None:
+            point_change = latest["value"] - float(previous["value"])
+        record = build_macro_record(
+            series_id=series_id,
+            name=name,
+            category="US demand",
+            date=latest["date"],
+            actual=latest["value"],
+            previous=previous.get("value"),
+            unit="index",
+            source="MacroMicro public series (source: ISM)",
+            source_url=url,
+        )
+        if point_change is not None:
+            record["mom_pct"] = round(point_change, 2)
+            record["point_change"] = round(point_change, 2)
+        record["forecast_note"] = "Market consensus is not included in this free public series; surprise is left blank instead of estimated."
+        records.append(record)
+    return records
+
+
 def fetch_fred_series(series_id: str) -> dict[str, object]:
     start_date = (dt.datetime.now(TW).date() - dt.timedelta(days=560)).isoformat()
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?{urllib.parse.urlencode({'id': series_id, 'cosd': start_date})}"
@@ -2315,20 +2860,29 @@ def fetch_macro_indicators(today: dt.date) -> dict[str, object]:
                     "source": "FRED",
                 }
             )
-    records.extend(
-        [
-            {"series_id": "ISM_MANUFACTURING", "name": "ISM Manufacturing PMI", "category": "US demand", "status": "not_connected", "source": "ISM / FRED"},
-            {"series_id": "TW_EXPORTS", "name": "Taiwan exports", "category": "Taiwan macro", "status": "not_connected", "source": "MOEA"},
-            {"series_id": "TW_EXPORT_ORDERS", "name": "Taiwan export orders", "category": "Taiwan macro", "status": "not_connected", "source": "MOEA"},
-            {"series_id": "TW_INDUSTRIAL_PRODUCTION", "name": "Taiwan industrial production", "category": "Taiwan macro", "status": "not_connected", "source": "MOEA"},
-            {"series_id": "TW_NDC_SIGNAL", "name": "Taiwan NDC business cycle signal", "category": "Taiwan macro", "status": "not_connected", "source": "NDC"},
-            {"series_id": "TW_M1B_M2", "name": "Taiwan M1B / M2", "category": "Taiwan liquidity", "status": "not_connected", "source": "CBC"},
-        ]
-    )
+    try:
+        records.extend(fetch_ism_manufacturing())
+    except Exception as exc:
+        print(f"ISM official fallback: {exc}")
+        try:
+            records.extend(fetch_macromicro_ism_records())
+        except Exception as fallback_exc:
+            print(f"ISM MacroMicro fallback: {fallback_exc}")
+            records.append(
+                {
+                    "series_id": "US_ISM_MANUFACTURING",
+                    "name": "ISM Manufacturing PMI",
+                    "category": "US demand",
+                    "status": "failed",
+                    "source": "ISM official report / MacroMicro public series",
+                    "error": str(fallback_exc)[:160],
+                }
+            )
+    records.extend(fetch_taiwan_macro_records())
     ok_count = sum(1 for row in records if row.get("status") == "ok")
     return {
-        "status": "ok" if ok_count >= len(FRED_SERIES) else "partial" if ok_count else "failed",
-        "source": "FRED / ISM / MOEA / NDC / CBC",
+        "status": "ok" if records and ok_count == len(records) else "partial" if ok_count else "failed",
+        "source": "FRED / ISM official report / MacroMicro / data.gov.tw / MOEA / NDC / CBC / Customs",
         "date": today.isoformat(),
         "records": records,
     }
@@ -2540,6 +3094,9 @@ def build_processed_payloads(
         }
         for item in candidates
     ]
+    macro_records = macro_indicators.get("records") if isinstance(macro_indicators.get("records"), list) else []
+    taiwan_macro_records = [row for row in macro_records if str(row.get("category", "")).startswith("Taiwan")]
+    taiwan_macro_ok = sum(1 for row in taiwan_macro_records if row.get("status") == "ok")
     data_health_rows = [
         {
             "dataset": "market_summary",
@@ -2597,9 +3154,9 @@ def build_processed_payloads(
         },
         {
             "dataset": "taiwan_macro_actual_forecast",
-            "status": "not_connected",
-            "source": "DGBAS / MOEA / NDC / CBC / TWSE",
-            "last_successful_update": None,
+            "status": "ok" if taiwan_macro_records and taiwan_macro_ok == len(taiwan_macro_records) else "partial" if taiwan_macro_ok else "failed",
+            "source": "Customs / MOEA / NDC / CBC public data",
+            "last_successful_update": generated_at if taiwan_macro_ok else None,
         },
         {
             "dataset": "company_fundamentals",
@@ -2819,7 +3376,7 @@ def render_html(
     </table>
 
     <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>先顯示已接資料與待接資料源，避免用舊資料或假資料冒充即時資料。</p></div>
-    <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot, capital_flow)}{render_derivatives_and_breadth(derivatives_flow, market_breadth)}</section>
+    <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot, capital_flow)}{render_derivatives_and_breadth_v2(derivatives_flow, market_breadth)}</section>
 
     <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>核心追蹤池僅保留鴻海、富邦金、台積電、台達電；其他標的須由 TWSE T86 動態法人雷達進入候選。</p></div>
     <table>
@@ -2834,7 +3391,7 @@ def render_html(
     <div class="section-title"><h2>投資影響卡</h2><p>每則重點新聞對應受惠族群、台股標的與驗證指標。</p></div>
     <section class="impact-grid">{render_impact_cards(news)}</section>
 
-    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>FRED 已接 CPI、PCE、非農、零售銷售、Fed Funds、2Y/10Y；ISM 與市場預期/Surprise 仍保留待接狀態。</p></div>
+    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>FRED 已接 CPI、PCE、非農、零售銷售、Fed Funds、2Y/10Y；ISM 製造業 PMI 已接官方報告。免費官方來源不含市場共識，Forecast / Surprise 保留空白並標註原因。</p></div>
     <section class="panel">{render_macro_table(macro_indicators, "US")}</section>
 
     <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>台灣出口、外銷訂單、工業生產、景氣燈號、M1B/M2 已列入資料層契約；待官方端點驗證後逐一接入。</p></div>

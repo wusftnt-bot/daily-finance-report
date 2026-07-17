@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17 05:40:10 Asia/Taipei",
+  "generated_at": "2026-07-17 10:44:49 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -12,12 +12,12 @@
     },
     {
       "date": "2026-07-16",
-      "score": 54,
+      "score": 53,
       "status": "黃燈警戒"
     },
     {
       "date": "2026-07-17",
-      "score": 53,
+      "score": 50,
       "status": "黃燈警戒"
     }
   ]

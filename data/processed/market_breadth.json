@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17 05:40:10 Asia/Taipei",
+  "generated_at": "2026-07-17 10:44:49 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -11,11 +11,11 @@
     "declining": 600,
     "unchanged": 111,
     "advance_decline_ratio": 0.62,
-    "new_20d_high": null,
-    "new_20d_low": null,
+    "new_20d_high": 99,
+    "new_20d_low": 163,
     "new_52w_high": null,
     "new_52w_low": null,
-    "new_high_low_status": "not_connected"
+    "new_high_low_status": "partial_20d_connected_52w_pending"
   },
   "margin_records": [
     {
@@ -56,8 +56,42 @@
     }
   ],
   "securities_lending": {
-    "status": "not_connected",
-    "source": "TWSE / TPEx"
+    "status": "ok",
+    "source": "FinMind TaiwanStockSecuritiesLending",
+    "records": [
+      {
+        "ticker": "2330",
+        "date": "2026-07-16",
+        "transaction_count": 5,
+        "lending_volume": 1442,
+        "avg_fee_rate": 0.14,
+        "source": "FinMind TaiwanStockSecuritiesLending"
+      },
+      {
+        "ticker": "2317",
+        "date": "2026-07-16",
+        "transaction_count": 10,
+        "lending_volume": 24549,
+        "avg_fee_rate": 0.177,
+        "source": "FinMind TaiwanStockSecuritiesLending"
+      },
+      {
+        "ticker": "2308",
+        "date": "2026-07-16",
+        "transaction_count": 2,
+        "lending_volume": 156,
+        "avg_fee_rate": 0.3,
+        "source": "FinMind TaiwanStockSecuritiesLending"
+      },
+      {
+        "ticker": "2881",
+        "date": "2026-07-16",
+        "transaction_count": 5,
+        "lending_volume": 22353,
+        "avg_fee_rate": 0.268,
+        "source": "FinMind TaiwanStockSecuritiesLending"
+      }
+    ]
   },
   "records": [
     {

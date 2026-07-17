@@ -50,8 +50,8 @@ Current P0 files:
 | Economic calendar | Near-term high-impact event template | Manual P0 template | partial | no | show `待接資料源` for actual/forecast |
 | Sector news context | News theme classifier | Google News RSS | partial | no | label as qualitative context |
 | TAIFEX derivatives flow | foreign TAIEX futures net position, TXO Put/Call Ratio | TAIFEX HTML public pages | connected | no | mark failed/partial |
-| TWSE/TPEx breadth and margin | advance/decline, core-stock margin and short-sale balance; lending and new highs/lows pending | TWSE MI_INDEX / FinMind | partial | no | show partial and pending subfields |
-| Macro indicators | US CPI, PCE, payrolls, retail sales, Fed Funds, 2Y/10Y; Taiwan macro pending | FRED / official macro sources | partial | no | show connected rows and not_connected rows |
+| TWSE/TPEx breadth and margin | advance/decline, 20-trading-day new highs/lows, core-stock margin and short-sale balance, core-stock securities-lending transactions | TWSE MI_INDEX / FinMind | connected / partial | no | show partial when a subsource fails; keep 52-week highs/lows pending |
+| Macro indicators | US CPI, PCE, payrolls, claims, retail sales, housing, Fed Funds, 2Y/10Y, ISM PMI/New Orders, Taiwan exports, export orders, industrial production, NDC signal, M1B/M2 | FRED / ISM official report / MacroMicro / Customs / MOEA / NDC / CBC | connected | no | leave forecast/surprise blank when consensus is unavailable |
 | Company fundamentals | monthly revenue, EPS, margins, ROE, inventory, receivables for fixed core pool | FinMind public datasets | connected / partial by ticker | no | show failed ticker rows |
 
 ## P1 Sources
@@ -68,10 +68,10 @@ Current P0 files:
 
 These sources are not yet connected and must be added in small, testable batches:
 
-- US macro actual/forecast/surprise: FRED actuals are connected; forecast/surprise, ISM direct source, BLS/BEA/Census official release metadata remain pending.
-- Taiwan macro actual/forecast/surprise: DGBAS, MOEA, NDC, CBC remain pending.
+- US macro actuals: FRED actuals are connected; ISM official page is attempted first, then MacroMicro public series is used as a fallback because the official ISM site can return reCAPTCHA/closed connections to unattended jobs. Forecast/surprise and BLS/BEA/Census official release metadata remain pending.
+- Taiwan macro actuals: exports, export orders, industrial production, NDC signal, M1B, and M2 are connected through Customs / MOEA / NDC / CBC public data. Forecast/surprise and DGBAS CPI/unemployment remain pending.
 - TAIFEX futures foreign net position and options put/call ratio are connected.
-- TWSE/TPEx market breadth and core-stock margin are connected/partial; securities lending and 20-day/52-week new highs/lows remain pending.
+- TWSE market breadth, 20-trading-day new highs/lows, core-stock margin, and core-stock securities lending are connected/partial. Full-market official TWSE/TPEx lending-sale balance and 52-week highs/lows remain pending.
 - Company fundamentals: FinMind monthly revenue, quarterly EPS, margins, ROE, inventory, receivables are connected for the fixed core pool; direct MOPS/TWSE/TPEx source validation remains pending.
 - Sector rotation depth: 5/20/60-day sector returns, sector turnover, institutional flow by sector, revenue growth by sector.
 

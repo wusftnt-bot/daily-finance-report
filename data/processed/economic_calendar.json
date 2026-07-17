@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17 15:42:20 Asia/Taipei",
+  "generated_at": "2026-07-17 16:04:11 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -18,19 +18,19 @@
       "time": "每日",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金訊號",
-      "previous": "法人合計 -2617.2 億; 外資台指期 -86,189 口; Put/Call 83.63%; USD/TWD 32.352",
+      "previous": "法人合計 -2617.2 億; 外資台指期 -86,189 口; Put/Call 83.63%; USD/TWD 32.374",
       "forecast": "不適用；以每日實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持"
     },
     {
-      "time": "本週",
+      "time": "07/16 14:00",
       "country": "台灣",
-      "event": "上市櫃月營收與重大公告追蹤",
-      "previous": "2330 台積電 最新月營收 4426.8 億元",
-      "forecast": "不適用；以公司公告與月營收實際值驗證",
+      "event": "2330 台積電 Q2 法說會與財報重點",
+      "previous": "Q2營收 US$40.20B；毛利率67.7%；營益率60.3%；淨利約 NT$7066億；EPS NT$27.25",
+      "forecast": "Q3指引：營收 US$44.6-45.8B；毛利率65.0-67.0%；營益率56.0-58.0%",
       "importance": "高",
-      "impact": "驗證 AI 伺服器、半導體、電子零組件基本面是否延續"
+      "impact": "AI/HPC需求、先進製程、CoWoS、AI伺服器與半導體供應鏈；來源：TSMC IR 2026 Q2 results / earnings call"
     },
     {
       "time": "本週",

@@ -2257,6 +2257,21 @@ def latest_ok_record(records: list[dict[str, object]], key: str, value: object) 
     return latest_record(matches)
 
 
+def recent_company_material_event(today: dt.date) -> dict[str, str] | None:
+    tsmc_q2_date = dt.date(2026, 7, 16)
+    if 0 <= (today - tsmc_q2_date).days <= 7:
+        return {
+            "time": "07/16 14:00",
+            "country": "台灣",
+            "event": "2330 台積電 Q2 法說會與財報重點",
+            "previous": "Q2營收 US$40.20B；毛利率67.7%；營益率60.3%；淨利約 NT$7066億；EPS NT$27.25",
+            "forecast": "Q3指引：營收 US$44.6-45.8B；毛利率65.0-67.0%；營益率56.0-58.0%",
+            "importance": "高",
+            "impact": "AI/HPC需求、先進製程、CoWoS、AI伺服器與半導體供應鏈；來源：TSMC IR 2026 Q2 results / earnings call",
+        }
+    return None
+
+
 def enrich_event_calendar_v2(
     events: list[dict[str, str]],
     macro_indicators: dict[str, object],
@@ -2272,6 +2287,7 @@ def enrich_event_calendar_v2(
     futures = next((row for row in derivatives_records if row.get("dataset") == "foreign_taiex_futures_net_position"), {})
     pcr = next((row for row in derivatives_records if row.get("dataset") == "txo_put_call_ratio"), {})
     latest_revenue = latest_record([row for row in fund_records if isinstance(row.get("latest_month_revenue"), (int, float))])
+    company_event = recent_company_material_event(dt.datetime.now(TW).date())
     retail = next((row for row in macro_records if row.get("series_id") == "RSAFS" and row.get("status") == "ok"), None)
     claims = next((row for row in macro_records if row.get("series_id") == "ICSA" and row.get("status") == "ok"), None)
     ism = next((row for row in macro_records if row.get("series_id") == "US_ISM_NEW_ORDERS" and row.get("status") == "ok"), None)
@@ -2318,6 +2334,8 @@ def enrich_event_calendar_v2(
             "impact": "影響美元、2Y/10Y 殖利率與科技股估值折現率",
         },
     ]
+    if company_event:
+        rows[2] = company_event
     return rows[:6]
 
 

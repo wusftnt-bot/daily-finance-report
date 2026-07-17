@@ -775,6 +775,39 @@ def fetch_yahoo_quote(symbol: str) -> dict[str, object]:
         return {"value": None, "change_pct": None, "change_5d": None, "change_20d": None, "ytd_change": None, "high_52w_gap": None, "data_time": "資料更新失敗", "ok": False}
 
 
+def fetch_tpex_index_quote() -> dict[str, object]:
+    url = "https://www.tpex.org.tw/openapi/v1/tpex_index"
+    try:
+        rows = fetch_json_url(url, timeout=10)
+        if not isinstance(rows, list) or not rows:
+            raise RuntimeError("TPEx index API returned no rows")
+        points = []
+        for row in rows:
+            close = parse_number(row.get("Close"))
+            if close is None:
+                continue
+            points.append({"date": str(row.get("Date") or ""), "close": close, "change": parse_number(row.get("Change"))})
+        points = sorted(points, key=lambda item: item["date"])
+        if not points:
+            raise RuntimeError("TPEx index API returned no numeric close")
+        latest = points[-1]
+        previous = points[-2]["close"] if len(points) >= 2 else (latest["close"] - (latest.get("change") or 0))
+        return {
+            "value": latest["close"],
+            "change_pct": pct_change(latest["close"], previous),
+            "change_5d": pct_change(latest["close"], points[-6]["close"] if len(points) >= 6 else None),
+            "change_20d": pct_change(latest["close"], points[-21]["close"] if len(points) >= 21 else None),
+            "ytd_change": None,
+            "high_52w_gap": None,
+            "data_time": f"{latest['date']} TPEx official close",
+            "ok": True,
+            "source": "TPEx OpenAPI tpex_index",
+        }
+    except Exception as exc:
+        print(f"TPEx index fallback failed: {exc}")
+        return {"value": None, "change_pct": None, "change_5d": None, "change_20d": None, "ytd_change": None, "high_52w_gap": None, "data_time": "TPEx data unavailable", "ok": False}
+
+
 def parse_number(value: object) -> float | None:
     text = clean_text(value).replace(",", "").replace("--", "")
     text = re.sub(r"<[^>]+>", "", text)
@@ -796,6 +829,12 @@ def format_ntd_billion(value: object) -> str:
         return "待更新"
     sign = "+" if value >= 0 else ""
     return f"{sign}{value / 100_000_000:.1f} 億"
+
+
+def format_ntd_yi_abs(value: object) -> str:
+    if not isinstance(value, (int, float)):
+        return "資料暫缺"
+    return f"{value / 100_000_000:.1f} 億元"
 
 
 def fetch_twse_json(path: str, params: dict[str, str], timeout: int = 12) -> dict[str, object]:
@@ -1729,6 +1768,8 @@ def market_snapshot() -> list[dict[str, object]]:
     rows = []
     for label, symbol, group in MARKET_TICKERS:
         quote = fetch_yahoo_quote(symbol)
+        if symbol == "^TWOII" and not quote.get("ok"):
+            quote = fetch_tpex_index_quote()
         rows.append({"label": label, "symbol": symbol, "group": group, **quote})
     return rows
 
@@ -2211,6 +2252,133 @@ def enrich_event_calendar(events: list[dict[str, str]], macro_indicators: dict[s
     return enriched
 
 
+def latest_ok_record(records: list[dict[str, object]], key: str, value: object) -> dict[str, object] | None:
+    matches = [row for row in records if row.get(key) == value and row.get("status", "ok") == "ok"]
+    return latest_record(matches)
+
+
+def enrich_event_calendar_v2(
+    events: list[dict[str, str]],
+    macro_indicators: dict[str, object],
+    capital_flow: dict[str, object],
+    derivatives_flow: dict[str, object],
+    fundamentals: dict[str, object],
+    snapshot: list[dict[str, object]],
+) -> list[dict[str, str]]:
+    macro_records = macro_indicators.get("records") if isinstance(macro_indicators.get("records"), list) else []
+    fund_records = fundamentals.get("records") if isinstance(fundamentals.get("records"), list) else []
+    derivatives_records = derivatives_flow.get("records") if isinstance(derivatives_flow.get("records"), list) else []
+    twd = next((row for row in snapshot if row.get("symbol") == "TWD=X"), {})
+    futures = next((row for row in derivatives_records if row.get("dataset") == "foreign_taiex_futures_net_position"), {})
+    pcr = next((row for row in derivatives_records if row.get("dataset") == "txo_put_call_ratio"), {})
+    latest_revenue = latest_record([row for row in fund_records if isinstance(row.get("latest_month_revenue"), (int, float))])
+    retail = next((row for row in macro_records if row.get("series_id") == "RSAFS" and row.get("status") == "ok"), None)
+    claims = next((row for row in macro_records if row.get("series_id") == "ICSA" and row.get("status") == "ok"), None)
+    ism = next((row for row in macro_records if row.get("series_id") == "US_ISM_NEW_ORDERS" and row.get("status") == "ok"), None)
+    fed = next((row for row in macro_records if row.get("series_id") == "FEDFUNDS" and row.get("status") == "ok"), None)
+    rows = [
+        {
+            "time": "未來 72 小時",
+            "country": "美國",
+            "event": "美國需求與利率觀察：零售銷售 / 初領失業金 / ISM 新訂單",
+            "previous": " / ".join(part for part in [
+                f"Retail {format_macro_actual(retail)}" if retail else "",
+                f"Claims {format_macro_actual(claims)}" if claims else "",
+                f"ISM New Orders {format_macro_actual(ism)}" if ism else "",
+            ] if part) or "資料更新失敗",
+            "forecast": "免費官方來源未提供一致市場共識；不估算",
+            "importance": "高",
+            "impact": "影響美債殖利率、美元、高估值科技股與台股外資風險偏好",
+        },
+        {
+            "time": "每日",
+            "country": "台灣",
+            "event": "外資 / 投信 / 台指期 / 新台幣資金訊號",
+            "previous": f"法人合計 {format_ntd_billion(capital_flow.get('total_net'))}; 外資台指期 {format_plain_number(futures.get('open_interest_net_lots'), ' 口')}; Put/Call {format_plain_number(pcr.get('put_call_volume_ratio'), '%')}; USD/TWD {format_market_value(twd)}",
+            "forecast": "不適用；以每日實際資金流判讀",
+            "importance": "高",
+            "impact": "判斷權值股、電子股與 ETF 資金是否同向支持",
+        },
+        {
+            "time": "本週",
+            "country": "台灣",
+            "event": "上市櫃月營收與重大公告追蹤",
+            "previous": f"{latest_revenue.get('ticker')} {latest_revenue.get('name')} 最新月營收 {format_ntd_yi_abs(latest_revenue.get('latest_month_revenue'))}" if latest_revenue else "核心股月營收資料更新失敗",
+            "forecast": "不適用；以公司公告與月營收實際值驗證",
+            "importance": "高",
+            "impact": "驗證 AI 伺服器、半導體、電子零組件基本面是否延續",
+        },
+        {
+            "time": "本週",
+            "country": "美國",
+            "event": "Fed 利率與金融條件追蹤",
+            "previous": f"Fed Funds {format_macro_actual(fed)}" if fed else "Fed Funds 資料更新失敗",
+            "forecast": "FOMC / FedWatch 類共識待正式免費來源接入",
+            "importance": "中",
+            "impact": "影響美元、2Y/10Y 殖利率與科技股估值折現率",
+        },
+    ]
+    return rows[:6]
+
+
+def direction_class(value: object) -> str:
+    if isinstance(value, (int, float)):
+        return "num-up" if value > 0 else "num-down" if value < 0 else "num-flat"
+    return "num-na"
+
+
+def signal_class(score: object) -> str:
+    if not isinstance(score, (int, float)):
+        return "signal-gray"
+    if score >= 70:
+        return "signal-red"
+    if score >= 55:
+        return "signal-yellow"
+    if score >= 40:
+        return "signal-green"
+    return "signal-blue"
+
+
+def format_macro_actual(row: dict[str, object]) -> str:
+    value = row.get("actual")
+    if not isinstance(value, (int, float)):
+        return "資料暫缺"
+    series_id = str(row.get("series_id") or "")
+    unit = str(row.get("unit") or "")
+    if series_id in {"TW_M1B", "TW_M2"}:
+        return f"{value / 1_000_000:.2f} 兆元"
+    if series_id == "TW_EXPORTS":
+        return f"{value / 1_000:.2f} 兆元"
+    if series_id == "TW_EXPORT_ORDERS":
+        return f"{value / 1_000:.2f} 十億美元"
+    if unit == "million USD":
+        return f"{value / 1_000:.2f} 十億美元"
+    if unit == "million TWD":
+        return f"{value / 1_000_000:.2f} 兆元"
+    if unit == "million USD":
+        return f"{value / 1_000:.2f} 十億美元"
+    if unit == "thousand persons":
+        return f"{value:,.0f} 千人"
+    if unit == "persons":
+        return f"{value:,.0f} 人"
+    if unit == "thousand units":
+        return f"{value:,.0f} 千戶"
+    if unit == "million USD":
+        return f"{value / 1_000:.2f} 十億美元"
+    if unit == "%":
+        return f"{value:.2f}%"
+    if unit.startswith("index"):
+        return f"{value:,.2f} 指數"
+    return f"{value:,.2f} {unit}".strip()
+
+
+def format_macro_delta(value: object, suffix: str = "%") -> str:
+    if not isinstance(value, (int, float)):
+        return "NA"
+    sign = "+" if value > 0 else ""
+    return f"{sign}{value:.2f}{suffix}"
+
+
 def render_market_snapshot(snapshot: list[dict[str, object]]) -> str:
     return "\n".join(
         f"""
@@ -2227,9 +2395,9 @@ def render_market_snapshot(snapshot: list[dict[str, object]]) -> str:
 def render_market_environment(env: dict[str, object], generated_at: str) -> str:
     components = "\n".join(
         f"""
-        <div class="score-row">
+        <div class="score-row {signal_class(score)}">
           <div><b>{html.escape(name)}</b><span>{html.escape(note)}</span></div>
-          <strong>{score}</strong>
+          <strong><i class="signal-dot"></i>{score}</strong>
         </div>
         """
         for name, score, note in env["components"]
@@ -2237,7 +2405,7 @@ def render_market_environment(env: dict[str, object], generated_at: str) -> str:
     factors = "".join(f"<li>{html.escape(str(item))}</li>" for item in env["factors"])
     return f"""
     <section class="regime-panel" id="dashboard">
-      <div class="regime-score">
+      <div class="regime-score {signal_class(env.get("score"))}">
         <span>市場環境分數</span>
         <strong>{env["score"]}</strong>
         <em>{html.escape(str(env["status"]))}</em>
@@ -2277,6 +2445,28 @@ def render_global_market_cards(snapshot: list[dict[str, object]]) -> str:
         """
         for row in rows
     )
+
+
+def render_global_market_cards_v2(snapshot: list[dict[str, object]]) -> str:
+    rows = [row for row in snapshot if row.get("group") == "global"]
+    cards = []
+    for row in rows:
+        cards.append(
+            f"""
+            <article class="market-card {'data-ok' if row.get('ok') else 'data-missing'}">
+              <div class="card-head"><h3>{html.escape(str(row["label"]))}</h3><span>{html.escape(str(row.get("data_time") or "資料暫缺"))}</span></div>
+              <strong>{html.escape(format_market_value(row))}</strong>
+              <dl>
+                <dt>日變化</dt><dd class="{direction_class(row.get("change_pct"))}">{html.escape(format_pct(row.get("change_pct")))}</dd>
+                <dt>5日</dt><dd class="{direction_class(row.get("change_5d"))}">{html.escape(format_pct(row.get("change_5d")))}</dd>
+                <dt>20日</dt><dd class="{direction_class(row.get("change_20d"))}">{html.escape(format_pct(row.get("change_20d")))}</dd>
+                <dt>YTD</dt><dd class="{direction_class(row.get("ytd_change"))}">{html.escape(format_pct(row.get("ytd_change")))}</dd>
+                <dt>距52週高點</dt><dd class="{direction_class(row.get("high_52w_gap"))}">{html.escape(format_pct(row.get("high_52w_gap")))}</dd>
+              </dl>
+            </article>
+            """
+        )
+    return "\n".join(cards)
 
 
 def render_cross_asset_cards(snapshot: list[dict[str, object]]) -> str:
@@ -2402,6 +2592,39 @@ def render_macro_table(macro_indicators: dict[str, object], prefix: str) -> str:
       <tbody>{''.join(body)}</tbody>
     </table>
     """
+
+
+def render_macro_cards(macro_indicators: dict[str, object], prefix: str) -> str:
+    records = [row for row in macro_indicators.get("records", []) if str(row.get("category", "")).startswith(prefix)]
+    if not records:
+        return '<p class="data-warning">資料暫缺</p>'
+    cards = []
+    for row in records:
+        mom = row.get("mom_pct")
+        yoy = row.get("yoy_pct")
+        previous = row.get("previous")
+        previous_text = format_macro_actual({**row, "actual": previous}) if previous is not None else "NA"
+        cards.append(
+            f"""
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>{html.escape(str(row.get("name") or row.get("series_id")))}</h3>
+                <span class="source-chip">{html.escape(str(row.get("source") or ""))}</span>
+              </div>
+              <strong>{html.escape(format_macro_actual(row))}</strong>
+              <div class="macro-meta">
+                <span>日期 {html.escape(str(row.get("date") or "NA"))}</span>
+                <span>前值 {html.escape(previous_text)}</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="{direction_class(mom)}">MoM {html.escape(format_macro_delta(mom))}</span>
+                <span class="{direction_class(yoy)}">YoY {html.escape(format_macro_delta(yoy))}</span>
+              </div>
+              <p>{html.escape(str(row.get("forecast_note") or "Forecast / Surprise only shown when a public consensus source is available."))}</p>
+            </article>
+            """
+        )
+    return f'<div class="macro-grid">{"".join(cards)}</div>'
 
 
 def render_fundamentals_table(fundamentals: dict[str, object]) -> str:
@@ -3255,7 +3478,7 @@ def render_html(
     market_history = build_market_history(today, environment, previous_market or {}, previous_history or {})
     all_candidates = score_candidates(news, analysis, today, dynamic_candidates)
     candidates = priority_candidates(all_candidates)
-    events = enrich_event_calendar(event_calendar(today), macro_indicators)
+    events = enrich_event_calendar_v2(event_calendar(today), macro_indicators, capital_flow, derivatives_flow, fundamentals, snapshot)
     LAST_PROCESSED_PAYLOADS = build_processed_payloads(
         today=today,
         generated_at=generated_at,
@@ -3312,7 +3535,7 @@ def render_html(
     .metric span, .quote-tile span {{ display: block; color: var(--muted); font-size: 13px; }}
     .metric strong, .quote-tile strong {{ display: block; margin-top: 6px; font-size: 24px; }}
     .quote-tile em {{ font-style: normal; color: var(--muted); }}
-    .quote-tile.up em {{ color: var(--green); }} .quote-tile.down em {{ color: var(--red); }}
+    .quote-tile.up em {{ color: var(--red); }} .quote-tile.down em {{ color: var(--green); }}
     .section-title {{ display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 28px 0 12px; }}
     .section-title h2 {{ margin: 0; font-size: 22px; }}
     .section-title p {{ margin: 0; color: var(--muted); font-size: 14px; }}
@@ -3350,7 +3573,7 @@ def render_html(
     .status-grid span, .score-row span, .capital-card span {{ display: block; color: var(--muted); font-size: 12px; }}
     .score-grid {{ grid-template-columns: repeat(5, minmax(0, 1fr)); }}
     .score-row {{ display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }}
-    .score-row strong {{ font-size: 28px; color: var(--teal); }}
+    .score-row strong {{ font-size: 28px; color: var(--teal); display: inline-flex; align-items: center; gap: 8px; }}
     .factor-grid {{ grid-template-columns: 1.2fr .8fr; margin-top: 14px; }}
     .factor-grid h3 {{ margin-top: 0; }}
     .market-grid {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
@@ -3363,13 +3586,35 @@ def render_html(
     .market-card dl {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; margin: 0; }}
     .market-card dt {{ font-size: 12px; color: var(--muted); }}
     .market-card dd {{ margin: 0; }}
+    .num-up {{ color: var(--red); font-weight: 800; }}
+    .num-down {{ color: var(--green); font-weight: 800; }}
+    .num-flat, .num-na {{ color: var(--muted); font-weight: 700; }}
+    .data-warning {{ color: var(--amber); font-weight: 800; }}
+    .data-missing {{ border-color: #ead6a5; background: #fffaf0; }}
+    .macro-panel {{ padding: 14px; }}
+    .macro-grid {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }}
+    .macro-card {{ border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fff; }}
+    .macro-head {{ display: flex; align-items: start; justify-content: space-between; gap: 10px; }}
+    .macro-head h3 {{ margin: 0; font-size: 15px; line-height: 1.35; }}
+    .source-chip {{ flex: 0 0 auto; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px; color: var(--muted); font-size: 11px; background: #f6f9fa; }}
+    .macro-card strong {{ display: block; margin: 10px 0 8px; font-size: 24px; line-height: 1.18; }}
+    .macro-meta, .macro-deltas {{ display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; }}
+    .macro-meta span {{ color: var(--muted); background: #f6f9fa; border-radius: 999px; padding: 3px 8px; }}
+    .macro-deltas span {{ border-radius: 999px; background: #f6f9fa; padding: 3px 8px; }}
+    .macro-card p {{ margin: 10px 0 0; color: var(--muted); font-size: 12px; }}
+    .signal-dot {{ width: 12px; height: 12px; border-radius: 999px; display: inline-block; background: #9aa8b4; box-shadow: 0 0 0 3px rgba(154,168,180,.16); }}
+    .signal-red .signal-dot, .regime-score.signal-red {{ background: #8f1f2d; }}
+    .signal-yellow .signal-dot, .regime-score.signal-yellow {{ background: #b57411; }}
+    .signal-green .signal-dot, .regime-score.signal-green {{ background: #117a4b; }}
+    .signal-blue .signal-dot, .regime-score.signal-blue {{ background: #2768a5; }}
+    .signal-gray .signal-dot, .regime-score.signal-gray {{ background: #697887; }}
     .mini-trend {{ display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }}
     .tag, .importance {{ border-radius: 999px; padding: 4px 9px; border: 1px solid var(--line); background: #eef3f5; color: #34485a; font-size: 12px; font-weight: 800; }}
     .tag.偏多 {{ background: #e8f4ee; color: var(--green); }} .tag.偏空, .tag.警戒 {{ background: #f8eaea; color: var(--red); }}
     .importance.高 {{ background: #f8eaea; color: var(--red); }} .importance.中 {{ background: #fff4df; color: var(--amber); }}
     .research-note {{ background: #fff; border-left: 4px solid var(--teal); padding: 14px 16px; color: #334454; }}
     .footer {{ color: var(--muted); font-size: 13px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }}
-    @media (max-width: 920px) {{ .metrics, .quotes, .themes, .impact-grid, .events, .regime-panel, .status-grid, .score-grid, .factor-grid, .market-grid, .asset-grid, .capital-grid {{ grid-template-columns: 1fr; }} .news-row {{ grid-template-columns: 1fr; }} table {{ display: block; overflow-x: auto; }} .regime-score strong {{ font-size: 56px; }} }}
+    @media (max-width: 920px) {{ .metrics, .quotes, .themes, .impact-grid, .events, .regime-panel, .status-grid, .score-grid, .factor-grid, .market-grid, .asset-grid, .capital-grid, .macro-grid {{ grid-template-columns: 1fr; }} .news-row {{ grid-template-columns: 1fr; }} table {{ display: block; overflow-x: auto; }} .regime-score strong {{ font-size: 56px; }} }}
   </style>
 </head>
 <body>
@@ -3403,7 +3648,7 @@ def render_html(
     {render_market_environment(environment, generated_at)}
 
     <div class="section-title" id="market-pulse"><h2>全球市場 Market Pulse</h2><p>不只看單日漲跌，同時呈現 5 日、20 日、YTD 與距 52 週高點。</p></div>
-    <section class="market-grid">{render_global_market_cards(snapshot)}</section>
+    <section class="market-grid">{render_global_market_cards_v2(snapshot)}</section>
 
     <div class="section-title"><h2>跨資產與風險雷達</h2><p>利率、美元、匯率、VIX、商品是台股資金與估值的重要背景。</p></div>
     <section class="asset-grid">{render_cross_asset_cards(snapshot)}</section>
@@ -3414,7 +3659,7 @@ def render_html(
       <tbody>{render_event_calendar(events)}</tbody>
     </table>
 
-    <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>先顯示已接資料與待接資料源，避免用舊資料或假資料冒充即時資料。</p></div>
+    <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>已接 TWSE 法人、TAIFEX 台指期與 Put/Call、TWSE 市場廣度、FinMind 核心股融資融券與借券；抓取失敗會明確標示，不以舊資料冒充即時。</p></div>
     <section class="capital-grid">{render_capital_flow_summary(candidates, snapshot, capital_flow)}{render_derivatives_and_breadth_v2(derivatives_flow, market_breadth)}</section>
 
     <div class="section-title" id="stock-radar"><h2>四層選股 Stock Radar</h2><p>核心追蹤池僅保留鴻海、富邦金、台積電、台達電；其他標的須由 TWSE T86 動態法人雷達進入候選。</p></div>
@@ -3430,11 +3675,11 @@ def render_html(
     <div class="section-title"><h2>投資影響卡</h2><p>每則重點新聞對應受惠族群、台股標的與驗證指標。</p></div>
     <section class="impact-grid">{render_impact_cards(news)}</section>
 
-    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>FRED 已接 CPI、PCE、非農、零售銷售、Fed Funds、2Y/10Y；ISM 製造業 PMI 已接官方報告。免費官方來源不含市場共識，Forecast / Surprise 保留空白並標註原因。</p></div>
-    <section class="panel">{render_macro_table(macro_indicators, "US")}</section>
+    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>以實際值、單位、前值、MoM/YoY 與來源呈現；免費官方來源不含市場共識時不估算 Forecast / Surprise。</p></div>
+    <section class="panel macro-panel">{render_macro_cards(macro_indicators, "US")}</section>
 
-    <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>台灣出口、外銷訂單、工業生產、景氣燈號、M1B/M2 已列入資料層契約；待官方端點驗證後逐一接入。</p></div>
-    <section class="panel">{render_macro_table(macro_indicators, "Taiwan")}</section>
+    <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>出口、外銷訂單、工業生產、景氣燈號、M1B/M2 皆由官方公開資料接入，金額已換算為兆元或十億美元方便判讀。</p></div>
+    <section class="panel macro-panel">{render_macro_cards(macro_indicators, "Taiwan")}</section>
 
     <div class="section-title"><h2>核心股基本面 Company Fundamentals</h2><p>核心追蹤池月營收、EPS、毛利率、ROE、存貨、應收帳款先以 FinMind 公開資料接入；金融股部分財報欄位可能不適用，會顯示待接資料源。</p></div>
     <section class="panel">{render_fundamentals_table(fundamentals)}</section>

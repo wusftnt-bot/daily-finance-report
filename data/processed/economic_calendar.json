@@ -1,45 +1,45 @@
 {
-  "generated_at": "2026-07-17 11:12:33 Asia/Taipei",
+  "generated_at": "2026-07-17 12:07:56 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Manual P0 template; official calendar API pending",
   "records": [
     {
-      "time": "07/17 20:30",
-      "country": "美國",
-      "event": "新屋開工 / 建築許可",
-      "previous": "HOUST 1,177.00 thousand units (2026-05-01) / PERMIT 1,410.00 thousand units (2026-05-01)",
-      "forecast": "市場預期待接",
-      "importance": "中",
-      "impact": "利率敏感資產與景氣需求"
-    },
-    {
       "time": "未來 72 小時",
       "country": "美國",
-      "event": "CPI / PCE / Fed / 就業資料監控",
-      "previous": "3.63 % (2026-06-01)",
-      "forecast": "市場預期待接",
-      "importance": "中",
-      "impact": "若有臨時公布或修正，影響利率、美元與高估值科技股"
-    },
-    {
-      "time": "未來 7 天",
-      "country": "台灣",
-      "event": "上市櫃月營收與重大公告追蹤",
-      "previous": "待接資料源",
-      "forecast": "不適用",
+      "event": "美國需求與利率觀察：零售銷售 / 初領失業金 / ISM 新訂單",
+      "previous": "Retail 768.55 十億美元 / Claims 208,000 人 / ISM New Orders 56.00 指數",
+      "forecast": "免費官方來源未提供一致市場共識；不估算",
       "importance": "高",
-      "impact": "AI 伺服器、半導體、電子零組件"
+      "impact": "影響美債殖利率、美元、高估值科技股與台股外資風險偏好"
     },
     {
       "time": "每日",
       "country": "台灣",
-      "event": "外資、投信、台指期與新台幣",
-      "previous": "待接資料源",
-      "forecast": "不適用",
+      "event": "外資 / 投信 / 台指期 / 新台幣資金訊號",
+      "previous": "法人合計 -430.5 億; 外資台指期 -84,453 口; Put/Call 88.01%; USD/TWD 32.318",
+      "forecast": "不適用；以每日實際資金流判讀",
       "importance": "高",
-      "impact": "台股資金、權值股、ETF、期貨避險部位"
+      "impact": "判斷權值股、電子股與 ETF 資金是否同向支持"
+    },
+    {
+      "time": "本週",
+      "country": "台灣",
+      "event": "上市櫃月營收與重大公告追蹤",
+      "previous": "2330 台積電 最新月營收 4426.8 億元",
+      "forecast": "不適用；以公司公告與月營收實際值驗證",
+      "importance": "高",
+      "impact": "驗證 AI 伺服器、半導體、電子零組件基本面是否延續"
+    },
+    {
+      "time": "本週",
+      "country": "美國",
+      "event": "Fed 利率與金融條件追蹤",
+      "previous": "Fed Funds 3.63%",
+      "forecast": "FOMC / FedWatch 類共識待正式免費來源接入",
+      "importance": "中",
+      "impact": "影響美元、2Y/10Y 殖利率與科技股估值折現率"
     }
   ]
 }

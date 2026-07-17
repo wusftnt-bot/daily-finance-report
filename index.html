@@ -32,7 +32,7 @@
     .metric span, .quote-tile span { display: block; color: var(--muted); font-size: 13px; }
     .metric strong, .quote-tile strong { display: block; margin-top: 6px; font-size: 24px; }
     .quote-tile em { font-style: normal; color: var(--muted); }
-    .quote-tile.up em { color: var(--green); } .quote-tile.down em { color: var(--red); }
+    .quote-tile.up em { color: var(--red); } .quote-tile.down em { color: var(--green); }
     .section-title { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 28px 0 12px; }
     .section-title h2 { margin: 0; font-size: 22px; }
     .section-title p { margin: 0; color: var(--muted); font-size: 14px; }
@@ -70,7 +70,7 @@
     .status-grid span, .score-row span, .capital-card span { display: block; color: var(--muted); font-size: 12px; }
     .score-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
     .score-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
-    .score-row strong { font-size: 28px; color: var(--teal); }
+    .score-row strong { font-size: 28px; color: var(--teal); display: inline-flex; align-items: center; gap: 8px; }
     .factor-grid { grid-template-columns: 1.2fr .8fr; margin-top: 14px; }
     .factor-grid h3 { margin-top: 0; }
     .market-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -83,19 +83,41 @@
     .market-card dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; margin: 0; }
     .market-card dt { font-size: 12px; color: var(--muted); }
     .market-card dd { margin: 0; }
+    .num-up { color: var(--red); font-weight: 800; }
+    .num-down { color: var(--green); font-weight: 800; }
+    .num-flat, .num-na { color: var(--muted); font-weight: 700; }
+    .data-warning { color: var(--amber); font-weight: 800; }
+    .data-missing { border-color: #ead6a5; background: #fffaf0; }
+    .macro-panel { padding: 14px; }
+    .macro-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .macro-card { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fff; }
+    .macro-head { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+    .macro-head h3 { margin: 0; font-size: 15px; line-height: 1.35; }
+    .source-chip { flex: 0 0 auto; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px; color: var(--muted); font-size: 11px; background: #f6f9fa; }
+    .macro-card strong { display: block; margin: 10px 0 8px; font-size: 24px; line-height: 1.18; }
+    .macro-meta, .macro-deltas { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; }
+    .macro-meta span { color: var(--muted); background: #f6f9fa; border-radius: 999px; padding: 3px 8px; }
+    .macro-deltas span { border-radius: 999px; background: #f6f9fa; padding: 3px 8px; }
+    .macro-card p { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+    .signal-dot { width: 12px; height: 12px; border-radius: 999px; display: inline-block; background: #9aa8b4; box-shadow: 0 0 0 3px rgba(154,168,180,.16); }
+    .signal-red .signal-dot, .regime-score.signal-red { background: #8f1f2d; }
+    .signal-yellow .signal-dot, .regime-score.signal-yellow { background: #b57411; }
+    .signal-green .signal-dot, .regime-score.signal-green { background: #117a4b; }
+    .signal-blue .signal-dot, .regime-score.signal-blue { background: #2768a5; }
+    .signal-gray .signal-dot, .regime-score.signal-gray { background: #697887; }
     .mini-trend { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
     .tag, .importance { border-radius: 999px; padding: 4px 9px; border: 1px solid var(--line); background: #eef3f5; color: #34485a; font-size: 12px; font-weight: 800; }
     .tag.偏多 { background: #e8f4ee; color: var(--green); } .tag.偏空, .tag.警戒 { background: #f8eaea; color: var(--red); }
     .importance.高 { background: #f8eaea; color: var(--red); } .importance.中 { background: #fff4df; color: var(--amber); }
     .research-note { background: #fff; border-left: 4px solid var(--teal); padding: 14px 16px; color: #334454; }
     .footer { color: var(--muted); font-size: 13px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }
-    @media (max-width: 920px) { .metrics, .quotes, .themes, .impact-grid, .events, .regime-panel, .status-grid, .score-grid, .factor-grid, .market-grid, .asset-grid, .capital-grid { grid-template-columns: 1fr; } .news-row { grid-template-columns: 1fr; } table { display: block; overflow-x: auto; } .regime-score strong { font-size: 56px; } }
+    @media (max-width: 920px) { .metrics, .quotes, .themes, .impact-grid, .events, .regime-panel, .status-grid, .score-grid, .factor-grid, .market-grid, .asset-grid, .capital-grid, .macro-grid { grid-template-columns: 1fr; } .news-row { grid-template-columns: 1fr; } table { display: block; overflow-x: auto; } .regime-score strong { font-size: 56px; } }
   </style>
 </head>
 <body>
   <header>
     <div class="hero">
-      <div class="kicker">JT Investment Dashboard | 2026-07-17 11:12:33 Asia/Taipei</div>
+      <div class="kicker">JT Investment Dashboard | 2026-07-17 12:07:56 Asia/Taipei</div>
       <h1>2026-07-17 台股投資決策儀表板</h1>
       <p>以台股為核心，整合美國與台灣總經、全球跨資產、法人籌碼、產業趨勢與個股研究。今日主軸：AI 與半導體供應鏈。</p>
       <div class="meta">
@@ -122,7 +144,7 @@
   <main>
     
     <section class="regime-panel" id="dashboard">
-      <div class="regime-score">
+      <div class="regime-score signal-green">
         <span>市場環境分數</span>
         <strong>50</strong>
         <em>黃燈警戒</em>
@@ -131,41 +153,41 @@
         <div class="status-grid">
           <div><span>前一日分數</span><b>53</b></div>
           <div><span>一週變化</span><b>-7</b></div>
-          <div><span>更新時間</span><b>2026-07-17 11:12:33 Asia/Taipei</b></div>
+          <div><span>更新時間</span><b>2026-07-17 12:07:56 Asia/Taipei</b></div>
           <div><span>資料狀態</span><b>公開行情：8/8 已更新；總經預期/實際值逐步接入</b></div>
         </div>
         <div class="score-grid">
-        <div class="score-row">
+        <div class="score-row signal-green">
           <div><b>成長動能</b><span>ISM、零售、外銷訂單、工業生產、出口；目前以 AI/電子新聞與股市趨勢代理</span></div>
-          <strong>48</strong>
+          <strong><i class="signal-dot"></i>48</strong>
         </div>
         
 
-        <div class="score-row">
+        <div class="score-row signal-yellow">
           <div><b>通膨與利率</b><span>CPI、PCE、非農薪資、美債殖利率、Fed 預期；目前以 10Y 與美元壓力代理</span></div>
-          <strong>55</strong>
+          <strong><i class="signal-dot"></i>55</strong>
         </div>
         
 
-        <div class="score-row">
+        <div class="score-row signal-yellow">
           <div><b>資金與匯率</b><span>DXY、美元/台幣、外資、投信、台指期；目前以匯率與台股趨勢代理</span></div>
-          <strong>55</strong>
+          <strong><i class="signal-dot"></i>55</strong>
         </div>
         
 
-        <div class="score-row">
+        <div class="score-row signal-green">
           <div><b>市場趨勢</b><span>Nasdaq、費半、台股、均線、成交量；目前以 20 日價格趨勢代理</span></div>
-          <strong>42</strong>
+          <strong><i class="signal-dot"></i>42</strong>
         </div>
         
 
-        <div class="score-row">
+        <div class="score-row signal-green">
           <div><b>風險情緒</b><span>VIX、信用風險、油價、地緣政治事件；目前以 VIX/油價與新聞風險代理</span></div>
-          <strong>45</strong>
+          <strong><i class="signal-dot"></i>45</strong>
         </div>
         </div>
         <div class="factor-grid">
-          <div><h3>造成分數變動的前三項因素</h3><ul><li>台股加權 20 日趨勢轉弱（-5.18%）</li><li>Nasdaq 20 日趨勢震盪（-1.87%）</li><li>SOX 費半 20 日趨勢轉弱（-10.73%）</li></ul></div>
+          <div><h3>造成分數變動的前三項因素</h3><ul><li>台股加權 20 日趨勢轉弱（-5.30%）</li><li>Nasdaq 20 日趨勢震盪（-1.87%）</li><li>SOX 費半 20 日趨勢轉弱（-10.73%）</li></ul></div>
           <div><h3>對台股與 Stock Radar 的操作意義</h3><p>維持黃燈警戒，高估值與漲幅過大個股不宜追價，只保留最強候選。</p></div>
         </div>
       </div>
@@ -174,148 +196,148 @@
 
     <div class="section-title" id="market-pulse"><h2>全球市場 Market Pulse</h2><p>不只看單日漲跌，同時呈現 5 日、20 日、YTD 與距 52 週高點。</p></div>
     <section class="market-grid">
-        <article class="market-card">
-          <div class="card-head"><h3>S&amp;P 500</h3><span>2026-07-17 05:33</span></div>
-          <strong>7,533.77</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-0.51%</dd>
-            <dt>5日</dt><dd>-0.13%</dd>
-            <dt>20日</dt><dd>+0.30%</dd>
-            <dt>YTD</dt><dd>+9.85%</dd>
-            <dt>距52週高點</dt><dd>-1.00%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>S&amp;P 500</h3><span>2026-07-17 05:33</span></div>
+              <strong>7,533.77</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-0.51%</dd>
+                <dt>5日</dt><dd class="num-down">-0.13%</dd>
+                <dt>20日</dt><dd class="num-up">+0.30%</dd>
+                <dt>YTD</dt><dd class="num-up">+9.85%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-1.00%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>Nasdaq</h3><span>2026-07-17 05:15</span></div>
-          <strong>25,881.95</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-1.47%</dd>
-            <dt>5日</dt><dd>-1.24%</dd>
-            <dt>20日</dt><dd>-1.87%</dd>
-            <dt>YTD</dt><dd>+11.39%</dd>
-            <dt>距52週高點</dt><dd>-4.47%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>Nasdaq</h3><span>2026-07-17 05:15</span></div>
+              <strong>25,881.95</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-1.47%</dd>
+                <dt>5日</dt><dd class="num-down">-1.24%</dd>
+                <dt>20日</dt><dd class="num-down">-1.87%</dd>
+                <dt>YTD</dt><dd class="num-up">+11.39%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-4.47%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>SOX 費半</h3><span>2026-07-17 05:15</span></div>
-          <strong>11,867.50</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-4.29%</dd>
-            <dt>5日</dt><dd>-8.43%</dd>
-            <dt>20日</dt><dd>-10.73%</dd>
-            <dt>YTD</dt><dd>+61.08%</dd>
-            <dt>距52週高點</dt><dd>-18.91%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>SOX 費半</h3><span>2026-07-17 05:15</span></div>
+              <strong>11,867.50</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-4.29%</dd>
+                <dt>5日</dt><dd class="num-down">-8.43%</dd>
+                <dt>20日</dt><dd class="num-down">-10.73%</dd>
+                <dt>YTD</dt><dd class="num-up">+61.08%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-18.91%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>道瓊</h3><span>2026-07-17 05:33</span></div>
-          <strong>52,552.97</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-0.20%</dd>
-            <dt>5日</dt><dd>+0.12%</dd>
-            <dt>20日</dt><dd>+1.06%</dd>
-            <dt>YTD</dt><dd>+8.62%</dd>
-            <dt>距52週高點</dt><dd>-0.95%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>道瓊</h3><span>2026-07-17 05:33</span></div>
+              <strong>52,552.97</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-0.20%</dd>
+                <dt>5日</dt><dd class="num-up">+0.12%</dd>
+                <dt>20日</dt><dd class="num-up">+1.06%</dd>
+                <dt>YTD</dt><dd class="num-up">+8.62%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-0.95%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>日經225</h3><span>2026-07-17 10:35</span></div>
-          <strong>63,896.48</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-4.40%</dd>
-            <dt>5日</dt><dd>-6.80%</dd>
-            <dt>20日</dt><dd>-10.32%</dd>
-            <dt>YTD</dt><dd>+23.27%</dd>
-            <dt>距52週高點</dt><dd>-11.70%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>日經225</h3><span>2026-07-17 11:52</span></div>
+              <strong>63,796.51</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-4.55%</dd>
+                <dt>5日</dt><dd class="num-down">-6.94%</dd>
+                <dt>20日</dt><dd class="num-down">-10.46%</dd>
+                <dt>YTD</dt><dd class="num-up">+23.08%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-11.84%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>台股加權</h3><span>2026-07-17 10:52</span></div>
-          <strong>43,501.97</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-4.65%</dd>
-            <dt>5日</dt><dd>-4.08%</dd>
-            <dt>20日</dt><dd>-5.18%</dd>
-            <dt>YTD</dt><dd>+48.22%</dd>
-            <dt>距52週高點</dt><dd>-8.88%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>台股加權</h3><span>2026-07-17 11:47</span></div>
+              <strong>43,445.80</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-4.78%</dd>
+                <dt>5日</dt><dd class="num-down">-4.21%</dd>
+                <dt>20日</dt><dd class="num-down">-5.30%</dd>
+                <dt>YTD</dt><dd class="num-up">+48.03%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-9.00%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>櫃買指數</h3><span>資料更新失敗：最後資料 2024-10-12 04:00</span></div>
-          <strong>資料暫缺</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>待更新</dd>
-            <dt>5日</dt><dd>待更新</dd>
-            <dt>20日</dt><dd>待更新</dd>
-            <dt>YTD</dt><dd>待更新</dd>
-            <dt>距52週高點</dt><dd>待更新</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>櫃買指數</h3><span>20260716 TPEx official close</span></div>
+              <strong>407.01</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-2.26%</dd>
+                <dt>5日</dt><dd class="num-down">-3.41%</dd>
+                <dt>20日</dt><dd class="num-na">待更新</dd>
+                <dt>YTD</dt><dd class="num-na">待更新</dd>
+                <dt>距52週高點</dt><dd class="num-na">待更新</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>上海綜合</h3><span>2026-07-17 10:57</span></div>
-          <strong>3,814.11</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-1.76%</dd>
-            <dt>5日</dt><dd>-4.56%</dd>
-            <dt>20日</dt><dd>-6.76%</dd>
-            <dt>YTD</dt><dd>-5.20%</dd>
-            <dt>距52週高點</dt><dd>-10.10%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>上海綜合</h3><span>2026-07-17 11:30</span></div>
+              <strong>3,818.59</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-1.64%</dd>
+                <dt>5日</dt><dd class="num-down">-4.44%</dd>
+                <dt>20日</dt><dd class="num-down">-6.65%</dd>
+                <dt>YTD</dt><dd class="num-down">-5.09%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-9.99%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>恆生國企</h3><span>2026-07-17 10:57</span></div>
-          <strong>8,135.43</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-2.20%</dd>
-            <dt>5日</dt><dd>+1.20%</dd>
-            <dt>20日</dt><dd>-0.11%</dd>
-            <dt>YTD</dt><dd>-11.27%</dd>
-            <dt>距52週高點</dt><dd>-16.34%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>恆生國企</h3><span>2026-07-17 11:52</span></div>
+              <strong>8,118.24</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-2.40%</dd>
+                <dt>5日</dt><dd class="num-up">+0.98%</dd>
+                <dt>20日</dt><dd class="num-down">-0.32%</dd>
+                <dt>YTD</dt><dd class="num-down">-11.46%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-16.52%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>印度Nifty</h3><span>2026-07-16 18:01</span></div>
-          <strong>24,072.75</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-0.02%</dd>
-            <dt>5日</dt><dd>+0.46%</dd>
-            <dt>20日</dt><dd>-0.05%</dd>
-            <dt>YTD</dt><dd>-7.93%</dd>
-            <dt>距52週高點</dt><dd>-8.57%</dd>
-          </dl>
-        </article>
-        
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>印度Nifty</h3><span>2026-07-17 12:07</span></div>
+              <strong>24,215.50</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-up">+0.59%</dd>
+                <dt>5日</dt><dd class="num-up">+0.04%</dd>
+                <dt>20日</dt><dd class="num-up">+0.20%</dd>
+                <dt>YTD</dt><dd class="num-down">-7.39%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-8.03%</dd>
+              </dl>
+            </article>
+            
 
-        <article class="market-card">
-          <div class="card-head"><h3>巴西Bovespa</h3><span>2026-07-17 04:18</span></div>
-          <strong>173,825.27</strong>
-          <dl>
-            <dt>日漲跌</dt><dd>-1.24%</dd>
-            <dt>5日</dt><dd>+0.63%</dd>
-            <dt>20日</dt><dd>+3.30%</dd>
-            <dt>YTD</dt><dd>+8.28%</dd>
-            <dt>距52週高點</dt><dd>-12.50%</dd>
-          </dl>
-        </article>
-        </section>
+            <article class="market-card data-ok">
+              <div class="card-head"><h3>巴西Bovespa</h3><span>2026-07-17 04:18</span></div>
+              <strong>173,825.27</strong>
+              <dl>
+                <dt>日變化</dt><dd class="num-down">-1.24%</dd>
+                <dt>5日</dt><dd class="num-up">+0.63%</dd>
+                <dt>20日</dt><dd class="num-up">+3.30%</dd>
+                <dt>YTD</dt><dd class="num-up">+8.28%</dd>
+                <dt>距52週高點</dt><dd class="num-down">-12.50%</dd>
+              </dl>
+            </article>
+            </section>
 
     <div class="section-title"><h2>跨資產與風險雷達</h2><p>利率、美元、匯率、VIX、商品是台股資金與估值的重要背景。</p></div>
     <section class="asset-grid">
@@ -333,49 +355,49 @@
 
         <article class="asset-card">
           <div class="card-head"><h3>美元指數</h3><span class="tag 中性">中性</span></div>
-          <strong>100.78</strong>
+          <strong>100.76</strong>
           <div class="mini-trend">
-            <span>日 +0.05%</span>
-            <span>週 -0.19%</span>
-            <span>月 +0.69%</span>
+            <span>日 +0.26%</span>
+            <span>週 -0.18%</span>
+            <span>月 +1.23%</span>
           </div>
-          <p>20 日趨勢：+0.69%｜資料：2026-07-17 11:02</p>
+          <p>20 日趨勢：+1.23%｜資料：2026-07-17 11:57</p>
         </article>
         
 
         <article class="asset-card">
-          <div class="card-head"><h3>美元/台幣</h3><span class="tag 中性">中性</span></div>
-          <strong>32.284</strong>
+          <div class="card-head"><h3>美元/台幣</h3><span class="tag 偏空">偏空</span></div>
+          <strong>32.318</strong>
           <div class="mini-trend">
-            <span>日 +0.23%</span>
-            <span>週 +0.58%</span>
-            <span>月 +2.05%</span>
+            <span>日 +0.33%</span>
+            <span>週 +0.69%</span>
+            <span>月 +2.16%</span>
           </div>
-          <p>20 日趨勢：+2.05%｜資料：2026-07-17 11:12</p>
+          <p>20 日趨勢：+2.16%｜資料：2026-07-17 12:07</p>
         </article>
         
 
         <article class="asset-card">
           <div class="card-head"><h3>美元/日圓</h3><span class="tag 中性">中性</span></div>
-          <strong>162.37</strong>
+          <strong>162.40</strong>
           <div class="mini-trend">
-            <span>日 +0.18%</span>
-            <span>週 +0.00%</span>
-            <span>月 +0.67%</span>
+            <span>日 +0.20%</span>
+            <span>週 +0.02%</span>
+            <span>月 +0.69%</span>
           </div>
-          <p>20 日趨勢：+0.67%｜資料：2026-07-17 11:12</p>
+          <p>20 日趨勢：+0.69%｜資料：2026-07-17 12:07</p>
         </article>
         
 
         <article class="asset-card">
           <div class="card-head"><h3>美元/人民幣</h3><span class="tag 中性">中性</span></div>
-          <strong>6.76</strong>
+          <strong>6.77</strong>
           <div class="mini-trend">
-            <span>日 -0.06%</span>
-            <span>週 -0.41%</span>
-            <span>月 -0.07%</span>
+            <span>日 +0.09%</span>
+            <span>週 -0.27%</span>
+            <span>月 +0.08%</span>
           </div>
-          <p>20 日趨勢：-0.07%｜資料：2026-07-17 11:12</p>
+          <p>20 日趨勢：+0.08%｜資料：2026-07-17 12:07</p>
         </article>
         
 
@@ -393,49 +415,49 @@
 
         <article class="asset-card">
           <div class="card-head"><h3>黃金</h3><span class="tag 偏空">偏空</span></div>
-          <strong>3,987.40</strong>
+          <strong>3,994.90</strong>
           <div class="mini-trend">
-            <span>日 +0.05%</span>
-            <span>週 -2.84%</span>
-            <span>月 -8.52%</span>
+            <span>日 -1.21%</span>
+            <span>週 -3.29%</span>
+            <span>月 -7.76%</span>
           </div>
-          <p>20 日趨勢：-8.52%｜資料：2026-07-17 11:02</p>
+          <p>20 日趨勢：-7.76%｜資料：2026-07-17 11:57</p>
         </article>
         
 
         <article class="asset-card">
           <div class="card-head"><h3>WTI 原油</h3><span class="tag 警戒">警戒</span></div>
-          <strong>79.05</strong>
+          <strong>79.15</strong>
           <div class="mini-trend">
-            <span>日 +0.13%</span>
-            <span>週 +10.70%</span>
-            <span>月 +2.94%</span>
+            <span>日 -0.57%</span>
+            <span>週 +9.81%</span>
+            <span>月 +4.08%</span>
           </div>
-          <p>20 日趨勢：+2.94%｜資料：2026-07-17 11:02</p>
+          <p>20 日趨勢：+4.08%｜資料：2026-07-17 11:57</p>
         </article>
         
 
         <article class="asset-card">
           <div class="card-head"><h3>布蘭特原油</h3><span class="tag 警戒">警戒</span></div>
-          <strong>84.92</strong>
+          <strong>85.05</strong>
           <div class="mini-trend">
-            <span>日 +0.82%</span>
-            <span>週 +11.72%</span>
-            <span>月 +6.75%</span>
+            <span>日 +0.12%</span>
+            <span>週 +11.47%</span>
+            <span>月 +7.71%</span>
           </div>
-          <p>20 日趨勢：+6.75%｜資料：2026-07-17 10:59</p>
+          <p>20 日趨勢：+7.71%｜資料：2026-07-17 11:57</p>
         </article>
         
 
         <article class="asset-card">
           <div class="card-head"><h3>銅價</h3><span class="tag 偏空">偏空</span></div>
-          <strong>6.24</strong>
+          <strong>6.23</strong>
           <div class="mini-trend">
-            <span>日 -0.84%</span>
-            <span>週 +0.15%</span>
-            <span>月 -3.68%</span>
+            <span>日 -0.96%</span>
+            <span>週 +0.29%</span>
+            <span>月 -3.95%</span>
           </div>
-          <p>20 日趨勢：-3.68%｜資料：2026-07-17 11:02</p>
+          <p>20 日趨勢：-3.95%｜資料：2026-07-17 11:57</p>
         </article>
         
 
@@ -456,51 +478,51 @@
       <thead><tr><th>時間</th><th>國家</th><th>事件</th><th>前值</th><th>市場預期</th><th>重要性</th><th>對台股影響</th></tr></thead>
       <tbody>
         <tr>
-          <td>07/17 20:30</td>
-          <td>美國</td>
-          <td><b>新屋開工 / 建築許可</b></td>
-          <td>HOUST 1,177.00 thousand units (2026-05-01) / PERMIT 1,410.00 thousand units (2026-05-01)</td>
-          <td>市場預期待接</td>
-          <td><span class="importance 中">中</span></td>
-          <td>利率敏感資產與景氣需求</td>
-        </tr>
-        
-
-        <tr>
           <td>未來 72 小時</td>
           <td>美國</td>
-          <td><b>CPI / PCE / Fed / 就業資料監控</b></td>
-          <td>3.63 % (2026-06-01)</td>
-          <td>市場預期待接</td>
-          <td><span class="importance 中">中</span></td>
-          <td>若有臨時公布或修正，影響利率、美元與高估值科技股</td>
-        </tr>
-        
-
-        <tr>
-          <td>未來 7 天</td>
-          <td>台灣</td>
-          <td><b>上市櫃月營收與重大公告追蹤</b></td>
-          <td>待接資料源</td>
-          <td>不適用</td>
+          <td><b>美國需求與利率觀察：零售銷售 / 初領失業金 / ISM 新訂單</b></td>
+          <td>Retail 768.55 十億美元 / Claims 208,000 人 / ISM New Orders 56.00 指數</td>
+          <td>免費官方來源未提供一致市場共識；不估算</td>
           <td><span class="importance 高">高</span></td>
-          <td>AI 伺服器、半導體、電子零組件</td>
+          <td>影響美債殖利率、美元、高估值科技股與台股外資風險偏好</td>
         </tr>
         
 
         <tr>
           <td>每日</td>
           <td>台灣</td>
-          <td><b>外資、投信、台指期與新台幣</b></td>
-          <td>待接資料源</td>
-          <td>不適用</td>
+          <td><b>外資 / 投信 / 台指期 / 新台幣資金訊號</b></td>
+          <td>法人合計 -430.5 億; 外資台指期 -84,453 口; Put/Call 88.01%; USD/TWD 32.318</td>
+          <td>不適用；以每日實際資金流判讀</td>
           <td><span class="importance 高">高</span></td>
-          <td>台股資金、權值股、ETF、期貨避險部位</td>
+          <td>判斷權值股、電子股與 ETF 資金是否同向支持</td>
+        </tr>
+        
+
+        <tr>
+          <td>本週</td>
+          <td>台灣</td>
+          <td><b>上市櫃月營收與重大公告追蹤</b></td>
+          <td>2330 台積電 最新月營收 4426.8 億元</td>
+          <td>不適用；以公司公告與月營收實際值驗證</td>
+          <td><span class="importance 高">高</span></td>
+          <td>驗證 AI 伺服器、半導體、電子零組件基本面是否延續</td>
+        </tr>
+        
+
+        <tr>
+          <td>本週</td>
+          <td>美國</td>
+          <td><b>Fed 利率與金融條件追蹤</b></td>
+          <td>Fed Funds 3.63%</td>
+          <td>FOMC / FedWatch 類共識待正式免費來源接入</td>
+          <td><span class="importance 中">中</span></td>
+          <td>影響美元、2Y/10Y 殖利率與科技股估值折現率</td>
         </tr>
         </tbody>
     </table>
 
-    <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>先顯示已接資料與待接資料源，避免用舊資料或假資料冒充即時資料。</p></div>
+    <div class="section-title" id="capital-flow"><h2>台股資金與法人 Taiwan Capital Flow</h2><p>已接 TWSE 法人、TAIFEX 台指期與 Put/Call、TWSE 市場廣度、FinMind 核心股融資融券與借券；抓取失敗會明確標示，不以舊資料冒充即時。</p></div>
     <section class="capital-grid">
         <article class="capital-card">
           <span>候選股法人支持</span>
@@ -532,7 +554,7 @@
 
         <article class="capital-card">
           <span>新台幣匯率</span>
-          <strong>32.284 / 5日 +0.58%</strong>
+          <strong>32.318 / 5日 +0.69%</strong>
           <p>美元/台幣作為外資資金壓力代理</p>
         </article>
         
@@ -778,14 +800,14 @@
         <article class="impact-card">
           <div class="impact-meta">
             <span>高影響</span>
-            <span>1-3 個月</span>
+            <span>盤中至 1-2 週</span>
             <span>等待驗證後操作</span>
           </div>
-          <h3><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxPOGhkcF82TW9Rb2NCVUx1eXpWZUFONFh1MmdZa0Y0UTBBc1JyeHdDc0ZENUIzM1NaLXRnSlNXeTJFVXE2aENmbnVMOTN3MksyT3BfTVBNYVF2UzdsYUhreVVBUmNvak4xTllxNWlCNGJqeU9kYUFwY1lqTjVPR0dUdFRHdnhaLVhkRU9oR0NrNkNXZjNUMkVnWXpWMmZDM1c2T1pCWkFHampXSFFwbEI4YmhWVzhjM0U?oc=5">台積電業績為人工智慧和資料中心股票提供信心助推器</a></h3>
+          <h3><a href="https://news.google.com/rss/articles/CBMizgFBVV95cUxPN0dxOW5aUy1jSEExbVVUM0ZsYkVQSTJhZlY4Q0FCcWNySXJuTmlieE1MYW5uTWpYeWlXeGF5a2tXWFd5NFpHVzZ5NW1yQm0weVVmRVdtcHdTTUpRTkstckIzZUZCQkFVWk15S1pLM3hCUkdQTUxleEI0R0xJWTVqc0ZiWmZjWEVWLW1nWnBHY1gwQ19CQmlUZmJZTEhXZURELWNNMWdmRkhmeEExZlc0TVYtUFFvd2RRUU9CYTZXZm1WTERpTHJONVZORTJ4UQ?oc=5">比特幣因科技股下滑、美伊緊張局勢和鷹派利率暗示而下跌</a></h3>
           <dl>
-            <dt>直接受惠/受影響</dt><dd>GPU、伺服器、晶圓代工、散熱、電源</dd>
-            <dt>台股對應</dt><dd>台積電、廣達、緯創、緯穎、台達電</dd>
-            <dt>驗證指標</dt><dd>月營收、法人買超、突破前高</dd>
+            <dt>直接受惠/受影響</dt><dd>高估值成長股、金融、債券</dd>
+            <dt>台股對應</dt><dd>AI 高本益比股、金融股</dd>
+            <dt>驗證指標</dt><dd>10Y 殖利率、DXY、Fed 利率預期</dd>
           </dl>
         </article>
         
@@ -820,201 +842,317 @@
         </article>
         </section>
 
-    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>FRED 已接 CPI、PCE、非農、零售銷售、Fed Funds、2Y/10Y；ISM 製造業 PMI 已接官方報告。免費官方來源不含市場共識，Forecast / Surprise 保留空白並標註原因。</p></div>
-    <section class="panel">
-    <table>
-      <thead><tr><th>指標</th><th>狀態</th><th>最新值</th><th>日期</th><th>MoM</th><th>YoY</th><th>來源</th></tr></thead>
-      <tbody>
-            <tr>
-              <td>US CPI</td>
-              <td>ok</td>
-              <td>332.57</td>
-              <td>2026-06-01</td>
-              <td>-0.42%</td>
-              <td>3.73%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+    <div class="section-title" id="us-macro"><h2>美國總經 US Macro</h2><p>以實際值、單位、前值、MoM/YoY 與來源呈現；免費官方來源不含市場共識時不估算 Forecast / Surprise。</p></div>
+    <section class="panel macro-panel"><div class="macro-grid">
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US CPI</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>332.57 指數</strong>
+              <div class="macro-meta">
+                <span>日期 2026-06-01</span>
+                <span>前值 333.98 指數</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -0.42%</span>
+                <span class="num-up">YoY +3.73%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US PCE Price Index</td>
-              <td>ok</td>
-              <td>131.53</td>
-              <td>2026-05-01</td>
-              <td>0.45%</td>
-              <td>4.07%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US PCE Price Index</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>131.53 指數</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 130.94 指數</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +0.45%</span>
+                <span class="num-up">YoY +4.07%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US Nonfarm Payrolls</td>
-              <td>ok</td>
-              <td>158,984.00</td>
-              <td>2026-06-01</td>
-              <td>0.04%</td>
-              <td>0.32%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US Nonfarm Payrolls</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>158,984 千人</strong>
+              <div class="macro-meta">
+                <span>日期 2026-06-01</span>
+                <span>前值 158,927 千人</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +0.04%</span>
+                <span class="num-up">YoY +0.32%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US Initial Jobless Claims</td>
-              <td>ok</td>
-              <td>208,000.00</td>
-              <td>2026-07-11</td>
-              <td>-3.70%</td>
-              <td>-3.26%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US Initial Jobless Claims</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>208,000 人</strong>
+              <div class="macro-meta">
+                <span>日期 2026-07-11</span>
+                <span>前值 216,000 人</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -3.70%</span>
+                <span class="num-down">YoY -3.26%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US Retail Sales</td>
-              <td>ok</td>
-              <td>768,553.00</td>
-              <td>2026-06-01</td>
-              <td>0.22%</td>
-              <td>6.72%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US Retail Sales</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>768.55 十億美元</strong>
+              <div class="macro-meta">
+                <span>日期 2026-06-01</span>
+                <span>前值 766.88 十億美元</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +0.22%</span>
+                <span class="num-up">YoY +6.72%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US Housing Starts</td>
-              <td>ok</td>
-              <td>1,177.00</td>
-              <td>2026-05-01</td>
-              <td>-15.45%</td>
-              <td>-8.69%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US Housing Starts</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>1,177 千戶</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 1,392 千戶</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -15.45%</span>
+                <span class="num-down">YoY -8.69%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US Building Permits</td>
-              <td>ok</td>
-              <td>1,410.00</td>
-              <td>2026-05-01</td>
-              <td>-0.91%</td>
-              <td>-0.42%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US Building Permits</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>1,410 千戶</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 1,423 千戶</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -0.91%</span>
+                <span class="num-down">YoY -0.42%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>Fed Funds Rate</td>
-              <td>ok</td>
-              <td>3.63</td>
-              <td>2026-06-01</td>
-              <td>0.00%</td>
-              <td>-16.17%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>Fed Funds Rate</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>3.63%</strong>
+              <div class="macro-meta">
+                <span>日期 2026-06-01</span>
+                <span>前值 3.63%</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-flat">MoM 0.00%</span>
+                <span class="num-down">YoY -16.17%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US 2Y Treasury Yield</td>
-              <td>ok</td>
-              <td>4.13</td>
-              <td>2026-07-15</td>
-              <td>-1.20%</td>
-              <td>1.47%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US 2Y Treasury Yield</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>4.13%</strong>
+              <div class="macro-meta">
+                <span>日期 2026-07-15</span>
+                <span>前值 4.18%</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -1.20%</span>
+                <span class="num-up">YoY +1.47%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>US 10Y Treasury Yield</td>
-              <td>ok</td>
-              <td>4.55</td>
-              <td>2026-07-15</td>
-              <td>-0.66%</td>
-              <td>3.88%</td>
-              <td>FRED cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>US 10Y Treasury Yield</h3>
+                <span class="source-chip">FRED</span>
+              </div>
+              <strong>4.55%</strong>
+              <div class="macro-meta">
+                <span>日期 2026-07-15</span>
+                <span>前值 4.58%</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -0.66%</span>
+                <span class="num-up">YoY +3.88%</span>
+              </div>
+              <p>Forecast / Surprise only shown when a public consensus source is available.</p>
+            </article>
             
-            <tr>
-              <td>ISM Manufacturing PMI</td>
-              <td>ok</td>
-              <td>53.30</td>
-              <td>2026-06-01</td>
-              <td>-0.70%</td>
-              <td>待接資料源</td>
-              <td>MacroMicro public series (source: ISM) cached fallback cached fallback</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>ISM Manufacturing PMI</h3>
+                <span class="source-chip">MacroMicro public series (source: ISM)</span>
+              </div>
+              <strong>53.30 指數</strong>
+              <div class="macro-meta">
+                <span>日期 2026-06-01</span>
+                <span>前值 54.00 指數</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -0.70%</span>
+                <span class="num-na">YoY NA</span>
+              </div>
+              <p>Market consensus is not included in this free public series; surprise is left blank instead of estimated.</p>
+            </article>
             
-            <tr>
-              <td>ISM Manufacturing New Orders</td>
-              <td>ok</td>
-              <td>56.00</td>
-              <td>2026-06-01</td>
-              <td>-0.80%</td>
-              <td>待接資料源</td>
-              <td>MacroMicro public series (source: ISM) cached fallback cached fallback</td>
-            </tr>
-            </tbody>
-    </table>
-    </section>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>ISM Manufacturing New Orders</h3>
+                <span class="source-chip">MacroMicro public series (source: ISM)</span>
+              </div>
+              <strong>56.00 指數</strong>
+              <div class="macro-meta">
+                <span>日期 2026-06-01</span>
+                <span>前值 56.80 指數</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -0.80%</span>
+                <span class="num-na">YoY NA</span>
+              </div>
+              <p>Market consensus is not included in this free public series; surprise is left blank instead of estimated.</p>
+            </article>
+            </div></section>
 
-    <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>台灣出口、外銷訂單、工業生產、景氣燈號、M1B/M2 已列入資料層契約；待官方端點驗證後逐一接入。</p></div>
-    <section class="panel">
-    <table>
-      <thead><tr><th>指標</th><th>狀態</th><th>最新值</th><th>日期</th><th>MoM</th><th>YoY</th><th>來源</th></tr></thead>
-      <tbody>
-            <tr>
-              <td>Taiwan exports</td>
-              <td>ok</td>
-              <td>2,475.95</td>
-              <td>2026-05-01</td>
-              <td>14.96%</td>
-              <td>54.62%</td>
-              <td>Customs Administration open data</td>
-            </tr>
+    <div class="section-title" id="taiwan-macro"><h2>台灣總經 Taiwan Macro</h2><p>出口、外銷訂單、工業生產、景氣燈號、M1B/M2 皆由官方公開資料接入，金額已換算為兆元或十億美元方便判讀。</p></div>
+    <section class="panel macro-panel"><div class="macro-grid">
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>Taiwan exports</h3>
+                <span class="source-chip">Customs Administration open data</span>
+              </div>
+              <strong>2.48 兆元</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 2.15 兆元</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +14.96%</span>
+                <span class="num-up">YoY +54.62%</span>
+              </div>
+              <p>Free official source does not include market consensus; surprise is left blank instead of estimated.</p>
+            </article>
             
-            <tr>
-              <td>Taiwan export orders</td>
-              <td>ok</td>
-              <td>89,475.00</td>
-              <td>2026-05-01</td>
-              <td>2.32%</td>
-              <td>待接資料源</td>
-              <td>MOEA open data</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>Taiwan export orders</h3>
+                <span class="source-chip">MOEA open data</span>
+              </div>
+              <strong>89.47 十億美元</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 87.45 十億美元</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +2.32%</span>
+                <span class="num-na">YoY NA</span>
+              </div>
+              <p>Free official source does not include market consensus; surprise is left blank instead of estimated.</p>
+            </article>
             
-            <tr>
-              <td>Taiwan industrial production index</td>
-              <td>ok</td>
-              <td>136.65</td>
-              <td>2026-05-01</td>
-              <td>8.03%</td>
-              <td>11.78%</td>
-              <td>MOEA open data</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>Taiwan industrial production index</h3>
+                <span class="source-chip">MOEA open data</span>
+              </div>
+              <strong>136.65 指數</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 126.49 指數</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +8.03%</span>
+                <span class="num-up">YoY +11.78%</span>
+              </div>
+              <p>Free official source does not include market consensus; surprise is left blank instead of estimated.</p>
+            </article>
             
-            <tr>
-              <td>Taiwan NDC business cycle signal</td>
-              <td>ok</td>
-              <td>39.00</td>
-              <td>2026-05-01</td>
-              <td>-2.50%</td>
-              <td>待接資料源</td>
-              <td>NDC open data</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>Taiwan NDC business cycle signal</h3>
+                <span class="source-chip">NDC open data</span>
+              </div>
+              <strong>39.00 score</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 40.00 score</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-down">MoM -2.50%</span>
+                <span class="num-na">YoY NA</span>
+              </div>
+              <p>Free official source does not include market consensus; surprise is left blank instead of estimated.</p>
+            </article>
             
-            <tr>
-              <td>Taiwan M1B</td>
-              <td>ok</td>
-              <td>30,674,860.00</td>
-              <td>2026-05-01</td>
-              <td>0.68%</td>
-              <td>9.71%</td>
-              <td>CBC open data</td>
-            </tr>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>Taiwan M1B</h3>
+                <span class="source-chip">CBC open data</span>
+              </div>
+              <strong>30.67 兆元</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 30.47 兆元</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +0.68%</span>
+                <span class="num-up">YoY +9.71%</span>
+              </div>
+              <p>Free official source does not include market consensus; surprise is left blank instead of estimated.</p>
+            </article>
             
-            <tr>
-              <td>Taiwan M2</td>
-              <td>ok</td>
-              <td>70,146,402.00</td>
-              <td>2026-05-01</td>
-              <td>0.84%</td>
-              <td>8.36%</td>
-              <td>CBC open data</td>
-            </tr>
-            </tbody>
-    </table>
-    </section>
+            <article class="macro-card">
+              <div class="macro-head">
+                <h3>Taiwan M2</h3>
+                <span class="source-chip">CBC open data</span>
+              </div>
+              <strong>70.15 兆元</strong>
+              <div class="macro-meta">
+                <span>日期 2026-05-01</span>
+                <span>前值 69.56 兆元</span>
+              </div>
+              <div class="macro-deltas">
+                <span class="num-up">MoM +0.84%</span>
+                <span class="num-up">YoY +8.36%</span>
+              </div>
+              <p>Free official source does not include market consensus; surprise is left blank instead of estimated.</p>
+            </article>
+            </div></section>
 
     <div class="section-title"><h2>核心股基本面 Company Fundamentals</h2><p>核心追蹤池月營收、EPS、毛利率、ROE、存貨、應收帳款先以 FinMind 公開資料接入；金融股部分財報欄位可能不適用，會顯示待接資料源。</p></div>
     <section class="panel">
@@ -1148,11 +1286,11 @@
               <div class="rank">06</div>
               <div>
                 <div class="news-meta">
-                  <span>AI 與半導體供應鏈</span>
+                  <span>利率、通膨與估值</span>
                   <span>Investing.com</span>
                   <span>2026-07-17</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxPOGhkcF82TW9Rb2NCVUx1eXpWZUFONFh1MmdZa0Y0UTBBc1JyeHdDc0ZENUIzM1NaLXRnSlNXeTJFVXE2aENmbnVMOTN3MksyT3BfTVBNYVF2UzdsYUhreVVBUmNvak4xTllxNWlCNGJqeU9kYUFwY1lqTjVPR0dUdFRHdnhaLVhkRU9oR0NrNkNXZjNUMkVnWXpWMmZDM1c2T1pCWkFHampXSFFwbEI4YmhWVzhjM0U?oc=5">台積電業績為人工智慧和資料中心股票提供信心助推器</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMizgFBVV95cUxPN0dxOW5aUy1jSEExbVVUM0ZsYkVQSTJhZlY4Q0FCcWNySXJuTmlieE1MYW5uTWpYeWlXeGF5a2tXWFd5NFpHVzZ5NW1yQm0weVVmRVdtcHdTTUpRTkstckIzZUZCQkFVWk15S1pLM3hCUkdQTUxleEI0R0xJWTVqc0ZiWmZjWEVWLW1nWnBHY1gwQ19CQmlUZmJZTEhXZURELWNNMWdmRkhmeEExZlc0TVYtUFFvd2RRUU9CYTZXZm1WTERpTHJONVZORTJ4UQ?oc=5">比特幣因科技股下滑、美伊緊張局勢和鷹派利率暗示而下跌</a></h3>
                 <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
@@ -1236,7 +1374,7 @@
                   <span>TradingView</span>
                   <span>2026-07-17</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMirwFBVV95cUxOaVNGcUVVYXZFUmtwRDB0ZW0xeGx0VVdPME8xTkpNeGliV1hGd2dwdWYyRFF4Ym8xWnFybE5Fd0Z2Wnh5OGJDNnduSHQ3cWI4ZGwyTEQxa2dMYlpiLTlwdEpEWVdka1NBcDNkMkszcEV5ODlDWmxWX2lBdURVcG90RHREbVBBcGFYMWVtU1NfR05ySl80LU1TWHFnSThnR0xXWG1QZGM1Q0hoVzB2cUFB?oc=5">早晨總結：ASX 200 指數下跌，標準普爾 500 指數和納斯達克指數下跌，因晶片疲軟抵消了醫療保健收益</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMi4wFBVV95cUxNdkxad0ZxcVF5ZEZMSV9DdVNJNUxHb0ZvUnhCVlZCTjJNZWw1bzAwc0JBRFdVbmVtVllSM05ISWVkLW9kZjZqejVlNnB0NVpEVHpzQXlaTUlfVnVNZldJUFFPUXQxNnYyTGxRNjB3bHhGc1lqTDVVR2F3RmFreUxXNHgyVUFjdVQtcU1tVVRvUjBLTVVtR2hPZ2pkOFl4dG42YU16dXdITkdXekFJdDdWV1BoZ2Z3dVdrUXVkaU9VRE96MFNiMTBTcWpHSng4Mko5dlNpYXpqR0szdUx2el9kM2lzTQ?oc=5">早晨總結：ASX 200 指數下跌，標準普爾 500 指數和納斯達克指數下跌，因晶片疲軟抵消了醫療保健收益</a></h3>
                 <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
@@ -1320,7 +1458,7 @@
                   <span>Investing.com</span>
                   <span>2026-07-17</span>
                 </div>
-                <h3><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxPZER3S0U4LUhTLXJkYWZ0anRzUGpjZXFkd202ejBfMHpfWmFOVDh4d2xuNjVCSmluWkwxMHI3SXZYSWk5alhiaWRkU2tMT2pCbUpUVm9raG1CbzRrcGVNQ1h1cnF0RDljV1J0bUZkRFlocUVDQ2NzUGpGLUQ3STdlb2M2STFUMnVJVmx2aVBJMWNuSWhrUTdrbW5QaW5OamR5N09zNXhDYzl5WXIzTER6TEk5ZV96bDA?oc=5">英偉達與日本機器人公司合作開發人工智慧</a></h3>
+                <h3><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxPOGhkcF82TW9Rb2NCVUx1eXpWZUFONFh1MmdZa0Y0UTBBc1JyeHdDc0ZENUIzM1NaLXRnSlNXeTJFVXE2aENmbnVMOTN3MksyT3BfTVBNYVF2UzdsYUhreVVBUmNvak4xTllxNWlCNGJqeU9kYUFwY1lqTjVPR0dUdFRHdnhaLVhkRU9oR0NrNkNXZjNUMkVnWXpWMmZDM1c2T1pCWkFHampXSFFwbEI4YmhWVzhjM0U?oc=5">台積電業績為人工智慧和資料中心股票提供信心助推器</a></h3>
                 <p>投資解讀：先判斷是否影響營收、毛利率、估值或資金流，再用法人籌碼、成交量與關鍵價位確認是否已反映。</p>
               </div>
             </article>
@@ -1348,8 +1486,8 @@
 <span class="source-pill">MacroMicro <b>1</b></span>
 <span class="source-pill">TradingView <b>1</b></span></section>
 
-    <script type="application/json" id="market-analysis-data">{"market_state":"今日以新聞主題、主要市場數據與候選股因子交叉判讀，先確認風險燈號，再追蹤可驗證的營收、法人與技術條件。","change_from_previous":"與前一版相比，本版加入市場數據、候選股分層、投資影響卡、事件行事曆與信號品質，降低只讀新聞標題的盲點。","axes":[{"theme_key":"ai","title":"AI 與半導體供應鏈","summary":"AI 與半導體供應鏈出現 12 則相關訊號，重點新聞包含：由於中東緊張局勢，投資人押注人工智慧成長，華爾街上漲，油價下跌；台積電業績重燃人工智慧擔憂，美股期貨暴跌","impact":"直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。","watch":"觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。","count":12},{"theme_key":"rates","title":"利率、通膨與估值","summary":"利率、通膨與估值出現 2 則相關訊號，重點新聞包含：達拉斯聯邦儲備銀行主席洛根呼籲「適度」提高利率；SF Fed觀點：勞動市場平衡，但通膨加劇且不確定","impact":"利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。","watch":"觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。","count":2},{"theme_key":"markets","title":"全球股市與風險情緒","summary":"全球股市與風險情緒出現 2 則相關訊號，重點新聞包含：《紐約時報》試圖阻止因空軍一號報道而向記者發出傳票；勒龐當選總統對法國乃至全世界意味著什麼？","impact":"全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。","watch":"觀察 VIX、Nasdaq、SOX、S\u0026P 500 與台股電子成交比重。","count":2}]}</script>
-    <p class="footer">Updated: 2026-07-17 11:12:33 Asia/Taipei. This page is generated independently by GitHub Actions. Personal holdings and private risk data are intentionally not included.</p>
+    <script type="application/json" id="market-analysis-data">{"market_state":"今日以新聞主題、主要市場數據與候選股因子交叉判讀，先確認風險燈號，再追蹤可驗證的營收、法人與技術條件。","change_from_previous":"與前一版相比，本版加入市場數據、候選股分層、投資影響卡、事件行事曆與信號品質，降低只讀新聞標題的盲點。","axes":[{"theme_key":"ai","title":"AI 與半導體供應鏈","summary":"AI 與半導體供應鏈出現 11 則相關訊號，重點新聞包含：由於中東緊張局勢，投資人押注人工智慧成長，華爾街上漲，油價下跌；台積電業績重燃人工智慧擔憂，美股期貨暴跌","impact":"直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。","watch":"觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。","count":11},{"theme_key":"rates","title":"利率、通膨與估值","summary":"利率、通膨與估值出現 3 則相關訊號，重點新聞包含：達拉斯聯邦儲備銀行主席洛根呼籲「適度」提高利率；比特幣因科技股下滑、美伊緊張局勢和鷹派利率暗示而下跌","impact":"利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。","watch":"觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。","count":3},{"theme_key":"markets","title":"全球股市與風險情緒","summary":"全球股市與風險情緒出現 2 則相關訊號，重點新聞包含：《紐約時報》試圖阻止因空軍一號報道而向記者發出傳票；勒龐當選總統對法國乃至全世界意味著什麼？","impact":"全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。","watch":"觀察 VIX、Nasdaq、SOX、S\u0026P 500 與台股電子成交比重。","count":2}]}</script>
+    <p class="footer">Updated: 2026-07-17 12:07:56 Asia/Taipei. This page is generated independently by GitHub Actions. Personal holdings and private risk data are intentionally not included.</p>
   </main>
 </body>
 </html>

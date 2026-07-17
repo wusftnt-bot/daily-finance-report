@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: publish-daily-finance-report
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -57,6 +57,7 @@ jobs:
       - name: Generate daily finance report HTML
         if: steps.existing_report.outputs.skip != 'true'
         working-directory: site
+        timeout-minutes: 12
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DAILY_FINANCE_REPORT_DIR: .

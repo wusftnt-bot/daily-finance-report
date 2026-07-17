@@ -881,13 +881,15 @@ def latest_twse_t86_rows(today: dt.date) -> dict[str, object]:
 
 
 def latest_twse_price_momentum_rows(today: dt.date) -> dict[str, object]:
-    for offset in range(0, 10):
+    lookback_days = 5 if os.environ.get("GITHUB_ACTIONS") else 10
+    request_timeout = 6 if os.environ.get("GITHUB_ACTIONS") else 15
+    for offset in range(0, lookback_days):
         day = today - dt.timedelta(days=offset)
         try:
             data = fetch_twse_json(
                 "afterTrading/MI_INDEX",
                 {"date": day.strftime("%Y%m%d"), "type": "ALLBUT0999"},
-                timeout=15,
+                timeout=request_timeout,
             )
         except Exception as exc:
             print(f"TWSE MI_INDEX stock fallback for {day:%Y-%m-%d}: {exc}")
@@ -1567,7 +1569,12 @@ def fetch_market_breadth(today: dt.date, tickers: list[str]) -> dict[str, object
             }
         )
     history_by_date: dict[str, list[dict[str, object]]] = {}
-    for offset in range(0, 45):
+    history_deadline = time.monotonic() + (90 if os.environ.get("GITHUB_ACTIONS") else 240)
+    history_offset_limit = 34 if os.environ.get("GITHUB_ACTIONS") else 45
+    for offset in range(0, history_offset_limit):
+        if time.monotonic() > history_deadline:
+            print("TWSE MI_INDEX history fallback: stopped early after reaching time budget")
+            break
         if len(history_by_date) >= 22:
             break
         dataset = latest_twse_price_momentum_rows(today - dt.timedelta(days=offset))

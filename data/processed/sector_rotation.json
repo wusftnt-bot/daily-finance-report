@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17 10:44:49 Asia/Taipei",
+  "generated_at": "2026-07-17 10:49:09 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -133,11 +133,11 @@
       "count": 2
     },
     {
-      "theme_key": "earnings",
-      "title": "財報、營收與企業展望",
-      "summary": "財報、營收與企業展望出現 1 則相關訊號，重點新聞包含：CoinShares 比特幣挖礦 ETF：合約 AI 收入支持買入（納斯達克股票代碼：WGMI）",
-      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
-      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "theme_key": "energy",
+      "title": "能源、原物料與航運",
+      "summary": "能源、原物料與航運出現 1 則相關訊號，重點新聞包含：海灣地區戰事重燃，股市下跌，油價每週上漲",
+      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
+      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
       "count": 1
     }
   ]

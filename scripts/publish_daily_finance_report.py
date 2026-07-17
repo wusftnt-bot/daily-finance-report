@@ -2724,45 +2724,58 @@ def fetch_macromicro_ism_records() -> list[dict[str, object]]:
     ]
     records: list[dict[str, object]] = []
     for series_id, name, url in series:
-        page = fetch_text_url(url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
-        match = re.search(r'data:JSON\.parse\(atob\("([A-Za-z0-9+/=]+)"\)\)', page)
-        if not match:
-            raise RuntimeError(f"MacroMicro embedded data not found for {series_id}")
-        points = json.loads(base64.b64decode(match.group(1)).decode("utf-8"))
-        values = []
-        for point in points:
-            if not isinstance(point, list) or len(point) < 2:
-                continue
-            timestamp = parse_number(point[0])
-            value = parse_number(point[1])
-            if timestamp is None or value is None:
-                continue
-            date = (dt.date(1970, 1, 1) + dt.timedelta(milliseconds=timestamp)).replace(day=1).isoformat()
-            values.append({"date": date, "value": value})
-        values = sorted(values, key=lambda row: row["date"])
-        if not values:
-            raise RuntimeError(f"MacroMicro embedded data empty for {series_id}")
-        latest = values[-1]
-        previous = values[-2] if len(values) >= 2 else {}
-        point_change = None
-        if previous.get("value") is not None:
-            point_change = latest["value"] - float(previous["value"])
-        record = build_macro_record(
-            series_id=series_id,
-            name=name,
-            category="US demand",
-            date=latest["date"],
-            actual=latest["value"],
-            previous=previous.get("value"),
-            unit="index",
-            source="MacroMicro public series (source: ISM)",
-            source_url=url,
-        )
-        if point_change is not None:
-            record["mom_pct"] = round(point_change, 2)
-            record["point_change"] = round(point_change, 2)
-        record["forecast_note"] = "Market consensus is not included in this free public series; surprise is left blank instead of estimated."
-        records.append(record)
+        try:
+            page = fetch_text_url(url, timeout=20, user_agent="Mozilla/5.0 daily-finance-report")
+            match = re.search(r'data:JSON\.parse\(atob\("([A-Za-z0-9+/=]+)"\)\)', page)
+            if not match:
+                raise RuntimeError(f"MacroMicro embedded data not found for {series_id}")
+            points = json.loads(base64.b64decode(match.group(1)).decode("utf-8"))
+            values = []
+            for point in points:
+                if not isinstance(point, list) or len(point) < 2:
+                    continue
+                timestamp = parse_number(point[0])
+                value = parse_number(point[1])
+                if timestamp is None or value is None:
+                    continue
+                date = (dt.date(1970, 1, 1) + dt.timedelta(milliseconds=timestamp)).replace(day=1).isoformat()
+                values.append({"date": date, "value": value})
+            values = sorted(values, key=lambda row: row["date"])
+            if not values:
+                raise RuntimeError(f"MacroMicro embedded data empty for {series_id}")
+            latest = values[-1]
+            previous = values[-2] if len(values) >= 2 else {}
+            point_change = None
+            if previous.get("value") is not None:
+                point_change = latest["value"] - float(previous["value"])
+            record = build_macro_record(
+                series_id=series_id,
+                name=name,
+                category="US demand",
+                date=latest["date"],
+                actual=latest["value"],
+                previous=previous.get("value"),
+                unit="index",
+                source="MacroMicro public series (source: ISM)",
+                source_url=url,
+            )
+            if point_change is not None:
+                record["mom_pct"] = round(point_change, 2)
+                record["point_change"] = round(point_change, 2)
+            record["forecast_note"] = "Market consensus is not included in this free public series; surprise is left blank instead of estimated."
+            records.append(record)
+        except Exception as exc:
+            records.append(
+                {
+                    "series_id": series_id,
+                    "name": name,
+                    "category": "US demand",
+                    "status": "failed",
+                    "source": "MacroMicro public series (source: ISM)",
+                    "source_url": url,
+                    "error": str(exc)[:160],
+                }
+            )
     return records
 
 
@@ -2889,6 +2902,16 @@ def fetch_macro_indicators(today: dt.date) -> dict[str, object]:
 
 
 def merge_macro_fallback(macro_indicators: dict[str, object], previous_macro: dict[str, object]) -> dict[str, object]:
+    required_cache_ids = set(FRED_SERIES) | {
+        "US_ISM_MANUFACTURING",
+        "US_ISM_NEW_ORDERS",
+        "TW_EXPORTS",
+        "TW_EXPORT_ORDERS",
+        "TW_INDUSTRIAL_PRODUCTION",
+        "TW_NDC_SIGNAL",
+        "TW_M1B",
+        "TW_M2",
+    }
     previous_records = previous_macro.get("records") if isinstance(previous_macro, dict) else []
     if not isinstance(previous_records, list):
         previous_records = []
@@ -2905,11 +2928,20 @@ def merge_macro_fallback(macro_indicators: dict[str, object], previous_macro: di
             reused += 1
         else:
             records.append(row)
+    present_ids = {row.get("series_id") for row in records if isinstance(row, dict)}
+    for series_id in sorted(required_cache_ids - present_ids):
+        if series_id in previous_by_id:
+            cached = dict(previous_by_id[series_id])
+            cached["status"] = "ok"
+            cached["source"] = f"{cached.get('source', 'public source')} cached fallback"
+            cached["fallback_note"] = "Current fetch omitted this required series; reused last successful public value."
+            records.append(cached)
+            reused += 1
     if reused:
         macro_indicators = dict(macro_indicators)
         macro_indicators["records"] = records
         ok_count = sum(1 for row in records if isinstance(row, dict) and row.get("status") == "ok")
-        macro_indicators["status"] = "ok" if ok_count >= len(FRED_SERIES) else "partial" if ok_count else "failed"
+        macro_indicators["status"] = "ok" if records and ok_count == len(records) else "partial" if ok_count else "failed"
         macro_indicators["source"] = f"{macro_indicators.get('source', 'FRED')} / cached fallback"
     return macro_indicators
 

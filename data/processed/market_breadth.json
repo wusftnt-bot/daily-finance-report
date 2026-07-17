@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17 16:17:38 Asia/Taipei",
+  "generated_at": "2026-07-17 16:22:54 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -12,7 +12,7 @@
     "unchanged": 32,
     "advance_decline_ratio": 0.09,
     "new_20d_high": 37,
-    "new_20d_low": 522,
+    "new_20d_low": 523,
     "new_52w_high": null,
     "new_52w_low": null,
     "new_high_low_status": "partial_20d_connected_52w_pending"

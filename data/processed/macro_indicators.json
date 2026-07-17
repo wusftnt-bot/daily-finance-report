@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-07-17 16:17:38 Asia/Taipei",
+  "generated_at": "2026-07-17 16:22:54 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
-  "source": "FRED / ISM official report / MacroMicro / data.gov.tw / MOEA / NDC / CBC / Customs",
+  "source": "FRED / ISM official report / MacroMicro / data.gov.tw / MOEA / NDC / CBC / Customs / cached fallback",
   "date": "2026-07-17",
   "records": [
     {
@@ -18,8 +18,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "PCEPI",
@@ -33,8 +34,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "PAYEMS",
@@ -48,8 +50,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "thousand persons",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "ICSA",
@@ -63,8 +66,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "persons",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "RSAFS",
@@ -78,8 +82,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "million USD",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "HOUST",
@@ -93,8 +98,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "thousand units",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "PERMIT",
@@ -108,8 +114,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "thousand units",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "FEDFUNDS",
@@ -123,8 +130,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "DGS2",
@@ -138,8 +146,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "DGS10",
@@ -153,8 +162,9 @@
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED",
-      "status": "ok"
+      "source": "FRED cached fallback",
+      "status": "ok",
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "US_ISM_MANUFACTURING",
@@ -168,11 +178,12 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "MacroMicro public series (source: ISM)",
+      "source": "MacroMicro public series (source: ISM) cached fallback",
       "source_url": "https://en.macromicro.me/series/265/ism-pmi",
       "status": "ok",
       "forecast_note": "Market consensus is not included in this free public series; surprise is left blank instead of estimated.",
-      "point_change": -0.7
+      "point_change": -0.7,
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "US_ISM_NEW_ORDERS",
@@ -186,11 +197,12 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "MacroMicro public series (source: ISM)",
+      "source": "MacroMicro public series (source: ISM) cached fallback",
       "source_url": "https://en.macromicro.me/series/267/ism-manufacturing-neworders",
       "status": "ok",
       "forecast_note": "Market consensus is not included in this free public series; surprise is left blank instead of estimated.",
-      "point_change": -0.8
+      "point_change": -0.8,
+      "fallback_note": "Current FRED fetch failed; reused last successful public value."
     },
     {
       "series_id": "TW_EXPORTS",

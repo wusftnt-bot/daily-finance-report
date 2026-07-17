@@ -25,7 +25,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Checkout daily finance report site
         uses: actions/checkout@v4
@@ -57,11 +57,24 @@ jobs:
       - name: Generate daily finance report HTML
         if: steps.existing_report.outputs.skip != 'true'
         working-directory: site
-        timeout-minutes: 12
+        timeout-minutes: 8
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DAILY_FINANCE_REPORT_DIR: .
-        run: python scripts/publish_daily_finance_report.py
+          PYTHONUNBUFFERED: "1"
+        shell: bash
+        run: |
+          if timeout 7m python scripts/publish_daily_finance_report.py; then
+            exit 0
+          fi
+          status=$?
+          {
+            echo "## Daily finance report generation fallback"
+            echo
+            echo "Generation exited with status ${status}. Keeping the previous published site files."
+            echo "Telegram dispatch will run only if the local index.html has today's report-date."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
 
       - name: Commit and push report site
         if: steps.existing_report.outputs.skip != 'true'

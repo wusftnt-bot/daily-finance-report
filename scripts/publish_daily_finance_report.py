@@ -2257,19 +2257,83 @@ def latest_ok_record(records: list[dict[str, object]], key: str, value: object) 
     return latest_record(matches)
 
 
-def recent_company_material_event(today: dt.date) -> dict[str, str] | None:
-    tsmc_q2_date = dt.date(2026, 7, 16)
-    if 0 <= (today - tsmc_q2_date).days <= 7:
-        return {
-            "time": "07/16 14:00",
-            "country": "台灣",
-            "event": "2330 台積電 Q2 法說會與財報重點",
-            "previous": "Q2營收 US$40.20B；毛利率67.7%；營益率60.3%；淨利約 NT$7066億；EPS NT$27.25",
-            "forecast": "Q3指引：營收 US$44.6-45.8B；毛利率65.0-67.0%；營益率56.0-58.0%",
-            "importance": "高",
-            "impact": "AI/HPC需求、先進製程、CoWoS、AI伺服器與半導體供應鏈；來源：TSMC IR 2026 Q2 results / earnings call",
-        }
+def parse_event_date(value: str, today: dt.date) -> dt.date | None:
+    if not value:
+        return None
+    text = value.strip()
+    for pattern in ("%Y-%m-%d", "%Y/%m/%d"):
+        try:
+            return dt.datetime.strptime(text[:10], pattern).date()
+        except ValueError:
+            pass
+    match = re.search(r"(\d{1,2})[/-](\d{1,2})", text)
+    if match:
+        try:
+            return dt.date(today.year, int(match.group(1)), int(match.group(2)))
+        except ValueError:
+            return None
     return None
+
+
+def select_material_company_event(news: list[dict[str, str]], today: dt.date) -> dict[str, str] | None:
+    company_aliases = {
+        "2330": ("台積電", "tsmc", "taiwan semiconductor", "台灣積體電路"),
+        "2317": ("鴻海", "foxconn", "hon hai"),
+        "2308": ("台達電", "delta electronics"),
+        "2881": ("富邦金", "fubon"),
+    }
+    material_keywords = (
+        "earnings", "results", "財報", "法說", "法說會", "conference call",
+        "revenue", "營收", "profit", "獲利", "eps", "毛利", "margin",
+        "guidance", "outlook", "forecast", "展望", "指引", "capex", "資本支出",
+    )
+    trusted_sources = ("tsmc", "mops", "twse", "tpex", "reuters", "bloomberg", "wsj", "financial times", "cnbc")
+    scored: list[tuple[int, dict[str, str], str, str, int | None]] = []
+    for item in news:
+        haystack = " ".join(
+            str(item.get(key, "")) for key in ("headline", "original_headline", "source", "host")
+        ).lower()
+        matched = [(ticker, aliases[0]) for ticker, aliases in company_aliases.items() if any(alias.lower() in haystack for alias in aliases)]
+        if not matched or not any(keyword.lower() in haystack for keyword in material_keywords):
+            continue
+        event_date = parse_event_date(str(item.get("published", "")), today)
+        age_days = (today - event_date).days if event_date else None
+        score = 60
+        if age_days is not None:
+            if 0 <= age_days <= 3:
+                score += 30
+            elif 4 <= age_days <= 7:
+                score += 12
+            elif age_days < 0:
+                score += 18
+            else:
+                score -= 25
+        if any(source in haystack for source in trusted_sources):
+            score += 15
+        if item.get("theme") == "earnings":
+            score += 12
+        if any(keyword in haystack for keyword in ("guidance", "outlook", "forecast", "展望", "指引", "capex", "資本支出")):
+            score += 8
+        ticker, name = matched[0]
+        scored.append((score, item, ticker, name, age_days))
+    if not scored:
+        return None
+    score, item, ticker, name, age_days = max(scored, key=lambda row: row[0])
+    if score < 70:
+        return None
+    published = item.get("published") or "近72小時"
+    source = item.get("source") or item.get("host") or "public news"
+    age_note = "近72小時" if age_days is None or age_days <= 3 else f"{age_days}天內"
+    headline = item.get("headline") or item.get("original_headline") or "重大公司事件"
+    return {
+        "time": str(published),
+        "country": "台灣",
+        "event": f"{ticker} {name} 重大公司事件追蹤",
+        "previous": headline[:180],
+        "forecast": f"事件評分 {score}；{age_note}；優先檢查公司公告、法說會逐字稿、財報與財測/展望。",
+        "importance": "高",
+        "impact": f"影響核心持股、AI/半導體供應鏈、法人資金與 Stock Radar 分層；來源：{source}",
+    }
 
 
 def enrich_event_calendar_v2(
@@ -2279,6 +2343,7 @@ def enrich_event_calendar_v2(
     derivatives_flow: dict[str, object],
     fundamentals: dict[str, object],
     snapshot: list[dict[str, object]],
+    news: list[dict[str, str]],
 ) -> list[dict[str, str]]:
     macro_records = macro_indicators.get("records") if isinstance(macro_indicators.get("records"), list) else []
     fund_records = fundamentals.get("records") if isinstance(fundamentals.get("records"), list) else []
@@ -2287,7 +2352,7 @@ def enrich_event_calendar_v2(
     futures = next((row for row in derivatives_records if row.get("dataset") == "foreign_taiex_futures_net_position"), {})
     pcr = next((row for row in derivatives_records if row.get("dataset") == "txo_put_call_ratio"), {})
     latest_revenue = latest_record([row for row in fund_records if isinstance(row.get("latest_month_revenue"), (int, float))])
-    company_event = recent_company_material_event(dt.datetime.now(TW).date())
+    company_event = select_material_company_event(news, dt.datetime.now(TW).date())
     retail = next((row for row in macro_records if row.get("series_id") == "RSAFS" and row.get("status") == "ok"), None)
     claims = next((row for row in macro_records if row.get("series_id") == "ICSA" and row.get("status") == "ok"), None)
     ism = next((row for row in macro_records if row.get("series_id") == "US_ISM_NEW_ORDERS" and row.get("status") == "ok"), None)
@@ -3496,7 +3561,7 @@ def render_html(
     market_history = build_market_history(today, environment, previous_market or {}, previous_history or {})
     all_candidates = score_candidates(news, analysis, today, dynamic_candidates)
     candidates = priority_candidates(all_candidates)
-    events = enrich_event_calendar_v2(event_calendar(today), macro_indicators, capital_flow, derivatives_flow, fundamentals, snapshot)
+    events = enrich_event_calendar_v2(event_calendar(today), macro_indicators, capital_flow, derivatives_flow, fundamentals, snapshot, news)
     LAST_PROCESSED_PAYLOADS = build_processed_payloads(
         today=today,
         generated_at=generated_at,

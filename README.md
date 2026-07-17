@@ -92,6 +92,27 @@ New data sources must be integrated through the data layer first, not directly h
 - Telegram should read only summary-ready public data and must not be blocked by cosmetic website section-title changes.
 - LINE smart-stock bot data and credentials must stay separate from this public dashboard repository.
 
+## 72-Hour Material Event Rule
+
+The economic-calendar section must not hard-code a single example event as a permanent output. Company events such as TSMC earnings, Foxconn guidance, Delta Electronics margin updates, or Fubon Financial results must be selected dynamically from public news, official calendars, filings, and processed data.
+
+- Rank events by recency, source reliability, event type, market impact, and whether the information can be verified by public data.
+- Earnings releases, investor conferences, guidance changes, margin/EPS/profit updates, capex changes, major announcements, and regulatory filings outrank old monthly revenue.
+- Monthly revenue is only a fallback when no higher-impact company event is available.
+- Do not hard-code a quarter such as Q2 or Q3 into the output logic. Quarter-specific text may appear only when it comes from the current selected public source.
+- Every selected material event should show the source, update time or publish time, why it matters, and what data should be checked next.
+
+## Outstanding Dashboard Quality Items
+
+Track these as product-quality requirements rather than cosmetic backlog:
+
+- Publish workflow stability: keep job-level timeout, step-level timeout, concurrency cancellation, and external-source fallback so one slow source cannot block the full site or Telegram workflow.
+- Macro score calculation: replace proxy wording with direct calculations from CPI, PCE, ISM, export orders, industrial production, exports, capital flow, FX, yields, and market breadth as sources become stable.
+- Forecast / Surprise: use a reliable public or low-cost source when available; otherwise explicitly show that no reliable free consensus is connected. Never fabricate consensus or surprise values.
+- Financial-sector fundamentals: financial stocks such as Fubon Financial need an industry-specific model instead of manufacturing-style gross margin, inventory, and receivables fields.
+- Source and freshness display: every major card should show source, update time, market timezone, data status, and whether the value is delayed, official close, intraday, fallback, or unavailable.
+- Stock Radar traceability: each selected stock must keep entry reason, score components, score change, upgrade/downgrade trigger, invalidation condition, source, and update time.
+
 Current connected expansion batch:
 
 - `derivatives_flow.json`: TAIFEX foreign TAIEX futures net position and TXO Put/Call Ratio.

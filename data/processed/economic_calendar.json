@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17 16:06:30 Asia/Taipei",
+  "generated_at": "2026-07-17 16:17:38 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -24,13 +24,13 @@
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持"
     },
     {
-      "time": "07/16 14:00",
+      "time": "2026-07-17",
       "country": "台灣",
-      "event": "2330 台積電 Q2 法說會與財報重點",
-      "previous": "Q2營收 US$40.20B；毛利率67.7%；營益率60.3%；淨利約 NT$7066億；EPS NT$27.25",
-      "forecast": "Q3指引：營收 US$44.6-45.8B；毛利率65.0-67.0%；營益率56.0-58.0%",
+      "event": "2330 台積電 重大公司事件追蹤",
+      "previous": "台積電業績重燃人工智慧擔憂，美股期貨暴跌",
+      "forecast": "事件評分 105；近72小時；優先檢查公司公告、法說會逐字稿、財報與財測/展望。",
       "importance": "高",
-      "impact": "AI/HPC需求、先進製程、CoWoS、AI伺服器與半導體供應鏈；來源：TSMC IR 2026 Q2 results / earnings call"
+      "impact": "影響核心持股、AI/半導體供應鏈、法人資金與 Stock Radar 分層；來源：Bloomberg"
     },
     {
       "time": "本週",

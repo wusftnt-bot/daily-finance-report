@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17 12:07:56 Asia/Taipei",
+  "generated_at": "2026-07-17 13:08:20 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -133,12 +133,12 @@
       "count": 3
     },
     {
-      "theme_key": "markets",
-      "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 2 則相關訊號，重點新聞包含：《紐約時報》試圖阻止因空軍一號報道而向記者發出傳票；勒龐當選總統對法國乃至全世界意味著什麼？",
-      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
-      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 2
+      "theme_key": "earnings",
+      "title": "財報、營收與企業展望",
+      "summary": "財報、營收與企業展望出現 1 則相關訊號，重點新聞包含：CoinShares 比特幣挖礦 ETF：合約 AI 收入支持買入（納斯達克股票代碼：WGMI）",
+      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
+      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "count": 1
     }
   ]
 }

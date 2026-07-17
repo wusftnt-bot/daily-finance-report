@@ -1,116 +1,116 @@
 {
-  "generated_at": "2026-07-17 13:08:20 Asia/Taipei",
+  "generated_at": "2026-07-17 15:42:20 Asia/Taipei",
   "data_date": "2026-07-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
-  "date": "20260716",
+  "date": "20260717",
   "records": [
     {
       "sector": "油電燃氣",
       "index_name": "油電燃氣類指數",
-      "close": 108.62,
-      "change_points": 8.41,
-      "change_pct": 8.39,
-      "stage": "強勢擴張",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "其他電子",
-      "index_name": "其他電子類指數",
-      "close": 269.93,
-      "change_points": 3.26,
-      "change_pct": 1.22,
+      "close": 110.01,
+      "change_points": 1.39,
+      "change_pct": 1.28,
       "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "通信網路",
-      "index_name": "通信網路類指數",
-      "close": 239.52,
-      "change_points": 0.95,
-      "change_pct": 0.4,
-      "stage": "中性整理",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "半導體",
-      "index_name": "半導體類指數",
-      "close": 1570.52,
-      "change_points": 5.89,
-      "change_pct": 0.38,
-      "stage": "中性整理",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "鋼鐵",
-      "index_name": "鋼鐵類指數",
-      "close": 117.32,
-      "change_points": 0.1,
-      "change_pct": 0.09,
-      "stage": "中性整理",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "金融保險",
       "index_name": "金融保險類指數",
-      "close": 3107.12,
-      "change_points": 0.86,
-      "change_pct": -0.03,
+      "close": 3080.89,
+      "change_points": 26.23,
+      "change_pct": -0.84,
+      "stage": "整理偏弱",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "鋼鐵",
+      "index_name": "鋼鐵類指數",
+      "close": 115.53,
+      "change_points": 1.79,
+      "change_pct": -1.53,
       "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "航運",
       "index_name": "航運類指數",
-      "close": 189.11,
-      "change_points": 1.72,
-      "change_pct": -0.9,
-      "stage": "整理偏弱",
+      "close": 185.17,
+      "change_points": 3.94,
+      "change_pct": -2.08,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "通信網路",
+      "index_name": "通信網路類指數",
+      "close": 230.38,
+      "change_points": 9.14,
+      "change_pct": -3.82,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "其他電子",
+      "index_name": "其他電子類指數",
+      "close": 256.2,
+      "change_points": 13.73,
+      "change_pct": -5.09,
+      "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "生技醫療",
       "index_name": "生技醫療類指數",
-      "close": 98.6,
-      "change_points": 0.95,
-      "change_pct": -0.95,
-      "stage": "整理偏弱",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "電機機械",
-      "index_name": "電機機械類指數",
-      "close": 528.67,
-      "change_points": 6.84,
-      "change_pct": -1.28,
-      "stage": "整理偏弱",
+      "close": 93.5,
+      "change_points": 5.1,
+      "change_pct": -5.17,
+      "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電腦及週邊設備",
       "index_name": "電腦及週邊設備類指數",
-      "close": 393.13,
-      "change_points": 5.15,
-      "change_pct": -1.29,
-      "stage": "整理偏弱",
+      "close": 372.54,
+      "change_points": 20.59,
+      "change_pct": -5.24,
+      "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
-      "sector": "電子零組件",
-      "index_name": "電子零組件類指數",
-      "close": 904.38,
-      "change_points": 17.87,
-      "change_pct": -1.94,
-      "stage": "整理偏弱",
+      "sector": "電機機械",
+      "index_name": "電機機械類指數",
+      "close": 495.47,
+      "change_points": 33.2,
+      "change_pct": -6.28,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "半導體",
+      "index_name": "半導體類指數",
+      "close": 1449.47,
+      "change_points": 121.05,
+      "change_pct": -7.71,
+      "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "塑膠",
       "index_name": "塑膠類指數",
-      "close": 375.34,
-      "change_points": 8.35,
-      "change_pct": -2.18,
+      "close": 345.86,
+      "change_points": 29.48,
+      "change_pct": -7.85,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "電子零組件",
+      "index_name": "電子零組件類指數",
+      "close": 824.93,
+      "change_points": 79.45,
+      "change_pct": -8.79,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     }
@@ -119,25 +119,25 @@
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 11 則相關訊號，重點新聞包含：由於中東緊張局勢，投資人押注人工智慧成長，華爾街上漲，油價下跌；台積電業績重燃人工智慧擔憂，美股期貨暴跌",
+      "summary": "AI 與半導體供應鏈出現 13 則相關訊號，重點新聞包含：由於中東緊張局勢，投資人押注人工智慧成長，華爾街上漲，油價下跌；台積電業績重燃人工智慧擔憂，美股期貨暴跌",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 11
+      "count": 13
     },
     {
       "theme_key": "rates",
       "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 3 則相關訊號，重點新聞包含：達拉斯聯邦儲備銀行主席洛根呼籲「適度」提高利率；比特幣因科技股下滑、美伊緊張局勢和鷹派利率暗示而下跌",
+      "summary": "利率、通膨與估值出現 2 則相關訊號，重點新聞包含：達拉斯聯邦儲備銀行主席洛根呼籲「適度」提高利率；比特幣因科技股下滑、美伊緊張局勢和鷹派利率暗示而下跌",
       "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
       "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 3
+      "count": 2
     },
     {
-      "theme_key": "earnings",
-      "title": "財報、營收與企業展望",
-      "summary": "財報、營收與企業展望出現 1 則相關訊號，重點新聞包含：CoinShares 比特幣挖礦 ETF：合約 AI 收入支持買入（納斯達克股票代碼：WGMI）",
-      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
-      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "theme_key": "fx",
+      "title": "美元、匯率與資金流",
+      "summary": "美元、匯率與資金流出現 1 則相關訊號，重點新聞包含：重塑價值萬億美元製藥商的男人",
+      "impact": "美元與台幣走勢會影響外資動能、出口電子匯兌與原物料成本。",
+      "watch": "觀察美元/台幣、DXY、外資買賣超與電子權值股是否同步轉強或轉弱。",
       "count": 1
     }
   ]

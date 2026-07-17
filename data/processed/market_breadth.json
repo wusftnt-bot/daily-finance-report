@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-17 16:22:54 Asia/Taipei",
-  "data_date": "2026-07-17",
+  "generated_at": "2026-07-18 05:25:53 Asia/Taipei",
+  "data_date": "2026-07-18",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX / FinMind",
@@ -12,7 +12,7 @@
     "unchanged": 32,
     "advance_decline_ratio": 0.09,
     "new_20d_high": 37,
-    "new_20d_low": 523,
+    "new_20d_low": 522,
     "new_52w_high": null,
     "new_52w_low": null,
     "new_high_low_status": "partial_20d_connected_52w_pending"
@@ -20,38 +20,38 @@
   "margin_records": [
     {
       "ticker": "2330",
-      "date": "2026-07-16",
-      "margin_purchase_balance": 32918,
-      "margin_purchase_change": -375,
-      "short_sale_balance": 38,
-      "short_sale_change": 19,
+      "date": "2026-07-17",
+      "margin_purchase_balance": 33373,
+      "margin_purchase_change": 455,
+      "short_sale_balance": 81,
+      "short_sale_change": 43,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     },
     {
       "ticker": "2317",
-      "date": "2026-07-16",
-      "margin_purchase_balance": 57196,
-      "margin_purchase_change": 15,
-      "short_sale_balance": 212,
-      "short_sale_change": 5,
+      "date": "2026-07-17",
+      "margin_purchase_balance": 57065,
+      "margin_purchase_change": -131,
+      "short_sale_balance": 244,
+      "short_sale_change": 32,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     },
     {
       "ticker": "2308",
-      "date": "2026-07-16",
-      "margin_purchase_balance": 7831,
-      "margin_purchase_change": 39,
-      "short_sale_balance": 15,
-      "short_sale_change": -6,
+      "date": "2026-07-17",
+      "margin_purchase_balance": 7764,
+      "margin_purchase_change": -67,
+      "short_sale_balance": 20,
+      "short_sale_change": 5,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     },
     {
       "ticker": "2881",
-      "date": "2026-07-16",
-      "margin_purchase_balance": 8134,
-      "margin_purchase_change": 668,
-      "short_sale_balance": 51,
-      "short_sale_change": -27,
+      "date": "2026-07-17",
+      "margin_purchase_balance": 6864,
+      "margin_purchase_change": -1270,
+      "short_sale_balance": 164,
+      "short_sale_change": 113,
       "source": "FinMind TaiwanStockMarginPurchaseShortSale"
     }
   ],
@@ -61,34 +61,34 @@
     "records": [
       {
         "ticker": "2330",
-        "date": "2026-07-16",
-        "transaction_count": 5,
-        "lending_volume": 1442,
-        "avg_fee_rate": 0.14,
+        "date": "2026-07-17",
+        "transaction_count": 7,
+        "lending_volume": 966,
+        "avg_fee_rate": 0.394,
         "source": "FinMind TaiwanStockSecuritiesLending"
       },
       {
         "ticker": "2317",
-        "date": "2026-07-16",
-        "transaction_count": 10,
-        "lending_volume": 24549,
-        "avg_fee_rate": 0.177,
+        "date": "2026-07-17",
+        "transaction_count": 6,
+        "lending_volume": 9755,
+        "avg_fee_rate": 0.18,
         "source": "FinMind TaiwanStockSecuritiesLending"
       },
       {
         "ticker": "2308",
-        "date": "2026-07-16",
+        "date": "2026-07-17",
         "transaction_count": 2,
-        "lending_volume": 156,
-        "avg_fee_rate": 0.3,
+        "lending_volume": 257,
+        "avg_fee_rate": 0.13,
         "source": "FinMind TaiwanStockSecuritiesLending"
       },
       {
         "ticker": "2881",
-        "date": "2026-07-16",
-        "transaction_count": 5,
-        "lending_volume": 22353,
-        "avg_fee_rate": 0.268,
+        "date": "2026-07-17",
+        "transaction_count": 3,
+        "lending_volume": 3889,
+        "avg_fee_rate": 0.217,
         "source": "FinMind TaiwanStockSecuritiesLending"
       }
     ]

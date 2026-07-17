@@ -2331,12 +2331,12 @@ def signal_class(score: object) -> str:
     if not isinstance(score, (int, float)):
         return "signal-gray"
     if score >= 70:
-        return "signal-red"
-    if score >= 55:
-        return "signal-yellow"
-    if score >= 40:
         return "signal-green"
-    return "signal-blue"
+    if score >= 58:
+        return "signal-teal"
+    if score >= 42:
+        return "signal-yellow"
+    return "signal-red"
 
 
 def format_macro_actual(row: dict[str, object]) -> str:
@@ -3605,6 +3605,7 @@ def render_html(
     .signal-dot {{ width: 12px; height: 12px; border-radius: 999px; display: inline-block; background: #9aa8b4; box-shadow: 0 0 0 3px rgba(154,168,180,.16); }}
     .signal-red .signal-dot, .regime-score.signal-red {{ background: #8f1f2d; }}
     .signal-yellow .signal-dot, .regime-score.signal-yellow {{ background: #b57411; }}
+    .signal-teal .signal-dot, .regime-score.signal-teal {{ background: #087f8c; }}
     .signal-green .signal-dot, .regime-score.signal-green {{ background: #117a4b; }}
     .signal-blue .signal-dot, .regime-score.signal-blue {{ background: #2768a5; }}
     .signal-gray .signal-dot, .regime-score.signal-gray {{ background: #697887; }}

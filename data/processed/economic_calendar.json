@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-23 05:30:31 Asia/Taipei",
-  "data_date": "2026-07-23",
+  "generated_at": "2026-07-24 05:32:04 Asia/Taipei",
+  "data_date": "2026-07-24",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Manual P0 template; official calendar API pending",
@@ -18,19 +18,19 @@
       "time": "每日",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金訊號",
-      "previous": "法人合計 +338.5 億; 外資台指期 -76,595 口; Put/Call 104.50%; USD/TWD 32.384",
+      "previous": "法人合計 +185.2 億; 外資台指期 -75,198 口; Put/Call 104.64%; USD/TWD 32.300",
       "forecast": "不適用；以每日實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持"
     },
     {
-      "time": "2026-07-22",
+      "time": "本週",
       "country": "台灣",
-      "event": "2330 台積電 重大公司事件追蹤",
-      "previous": "N2 到來，資本支出攀升：台積電加大人工智慧投資",
-      "forecast": "事件評分 113；近72小時；優先檢查公司公告、法說會逐字稿、財報與財測/展望。",
+      "event": "上市櫃月營收與重大公告追蹤",
+      "previous": "2330 台積電 最新月營收 4426.8 億元",
+      "forecast": "不適用；以公司公告與月營收實際值驗證",
       "importance": "高",
-      "impact": "影響核心持股、AI/半導體供應鏈、法人資金與 Stock Radar 分層；來源：MacroMicro"
+      "impact": "驗證 AI 伺服器、半導體、電子零組件基本面是否延續"
     },
     {
       "time": "本週",

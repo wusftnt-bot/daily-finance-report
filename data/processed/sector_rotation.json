@@ -1,141 +1,141 @@
 {
-  "generated_at": "2026-07-29 06:13:28 Asia/Taipei",
-  "data_date": "2026-07-29",
+  "generated_at": "2026-07-30 05:40:21 Asia/Taipei",
+  "data_date": "2026-07-30",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
-  "date": "20260728",
+  "date": "20260729",
   "records": [
     {
-      "sector": "航運",
-      "index_name": "航運類指數",
-      "close": 187.88,
-      "change_points": 1.1,
-      "change_pct": -0.58,
-      "stage": "整理偏弱",
+      "sector": "油電燃氣",
+      "index_name": "油電燃氣類指數",
+      "close": 101.83,
+      "change_points": 0.14,
+      "change_pct": 0.14,
+      "stage": "中性整理",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "鋼鐵",
       "index_name": "鋼鐵類指數",
-      "close": 116.61,
-      "change_points": 2.1,
-      "change_pct": -1.77,
+      "close": 116.76,
+      "change_points": 0.15,
+      "change_pct": 0.13,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "航運",
+      "index_name": "航運類指數",
+      "close": 187.1,
+      "change_points": 0.78,
+      "change_pct": -0.42,
       "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "金融保險",
       "index_name": "金融保險類指數",
-      "close": 3096.84,
-      "change_points": 60.66,
-      "change_pct": -1.92,
+      "close": 3067.13,
+      "change_points": 29.71,
+      "change_pct": -0.96,
       "stage": "整理偏弱",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "油電燃氣",
-      "index_name": "油電燃氣類指數",
-      "close": 101.69,
-      "change_points": 4.07,
-      "change_pct": -3.85,
-      "stage": "降溫警戒",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "通信網路",
-      "index_name": "通信網路類指數",
-      "close": 230.88,
-      "change_points": 9.52,
-      "change_pct": -3.96,
-      "stage": "降溫警戒",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "半導體",
-      "index_name": "半導體類指數",
-      "close": 1420.31,
-      "change_points": 65.61,
-      "change_pct": -4.42,
-      "stage": "降溫警戒",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "生技醫療",
-      "index_name": "生技醫療類指數",
-      "close": 88.35,
-      "change_points": 4.15,
-      "change_pct": -4.49,
-      "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電腦及週邊設備",
       "index_name": "電腦及週邊設備類指數",
-      "close": 385.99,
-      "change_points": 21.46,
-      "change_pct": -5.27,
+      "close": 378.04,
+      "change_points": 7.95,
+      "change_pct": -2.06,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "其他電子",
       "index_name": "其他電子類指數",
-      "close": 259.48,
-      "change_points": 15.62,
-      "change_pct": -5.68,
+      "close": 254.13,
+      "change_points": 5.35,
+      "change_pct": -2.06,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "生技醫療",
+      "index_name": "生技醫療類指數",
+      "close": 86.24,
+      "change_points": 2.11,
+      "change_pct": -2.39,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電機機械",
       "index_name": "電機機械類指數",
-      "close": 485.65,
-      "change_points": 32.74,
-      "change_pct": -6.32,
+      "close": 472.18,
+      "change_points": 13.47,
+      "change_pct": -2.77,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
-      "sector": "塑膠",
-      "index_name": "塑膠類指數",
-      "close": 289.57,
-      "change_points": 26.22,
-      "change_pct": -8.3,
+      "sector": "通信網路",
+      "index_name": "通信網路類指數",
+      "close": 223.83,
+      "change_points": 7.05,
+      "change_pct": -3.05,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "半導體",
+      "index_name": "半導體類指數",
+      "close": 1357.93,
+      "change_points": 62.38,
+      "change_pct": -4.39,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電子零組件",
       "index_name": "電子零組件類指數",
-      "close": 749.07,
-      "change_points": 73.96,
-      "change_pct": -8.99,
+      "close": 698.96,
+      "change_points": 50.11,
+      "change_pct": -6.69,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "塑膠",
+      "index_name": "塑膠類指數",
+      "close": 269.19,
+      "change_points": 20.38,
+      "change_pct": -7.04,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     }
   ],
   "news_axes": [
     {
-      "theme_key": "ai",
-      "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 12 則相關訊號，重點新聞包含：比特幣礦商和人工智慧公司 Ionic Digital 在納斯達克上市，估值 22.5 億美元；華爾街從人工智慧轉向不那麼受歡迎的股票的速度加快，而油價持續下跌",
-      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
-      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 12
+      "theme_key": "rates",
+      "title": "利率、通膨與估值",
+      "summary": "利率、通膨與估值出現 8 則相關訊號，重點新聞包含：聯準會對貨幣供應的新關注可能有助於邊際通膨思維；聯準會決定後納斯達克 100 進入調整，標準普爾 500 指數下跌",
+      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
+      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
+      "count": 8
     },
     {
-      "theme_key": "fx",
-      "title": "美元、匯率與資金流",
-      "summary": "美元、匯率與資金流出現 2 則相關訊號，重點新聞包含：Ebay 因其在蟑螂騷擾活動中所扮演的角色而向夫婦支付 5600 萬美元；納斯達克內部人士出售價值超過 280 萬美元的股票",
-      "impact": "美元與台幣走勢會影響外資動能、出口電子匯兌與原物料成本。",
-      "watch": "觀察美元/台幣、DXY、外資買賣超與電子權值股是否同步轉強或轉弱。",
-      "count": 2
+      "theme_key": "ai",
+      "title": "AI 與半導體供應鏈",
+      "summary": "AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：聯準會維持利率穩定。現在的大問題是：微軟和 Meta 對人工智慧資本支出有何看法？；SK 海力士業績不佳、人工智慧貿易放鬆，英偉達、美光、AMD 股價下跌",
+      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
+      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
+      "count": 6
     },
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 2 則相關訊號，重點新聞包含：散戶應警惕永續合約；Alphabet - 購買資本支出導致下降（納斯達克股票代碼：GOOGL）",
+      "summary": "全球股市與風險情緒出現 2 則相關訊號，重點新聞包含：世界經濟失衡了嗎？；自大流行以來，挑剔的散戶拋售了大多數個股",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 2

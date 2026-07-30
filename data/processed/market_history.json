@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-30 05:40:21 Asia/Taipei",
-  "data_date": "2026-07-30",
+  "generated_at": "2026-07-31 05:32:59 Asia/Taipei",
+  "data_date": "2026-07-31",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Generated market_summary history",
@@ -83,6 +83,11 @@
     {
       "date": "2026-07-30",
       "score": 50,
+      "status": "黃燈警戒"
+    },
+    {
+      "date": "2026-07-31",
+      "score": 51,
       "status": "黃燈警戒"
     }
   ]

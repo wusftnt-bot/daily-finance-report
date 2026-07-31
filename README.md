@@ -115,12 +115,14 @@ Track these as product-quality requirements rather than cosmetic backlog:
 
 Current connected expansion batch:
 
-- `derivatives_flow.json`: TAIFEX foreign TAIEX futures net position and TXO Put/Call Ratio.
+- `derivatives_flow.json`: TAIFEX foreign TAIEX futures net position and TXO Put/Call Ratio. Each metric backtracks independently to its latest published trading day and displays its own date; an unpublished same-day open-interest value must not hide an already published Put/Call value.
+- `market_summary.json`: TPEx Exchange Index uses 13 months of the official `indexInfo/inx` history for day/5-day/20-day/YTD/52-week calculations. Do not substitute Yahoo `^TWOII`, whose value does not match the official TPEx index.
+- FRED `DGS2`: US 2Y yield day, 5-day, and 20-day changes must be calculated from their matching historical observations. A latest-versus-prior value must not be labeled as a monthly change.
 - `market_history.json`: generated daily market-regime score history used for previous-day score and weekly change.
-- `market_breadth.json`: TWSE listed-stock advance/decline breadth, 20-trading-day new high/new low counts, fixed-core-stock margin/short-sale balances, and fixed-core-stock securities-lending transactions through public TWSE / FinMind data. Full-market official TWSE/TPEx lending-sale balance remains a follow-up because the public page endpoint is not yet stable for unattended GitHub Actions access.
+- `market_breadth.json`: TWSE listed-stock advance/decline breadth, 20-trading-day new high/new low counts, fixed-core-stock margin/short-sale balances, and fixed-core-stock securities-lending transactions through public TWSE / FinMind data. Full-market 52-week new-high/new-low breadth requires a verified 252-trading-day history for every listed stock and must not be inferred from the 20-day sample. Full-market official TWSE/TPEx lending-sale balance remains a follow-up because the public page endpoint is not yet stable for unattended GitHub Actions access.
 - `macro_indicators.json`: FRED public actuals for US CPI, PCE, nonfarm payrolls, initial claims, retail sales, housing starts, building permits, Fed Funds, US 2Y, and US 10Y; ISM Manufacturing PMI and New Orders through official-ISM-first / MacroMicro-public fallback; Taiwan exports, export orders, industrial production, NDC business-cycle signal, M1B, and M2 through Customs / MOEA / NDC / CBC public data.
 - Forecast / Surprise fields remain blank when a free public source does not provide market consensus. Do not fabricate consensus or surprise values.
-- `fundamentals.json`: fixed core pool monthly revenue, EPS, gross margin, ROE, inventory, and receivables through FinMind public datasets. Direct MOPS/TWSE/TPEx validation remains a follow-up item.
+- `fundamentals.json`: fixed core pool monthly revenue, EPS, gross margin, ROE, inventory, and receivables through FinMind public datasets. Financial-industry rows must label manufacturing-only fields as not applicable; missing EPS/ROE must remain unavailable rather than being estimated. Direct MOPS/TWSE/TPEx validation and a dedicated financial-sector model remain follow-up items.
 
 ## Development Priorities
 

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-07-31 14:20:06 Asia/Taipei",
+  "generated_at": "2026-07-31 14:57:46 Asia/Taipei",
   "data_date": "2026-07-31",
   "timezone": "Asia/Taipei",
   "status": "ok",
-  "source": "FRED / ISM official report / MacroMicro / data.gov.tw / MOEA / NDC / CBC / Customs / cached fallback",
+  "source": "FRED / ISM official report / MacroMicro / data.gov.tw / MOEA / NDC / CBC / Customs",
   "date": "2026-07-31",
   "records": [
     {
@@ -15,12 +15,16 @@
       "previous": 333.979,
       "mom_pct": -0.42,
       "yoy_pct": 3.73,
+      "change_1d": -0.42248165303806573,
+      "change_5d": 1.8310531924014235,
+      "change_20d": null,
+      "ytd_change": 1.8310531924014235,
+      "high_52w_gap": -0.42248165303806573,
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "PCEPI",
@@ -31,12 +35,16 @@
       "previous": 131.535,
       "mom_pct": -0.11,
       "yoy_pct": 3.67,
+      "change_1d": -0.10871631124795733,
+      "change_5d": 1.8361067406586422,
+      "change_20d": null,
+      "ytd_change": 1.8361067406586422,
+      "high_52w_gap": -0.10871631124795733,
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "PAYEMS",
@@ -47,12 +55,16 @@
       "previous": 158927.0,
       "mom_pct": 0.04,
       "yoy_pct": 0.32,
+      "change_1d": 0.035865523164723426,
+      "change_5d": 0.24717514124293788,
+      "change_20d": null,
+      "ytd_change": 0.24717514124293788,
+      "high_52w_gap": 0.0,
       "forecast": null,
       "surprise": null,
       "unit": "thousand persons",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "ICSA",
@@ -63,12 +75,16 @@
       "previous": 188000.0,
       "mom_pct": 4.79,
       "yoy_pct": -1.01,
+      "change_1d": 4.787234042553192,
+      "change_5d": -8.796296296296296,
+      "change_20d": -7.511737089201878,
+      "ytd_change": -4.830917874396135,
+      "high_52w_gap": -23.93822393822394,
       "forecast": null,
       "surprise": null,
       "unit": "persons",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "RSAFS",
@@ -79,12 +95,16 @@
       "previous": 766876.0,
       "mom_pct": 0.22,
       "yoy_pct": 6.72,
+      "change_1d": 0.21867942144492722,
+      "change_5d": 4.635787736741715,
+      "change_20d": null,
+      "ytd_change": 4.635787736741715,
+      "high_52w_gap": 0.0,
       "forecast": null,
       "surprise": null,
       "unit": "million USD",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "HOUST",
@@ -95,12 +115,16 @@
       "previous": 1199.0,
       "mom_pct": 19.02,
       "yoy_pct": 3.48,
+      "change_1d": 19.01584653878232,
+      "change_5d": 3.032490974729242,
+      "change_20d": null,
+      "ytd_change": 3.032490974729242,
+      "high_52w_gap": -6.241787122207622,
       "forecast": null,
       "surprise": null,
       "unit": "thousand units",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "PERMIT",
@@ -111,12 +135,16 @@
       "previous": 1410.0,
       "mom_pct": -2.55,
       "yoy_pct": -1.79,
+      "change_1d": -2.553191489361702,
+      "change_5d": -1.3639626704953338,
+      "change_20d": null,
+      "ytd_change": -1.3639626704953338,
+      "high_52w_gap": -10.779220779220779,
       "forecast": null,
       "surprise": null,
       "unit": "thousand units",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "FEDFUNDS",
@@ -127,12 +155,16 @@
       "previous": 3.63,
       "mom_pct": 0.0,
       "yoy_pct": -16.17,
+      "change_1d": 0.0,
+      "change_5d": -0.2747252747252811,
+      "change_20d": null,
+      "ytd_change": -0.2747252747252811,
+      "high_52w_gap": -16.16628175519631,
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "DGS2",
@@ -143,12 +175,16 @@
       "previous": 4.26,
       "mom_pct": -0.94,
       "yoy_pct": -0.94,
+      "change_1d": -0.9389671361502356,
+      "change_5d": -2.088167053364266,
+      "change_20d": 1.932367149758456,
+      "ytd_change": 21.613832853025922,
+      "high_52w_gap": -3.43249427917621,
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "DGS10",
@@ -159,12 +195,16 @@
       "previous": 4.61,
       "mom_pct": 1.3,
       "yoy_pct": 1.08,
+      "change_1d": 1.3015184381778657,
+      "change_5d": 0.0,
+      "change_20d": 5.1801801801801695,
+      "ytd_change": 11.455847255369916,
+      "high_52w_gap": -0.8492569002123149,
       "forecast": null,
       "surprise": null,
       "unit": "%",
-      "source": "FRED cached fallback",
-      "status": "ok",
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "source": "FRED",
+      "status": "ok"
     },
     {
       "series_id": "US_ISM_MANUFACTURING",
@@ -178,12 +218,11 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "MacroMicro public series (source: ISM) cached fallback",
+      "source": "MacroMicro public series (source: ISM)",
       "source_url": "https://en.macromicro.me/series/265/ism-pmi",
       "status": "ok",
       "forecast_note": "Market consensus is not included in this free public series; surprise is left blank instead of estimated.",
-      "point_change": -0.7,
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "point_change": -0.7
     },
     {
       "series_id": "US_ISM_NEW_ORDERS",
@@ -197,12 +236,11 @@
       "forecast": null,
       "surprise": null,
       "unit": "index",
-      "source": "MacroMicro public series (source: ISM) cached fallback",
+      "source": "MacroMicro public series (source: ISM)",
       "source_url": "https://en.macromicro.me/series/267/ism-manufacturing-neworders",
       "status": "ok",
       "forecast_note": "Market consensus is not included in this free public series; surprise is left blank instead of estimated.",
-      "point_change": -0.8,
-      "fallback_note": "Current FRED fetch failed; reused last successful public value."
+      "point_change": -0.8
     },
     {
       "series_id": "TW_EXPORTS",

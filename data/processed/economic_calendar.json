@@ -1,45 +1,54 @@
 {
-  "generated_at": "2026-07-31 05:32:59 Asia/Taipei",
+  "generated_at": "2026-07-31 14:17:41 Asia/Taipei",
   "data_date": "2026-07-31",
   "timezone": "Asia/Taipei",
   "status": "ok",
-  "source": "Manual P0 template; official calendar API pending",
+  "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled",
   "records": [
     {
-      "time": "未來 72 小時",
+      "time": "07/31 20:30 台北",
       "country": "美國",
-      "event": "美國需求與利率觀察：零售銷售 / 初領失業金 / ISM 新訂單",
-      "previous": "Retail 768.55 十億美元 / Claims 208,000 人 / ISM New Orders 56.00 指數",
-      "forecast": "免費官方來源未提供一致市場共識；不估算",
+      "event": "Employment Cost Index Q2（薪資成本）",
+      "previous": "前值：0.9% QoQ（Q1，BLS）",
+      "forecast": "市場共識：0.8% QoQ；公布後以 BLS 官方值回填",
       "importance": "高",
-      "impact": "影響美債殖利率、美元、高估值科技股與台股外資風險偏好"
+      "impact": "薪資通膨若高於預期，可能推升美債殖利率並壓抑高估值科技股"
     },
     {
-      "time": "每日",
-      "country": "台灣",
-      "event": "外資 / 投信 / 台指期 / 新台幣資金訊號",
-      "previous": "法人合計 -495.4 億; 外資台指期 -81,017 口; Put/Call 92.59%; USD/TWD 32.393",
-      "forecast": "不適用；以每日實際資金流判讀",
-      "importance": "高",
-      "impact": "判斷權值股、電子股與 ETF 資金是否同向支持"
-    },
-    {
-      "time": "本週",
-      "country": "台灣",
-      "event": "上市櫃月營收與重大公告追蹤",
-      "previous": "2330 台積電 最新月營收 4426.8 億元",
-      "forecast": "不適用；以公司公告與月營收實際值驗證",
-      "importance": "高",
-      "impact": "驗證 AI 伺服器、半導體、電子零組件基本面是否延續"
-    },
-    {
-      "time": "本週",
+      "time": "07/31 21:45 台北",
       "country": "美國",
-      "event": "Fed 利率與金融條件追蹤",
-      "previous": "Fed Funds 3.63%",
-      "forecast": "FOMC / FedWatch 類共識待正式免費來源接入",
+      "event": "Chicago PMI July（區域製造景氣）",
+      "previous": "前值：56.7",
+      "forecast": "市場共識：56.0；屬區域資料，低於 ISM 重要性",
       "importance": "中",
-      "impact": "影響美元、2Y/10Y 殖利率與科技股估值折現率"
+      "impact": "輔助判斷 8 月初 ISM 前的製造業需求溫度"
+    },
+    {
+      "time": "07/31 22:00 台北",
+      "country": "美國",
+      "event": "University of Michigan Consumer Sentiment Final July",
+      "previous": "初值：54.4；前月：49.5",
+      "forecast": "市場共識：54.0；關注通膨預期分項",
+      "importance": "中",
+      "impact": "若通膨預期反彈，可能影響 Fed 降息預期與美元走勢"
+    },
+    {
+      "time": "未來 72 小時",
+      "country": "台灣",
+      "event": "無固定重大總經或上市櫃月營收公布",
+      "previous": "不以過期月營收或過期法說會代替當前事件",
+      "forecast": "下一批定期重點：月營收每月 10 日前；出口、外銷訂單、工業生產、景氣燈號依官方日程更新",
+      "importance": "中",
+      "impact": "本區只顯示當前視窗內真正值得追蹤的事件；若無事件，投資判讀改看資金面與市場價格反應"
+    },
+    {
+      "time": "每日收盤後",
+      "country": "台灣",
+      "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
+      "previous": "法人合計 -495.4 億; 外資台指期 待接資料源; Put/Call 待接資料源; USD/TWD 32.422",
+      "forecast": "非未來事件；以每日收盤後實際資金流判讀",
+      "importance": "高",
+      "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀"
     }
   ]
 }

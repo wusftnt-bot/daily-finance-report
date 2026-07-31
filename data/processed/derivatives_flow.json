@@ -1,34 +1,23 @@
 {
-  "generated_at": "2026-07-31 05:32:59 Asia/Taipei",
+  "generated_at": "2026-07-31 14:17:41 Asia/Taipei",
   "data_date": "2026-07-31",
   "timezone": "Asia/Taipei",
-  "status": "ok",
+  "status": "partial",
   "source": "TAIFEX",
-  "date": "2026-07-30",
+  "date": "2026-07-31",
   "records": [
     {
       "dataset": "foreign_taiex_futures_net_position",
-      "date": "2026-07-30",
+      "date": "2026-07-31",
       "contract": "TXF",
       "investor": "foreign",
-      "trading_long_lots": 109127,
-      "trading_short_lots": 107346,
-      "trading_net_lots": 1781,
-      "open_interest_long_lots": 13822,
-      "open_interest_short_lots": 94839,
-      "open_interest_net_lots": -81017,
-      "source_url": "https://www.taifex.com.tw/cht/3/futContractsDate?queryType=1&doQuery=1&dateaddcnt=&queryDate=2026%2F07%2F30&commodityId=TXF"
-    },
-    {
-      "dataset": "txo_put_call_ratio",
-      "date": "2026-07-30",
-      "put_volume": 157159,
-      "call_volume": 169736,
-      "put_call_volume_ratio": 92.59,
-      "put_open_interest": 69875,
-      "call_open_interest": 87971,
-      "put_call_open_interest_ratio": 79.43,
-      "source_url": "https://www.taifex.com.tw/cht/3/pcRatio?queryStartDate=2026%2F07%2F30&queryEndDate=2026%2F07%2F30"
+      "trading_long_lots": 79661,
+      "trading_short_lots": 83953,
+      "trading_net_lots": -4292,
+      "open_interest_long_lots": null,
+      "open_interest_short_lots": null,
+      "open_interest_net_lots": null,
+      "source_url": "https://www.taifex.com.tw/cht/3/futContractsDate?queryType=1&doQuery=1&dateaddcnt=&queryDate=2026%2F07%2F31&commodityId=TXF"
     }
   ]
 }

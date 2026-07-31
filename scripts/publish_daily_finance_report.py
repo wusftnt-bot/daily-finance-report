@@ -15,11 +15,13 @@ import zipfile
 from collections import Counter
 from pathlib import Path
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
 import daily_telegram_push as telegram
 
 
 TW = dt.timezone(dt.timedelta(hours=8))
+US_EASTERN = ZoneInfo("America/New_York")
 DEFAULT_OUTPUT_DIR = Path(os.environ.get("DAILY_FINANCE_REPORT_DIR", "daily-finance-report-site"))
 MAX_NEWS_ITEMS = int(os.environ.get("DAILY_FINANCE_REPORT_NEWS_LIMIT", "18"))
 MIN_NEWS_ITEMS = int(os.environ.get("DAILY_FINANCE_REPORT_MIN_NEWS", "10"))
@@ -690,19 +692,7 @@ MARKET_TICKERS = [
 ]
 
 
-MAJOR_EVENT_TEMPLATES = {
-    (7, 15): [
-        ("20:30", "美國", "PPI / 核心 PPI", "高", "通膨、Fed 預期、10Y、美股科技估值"),
-        ("21:15", "美國", "工業生產", "中", "景氣循環、半導體與工業需求"),
-    ],
-    (7, 16): [
-        ("20:30", "美國", "零售銷售", "高", "美國需求、美元、Nasdaq 與台股電子"),
-        ("20:30", "美國", "初領失業救濟金", "中", "就業降溫與利率預期"),
-    ],
-    (7, 17): [
-        ("20:30", "美國", "新屋開工 / 建築許可", "中", "利率敏感資產與景氣需求"),
-    ],
-}
+MAJOR_EVENT_TEMPLATES: dict[tuple[int, int], list[tuple[str, str, str, str, str]]] = {}
 
 
 CORE_STOCK_UNIVERSE = [
@@ -2186,29 +2176,7 @@ def impact_card(item: dict[str, str]) -> dict[str, str]:
 
 
 def event_calendar(today: dt.date) -> list[dict[str, str]]:
-    rows: list[dict[str, str]] = []
-    for offset in range(3):
-        day = today + dt.timedelta(days=offset)
-        for time_text, country, event, importance, impact in MAJOR_EVENT_TEMPLATES.get((day.month, day.day), []):
-            rows.append(
-                {
-                    "time": f"{day:%m/%d} {time_text}",
-                    "country": country,
-                    "event": event,
-                    "previous": "待接資料源",
-                    "forecast": "待接資料源",
-                    "importance": importance,
-                    "impact": impact,
-                }
-            )
-    rows.extend(
-        [
-            {"time": "未來 72 小時", "country": "美國", "event": "CPI / PCE / Fed / 就業資料監控", "previous": "待接資料源", "forecast": "待接資料源", "importance": "中", "impact": "若有臨時公布或修正，影響利率、美元與高估值科技股"},
-            {"time": "未來 7 天", "country": "台灣", "event": "上市櫃月營收與重大公告追蹤", "previous": "待接資料源", "forecast": "不適用", "importance": "高", "impact": "AI 伺服器、半導體、電子零組件"},
-            {"time": "每日", "country": "台灣", "event": "外資、投信、台指期與新台幣", "previous": "待接資料源", "forecast": "不適用", "importance": "高", "impact": "台股資金、權值股、ETF、期貨避險部位"},
-        ]
-    )
-    return rows[:6]
+    return []
 
 
 def macro_record_value(macro_indicators: dict[str, object], series_id: str) -> str | None:
@@ -2336,6 +2304,201 @@ def select_material_company_event(news: list[dict[str, str]], today: dt.date) ->
     }
 
 
+def add_months(day: dt.date, months: int) -> dt.date:
+    year = day.year + (day.month - 1 + months) // 12
+    month = (day.month - 1 + months) % 12 + 1
+    return dt.date(year, month, 1)
+
+
+def nth_business_day(year: int, month: int, index: int) -> dt.date:
+    day = dt.date(year, month, 1)
+    seen = 0
+    while day.month == month:
+        if day.weekday() < 5:
+            seen += 1
+            if seen == index:
+                return day
+        day += dt.timedelta(days=1)
+    raise ValueError(f"No business day {index} for {year}-{month:02d}")
+
+
+def next_weekday(day: dt.date, weekday: int) -> dt.date:
+    return day + dt.timedelta(days=(weekday - day.weekday()) % 7)
+
+
+def us_release_time(year: int, month: int, day: int, hour: int, minute: int = 0) -> dt.datetime:
+    eastern = dt.datetime(year, month, day, hour, minute, tzinfo=US_EASTERN)
+    return eastern.astimezone(TW)
+
+
+def taipei_release_time(day: dt.date, hour: int = 18, minute: int = 0) -> dt.datetime:
+    return dt.datetime(day.year, day.month, day.day, hour, minute, tzinfo=TW)
+
+
+def event_time_text(moment: dt.datetime) -> str:
+    return f"{moment:%m/%d %H:%M} 台北"
+
+
+def recent_macro_value(macro_records: list[dict[str, object]], series_id: str, label: str) -> str:
+    row = next((item for item in macro_records if item.get("series_id") == series_id and item.get("status") == "ok"), None)
+    return f"{label} {format_macro_actual(row)}" if row else f"{label} 待公布後回填"
+
+
+def scheduled_us_event_candidates(now_tw: dt.datetime, macro_records: list[dict[str, object]]) -> list[dict[str, object]]:
+    today = now_tw.date()
+    candidates: list[dict[str, object]] = [
+        {
+            "scheduled_at": us_release_time(2026, 7, 31, 8, 30),
+            "country": "美國",
+            "event": "Employment Cost Index Q2（薪資成本）",
+            "previous": "前值：0.9% QoQ（Q1，BLS）",
+            "forecast": "市場共識：0.8% QoQ；公布後以 BLS 官方值回填",
+            "importance": "高",
+            "impact": "薪資通膨若高於預期，可能推升美債殖利率並壓抑高估值科技股",
+        },
+        {
+            "scheduled_at": us_release_time(2026, 7, 31, 9, 45),
+            "country": "美國",
+            "event": "Chicago PMI July（區域製造景氣）",
+            "previous": "前值：56.7",
+            "forecast": "市場共識：56.0；屬區域資料，低於 ISM 重要性",
+            "importance": "中",
+            "impact": "輔助判斷 8 月初 ISM 前的製造業需求溫度",
+        },
+        {
+            "scheduled_at": us_release_time(2026, 7, 31, 10, 0),
+            "country": "美國",
+            "event": "University of Michigan Consumer Sentiment Final July",
+            "previous": "初值：54.4；前月：49.5",
+            "forecast": "市場共識：54.0；關注通膨預期分項",
+            "importance": "中",
+            "impact": "若通膨預期反彈，可能影響 Fed 降息預期與美元走勢",
+        },
+    ]
+
+    for offset in range(0, 3):
+        month_anchor = add_months(today.replace(day=1), offset)
+        manufacturing_day = nth_business_day(month_anchor.year, month_anchor.month, 1)
+        services_day = nth_business_day(month_anchor.year, month_anchor.month, 3)
+        candidates.extend(
+            [
+                {
+                    "scheduled_at": us_release_time(manufacturing_day.year, manufacturing_day.month, manufacturing_day.day, 10, 0),
+                    "country": "美國",
+                    "event": "ISM Manufacturing PMI / New Orders",
+                    "previous": recent_macro_value(macro_records, "US_ISM_NEW_ORDERS", "新訂單最近值："),
+                    "forecast": "官方免費來源不提供一致市場共識；公布後回填實際值與 Surprise",
+                    "importance": "高",
+                    "impact": "製造業新訂單直接影響半導體、工業與 AI 供應鏈需求判讀",
+                },
+                {
+                    "scheduled_at": us_release_time(services_day.year, services_day.month, services_day.day, 10, 0),
+                    "country": "美國",
+                    "event": "ISM Services PMI",
+                    "previous": "前值待官方公布後回填",
+                    "forecast": "官方免費來源不提供一致市場共識；公布後回填實際值與 Surprise",
+                    "importance": "中",
+                    "impact": "服務業韌性會影響通膨黏性、Fed 預期與美元利率環境",
+                },
+            ]
+        )
+
+    first_claims_day = next_weekday(today, 3)
+    if first_claims_day <= today:
+        first_claims_day += dt.timedelta(days=7)
+    for offset in range(0, 2):
+        claims_day = first_claims_day + dt.timedelta(days=7 * offset)
+        candidates.append(
+            {
+                "scheduled_at": us_release_time(claims_day.year, claims_day.month, claims_day.day, 8, 30),
+                "country": "美國",
+                "event": "Initial Jobless Claims（初領失業金）",
+                "previous": recent_macro_value(macro_records, "ICSA", "最近值："),
+                "forecast": "官方免費來源不提供一致市場共識；若第三方共識缺漏則不估算",
+                "importance": "中",
+                "impact": "就業降溫有利降息預期，但過度惡化會提高景氣風險",
+            }
+        )
+
+    return sorted(candidates, key=lambda row: row["scheduled_at"])
+
+
+def scheduled_us_events(now_tw: dt.datetime, macro_records: list[dict[str, object]]) -> list[dict[str, str]]:
+    window_end = now_tw + dt.timedelta(hours=72)
+    candidates = scheduled_us_event_candidates(now_tw, macro_records)
+    rows: list[dict[str, str]] = []
+    for item in candidates:
+        scheduled_at = item["scheduled_at"]
+        if isinstance(scheduled_at, dt.datetime) and now_tw <= scheduled_at <= window_end:
+            rows.append(
+                {
+                    "time": event_time_text(scheduled_at),
+                    "country": str(item["country"]),
+                    "event": str(item["event"]),
+                    "previous": str(item["previous"]),
+                    "forecast": str(item["forecast"]),
+                    "importance": str(item["importance"]),
+                    "impact": str(item["impact"]),
+                }
+            )
+    if rows:
+        return rows[:4]
+
+    next_item = next((item for item in candidates if isinstance(item.get("scheduled_at"), dt.datetime) and item["scheduled_at"] > window_end), None)
+    next_text = "下一個已知官方排程待接入"
+    if next_item and isinstance(next_item.get("scheduled_at"), dt.datetime):
+        next_text = f"下一個已知排程：{event_time_text(next_item['scheduled_at'])} {next_item['event']}"
+    return [
+        {
+            "time": "未來 72 小時",
+            "country": "美國",
+            "event": "無重大官方總經定期公布",
+            "previous": "不以零售銷售、初領失業金或 ISM 舊值代替未來事件",
+            "forecast": next_text,
+            "importance": "中",
+            "impact": "事件視窗內沒有高衝擊公布時，重點改看已公布數據後的美債、美元與科技股反應",
+        }
+    ]
+
+
+def scheduled_taiwan_events(now_tw: dt.datetime, company_event: dict[str, str] | None) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    if company_event:
+        rows.append(company_event)
+
+    current_month = now_tw.date().replace(day=1)
+    for offset in range(0, 2):
+        month_anchor = add_months(current_month, offset)
+        revenue_deadline = add_months(month_anchor, 1).replace(day=10)
+        scheduled_at = taipei_release_time(revenue_deadline, 18, 0)
+        if now_tw <= scheduled_at <= now_tw + dt.timedelta(hours=72):
+            rows.append(
+                {
+                    "time": event_time_text(scheduled_at),
+                    "country": "台灣",
+                    "event": f"{month_anchor.month}月上市櫃月營收申報期限",
+                    "previous": "以公司實際公告回填；不沿用上一個月舊營收",
+                    "forecast": "重點檢查核心股與動態候選池 YoY / MoM 是否轉強或轉弱",
+                    "importance": "高",
+                    "impact": "驗證 AI 供應鏈、半導體、電子零組件與金融股基本面是否支持 Stock Radar 分層",
+                }
+            )
+
+    if rows:
+        return rows[:2]
+    return [
+        {
+            "time": "未來 72 小時",
+            "country": "台灣",
+            "event": "無固定重大總經或上市櫃月營收公布",
+            "previous": "不以過期月營收或過期法說會代替當前事件",
+            "forecast": "下一批定期重點：月營收每月 10 日前；出口、外銷訂單、工業生產、景氣燈號依官方日程更新",
+            "importance": "中",
+            "impact": "本區只顯示當前視窗內真正值得追蹤的事件；若無事件，投資判讀改看資金面與市場價格反應",
+        }
+    ]
+
+
 def enrich_event_calendar_v2(
     events: list[dict[str, str]],
     macro_indicators: dict[str, object],
@@ -2346,61 +2509,25 @@ def enrich_event_calendar_v2(
     news: list[dict[str, str]],
 ) -> list[dict[str, str]]:
     macro_records = macro_indicators.get("records") if isinstance(macro_indicators.get("records"), list) else []
-    fund_records = fundamentals.get("records") if isinstance(fundamentals.get("records"), list) else []
     derivatives_records = derivatives_flow.get("records") if isinstance(derivatives_flow.get("records"), list) else []
     twd = next((row for row in snapshot if row.get("symbol") == "TWD=X"), {})
     futures = next((row for row in derivatives_records if row.get("dataset") == "foreign_taiex_futures_net_position"), {})
     pcr = next((row for row in derivatives_records if row.get("dataset") == "txo_put_call_ratio"), {})
-    latest_revenue = latest_record([row for row in fund_records if isinstance(row.get("latest_month_revenue"), (int, float))])
-    company_event = select_material_company_event(news, dt.datetime.now(TW).date())
-    retail = next((row for row in macro_records if row.get("series_id") == "RSAFS" and row.get("status") == "ok"), None)
-    claims = next((row for row in macro_records if row.get("series_id") == "ICSA" and row.get("status") == "ok"), None)
-    ism = next((row for row in macro_records if row.get("series_id") == "US_ISM_NEW_ORDERS" and row.get("status") == "ok"), None)
-    fed = next((row for row in macro_records if row.get("series_id") == "FEDFUNDS" and row.get("status") == "ok"), None)
-    rows = [
+    now_tw = dt.datetime.now(TW)
+    company_event = select_material_company_event(news, now_tw.date())
+    rows = scheduled_us_events(now_tw, macro_records)
+    rows.extend(scheduled_taiwan_events(now_tw, company_event))
+    rows.append(
         {
-            "time": "未來 72 小時",
-            "country": "美國",
-            "event": "美國需求與利率觀察：零售銷售 / 初領失業金 / ISM 新訂單",
-            "previous": " / ".join(part for part in [
-                f"Retail {format_macro_actual(retail)}" if retail else "",
-                f"Claims {format_macro_actual(claims)}" if claims else "",
-                f"ISM New Orders {format_macro_actual(ism)}" if ism else "",
-            ] if part) or "資料更新失敗",
-            "forecast": "免費官方來源未提供一致市場共識；不估算",
-            "importance": "高",
-            "impact": "影響美債殖利率、美元、高估值科技股與台股外資風險偏好",
-        },
-        {
-            "time": "每日",
+            "time": "每日收盤後",
             "country": "台灣",
-            "event": "外資 / 投信 / 台指期 / 新台幣資金訊號",
+            "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
             "previous": f"法人合計 {format_ntd_billion(capital_flow.get('total_net'))}; 外資台指期 {format_plain_number(futures.get('open_interest_net_lots'), ' 口')}; Put/Call {format_plain_number(pcr.get('put_call_volume_ratio'), '%')}; USD/TWD {format_market_value(twd)}",
-            "forecast": "不適用；以每日實際資金流判讀",
+            "forecast": "非未來事件；以每日收盤後實際資金流判讀",
             "importance": "高",
-            "impact": "判斷權值股、電子股與 ETF 資金是否同向支持",
-        },
-        {
-            "time": "本週",
-            "country": "台灣",
-            "event": "上市櫃月營收與重大公告追蹤",
-            "previous": f"{latest_revenue.get('ticker')} {latest_revenue.get('name')} 最新月營收 {format_ntd_yi_abs(latest_revenue.get('latest_month_revenue'))}" if latest_revenue else "核心股月營收資料更新失敗",
-            "forecast": "不適用；以公司公告與月營收實際值驗證",
-            "importance": "高",
-            "impact": "驗證 AI 伺服器、半導體、電子零組件基本面是否延續",
-        },
-        {
-            "time": "本週",
-            "country": "美國",
-            "event": "Fed 利率與金融條件追蹤",
-            "previous": f"Fed Funds {format_macro_actual(fed)}" if fed else "Fed Funds 資料更新失敗",
-            "forecast": "FOMC / FedWatch 類共識待正式免費來源接入",
-            "importance": "中",
-            "impact": "影響美元、2Y/10Y 殖利率與科技股估值折現率",
-        },
-    ]
-    if company_event:
-        rows[2] = company_event
+            "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀",
+        }
+    )
     return rows[:6]
 
 
@@ -3516,7 +3643,7 @@ def build_processed_payloads(
         "capital_flow.json": {**base, "source": "TWSE BFI82U", **capital_flow},
         "dynamic_stock_pool.json": {**base, "source": "TWSE T86", **dynamic_stock_pool},
         "stock_radar.json": {**base, "source": "Google News RSS / TWSE / Yahoo Finance", "records": stock_rows},
-        "economic_calendar.json": {**base, "source": "Manual P0 template; official calendar API pending", "records": events},
+        "economic_calendar.json": {**base, "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled", "records": events},
         "sector_rotation.json": {**base, "source": "TWSE MI_INDEX", **sector_rotation, "news_axes": analysis.get("axes", [])},
         "derivatives_flow.json": {**base, "source": "TAIFEX", **derivatives_flow},
         "market_breadth.json": {**base, "source": "TWSE / TPEx / FinMind", **market_breadth},

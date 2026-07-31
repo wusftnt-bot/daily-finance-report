@@ -1536,7 +1536,7 @@
     <section class="panel">
       <p><b>資料來源：</b>Yahoo Finance 公開行情、Google News RSS、TWSE BFI82U 三大法人買賣金額、TWSE MI_INDEX 產業指數、TWSE 個股三大法人公開資料；MOPS、TPEx、FinMind、台灣主計總處、經濟部、國發會、央行、美國官方總經資料為 P1/P2 接入項目。</p>
       <p><b>資料層：</b>GitHub Actions 會同步產生 <code>data/processed/market_summary.json</code>、<code>market_history.json</code>、<code>capital_flow.json</code>、<code>dynamic_stock_pool.json</code>、<code>stock_radar.json</code>、<code>economic_calendar.json</code>、<code>sector_rotation.json</code>、<code>derivatives_flow.json</code>、<code>market_breadth.json</code>、<code>macro_indicators.json</code>、<code>fundamentals.json</code> 與 <code>data_health.json</code>。後續新增資料源一律先寫入 processed JSON，再由網站與 Telegram 摘要讀取。</p>
-      <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或待接資料源，不顯示假資料；每個主要區塊保留更新時間與資料狀態；市場環境分數會因必要資料不足而扣分。</p>
+      <p><b>資料品質規則：</b>抓取失敗時顯示資料更新失敗或尚無可靠來源，不顯示假資料；每個主要區塊保留更新時間與資料狀態；市場環境分數會因必要資料不足而扣分。</p>
       <p><b>風險揭露：</b>本網站僅提供公開資料整理、量化篩選與研究輔助，不構成買賣建議或保證獲利。投資人應自行評估風險。</p>
     </section>
 

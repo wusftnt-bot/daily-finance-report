@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-02 05:38:22 Asia/Taipei",
-  "data_date": "2026-08-02",
+  "generated_at": "2026-08-03 06:10:28 Asia/Taipei",
+  "data_date": "2026-08-03",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -119,26 +119,26 @@
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：Collegium Pharmaceutical：痛苦現金流正在為 ADHD 重新評級提供資金（納斯達克股票代碼：COLL）；西班牙稱大多數侵占非洲飛地的移民已經離開",
+      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：US Stocks Begin August With Focused Gains Ahead of Employment Data；SoFi：更多華爾街遊戲（納斯達克股票代碼：SOFI）",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 4
+      "count": 6
+    },
+    {
+      "theme_key": "earnings",
+      "title": "財報、營收與企業展望",
+      "summary": "財報、營收與企業展望出現 5 則相關訊號，重點新聞包含：本週值得關注的財報：SpaceX 第一份財報、迪士尼、AMD 和麥當勞；國際財經新聞：The sudden collapse of a $20 billion AI fund reveals why Bitcoin is the first thing Wall S",
+      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
+      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "count": 5
     },
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 4 則相關訊號，重點新聞包含：吉姆·克萊默 (Jim Cramer) 對蘋果公司 (NASDAQ:AAPL) 的人工智慧發展情不自禁地沾沾自喜；Sony提議收購騰龍Tamron，瞄準相機與Physical AI整合，加速影像事業布局",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Watch AI Is Turning Retail Traders Into DIY Hedge Funds；蘋果賺了數十億美元，但其人工智慧股票下跌近 8%，而亞馬遜飆升 11%",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 4
-    },
-    {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 4 則相關訊號，重點新聞包含：由於聯準會異議人士提出風險，美國公債下跌，油價上漲；分析：市場聽到了鴿派的凱文沃什 (Kevin Warsh) 的言論。聯準會主席自己的話暗示升息",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 4
+      "count": 5
     }
   ]
 }

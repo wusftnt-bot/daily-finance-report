@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-06 05:56:11 Asia/Taipei",
-  "data_date": "2026-08-06",
+  "generated_at": "2026-08-08 05:56:42 Asia/Taipei",
+  "data_date": "2026-08-08",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled",
@@ -27,7 +27,7 @@
       "time": "每日收盤後",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
-      "previous": "法人合計 +1030.3 億; 外資台指期 -87,199 口（2026-08-05）; Put/Call 109.99%（2026-08-05）; USD/TWD 32.256",
+      "previous": "法人合計 -428.9 億; 外資台指期 -87,911 口（2026-08-07）; Put/Call 99.19%（2026-08-07）; USD/TWD 32.235",
       "forecast": "非未來事件；以每日收盤後實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀"

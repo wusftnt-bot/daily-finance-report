@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-06 05:56:11 Asia/Taipei",
-  "data_date": "2026-08-06",
+  "generated_at": "2026-08-08 05:56:42 Asia/Taipei",
+  "data_date": "2026-08-08",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
-  "date": "2026-08-06",
+  "date": "2026-08-08",
   "records": [
     {
       "ticker": "2330",
@@ -26,8 +26,8 @@
       "name": "鴻海",
       "status": "ok",
       "source": "FinMind",
-      "latest_month_revenue_date": "2026-07-01",
-      "latest_month_revenue": 821762936000,
+      "latest_month_revenue_date": "2026-08-01",
+      "latest_month_revenue": 946512543000,
       "latest_quarter": "2026-03-31",
       "eps": 3.56,
       "gross_margin_pct": 6.18,

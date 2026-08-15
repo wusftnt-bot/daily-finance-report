@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-15 05:43:40 Asia/Taipei",
-  "data_date": "2026-08-15",
+  "generated_at": "2026-08-16 05:29:31 Asia/Taipei",
+  "data_date": "2026-08-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -119,25 +119,25 @@
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 8 則相關訊號，重點新聞包含：英偉達 5000 億美元計畫讓華爾街陷入人工智慧狂潮；快閃記憶體製造商 SanDisk 本週告訴投資者的消息對我們最新的股票來說是一個福音",
+      "summary": "AI 與半導體供應鏈出現 12 則相關訊號，重點新聞包含：亞洲人工智慧公司；債券交易員正在為人工智慧公司超過 700 億美元的影子信貸支援而苦惱",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 8
+      "count": 12
     },
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 7 則相關訊號，重點新聞包含：Reddit、SanDisk 是市值週五股票的推動者；路易吉·曼吉奧尼 (Luigi Mangione) 承認聯邦指控殺害保險高管",
+      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：印刷版 |華爾街日報；華倫巴菲特並不是第二季唯一購買 Alphabet 股票的億萬富翁",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 7
+      "count": 4
     },
     {
-      "theme_key": "earnings",
-      "title": "財報、營收與企業展望",
-      "summary": "財報、營收與企業展望出現 1 則相關訊號，重點新聞包含：國際財經新聞：Sandisk: The Market Is Pricing A 30% Margin Against Management's 75% (NASDAQ:SNDK)",
-      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
-      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "theme_key": "energy",
+      "title": "能源、原物料與航運",
+      "summary": "能源、原物料與航運出現 1 則相關訊號，重點新聞包含：儘管分析師指出尾部風險增加，但油價波動 6%，VIX 仍維持在 14.56",
+      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
+      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
       "count": 1
     }
   ]

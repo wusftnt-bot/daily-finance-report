@@ -1,144 +1,144 @@
 {
-  "generated_at": "2026-08-17 05:28:45 Asia/Taipei",
-  "data_date": "2026-08-17",
+  "generated_at": "2026-08-18 05:41:03 Asia/Taipei",
+  "data_date": "2026-08-18",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
-  "date": "20260814",
+  "date": "20260817",
   "records": [
-    {
-      "sector": "塑膠",
-      "index_name": "塑膠類指數",
-      "close": 346.83,
-      "change_points": 23.14,
-      "change_pct": 7.15,
-      "stage": "強勢擴張",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "生技醫療",
-      "index_name": "生技醫療類指數",
-      "close": 102.54,
-      "change_points": 1.56,
-      "change_pct": 1.54,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
     {
       "sector": "航運",
       "index_name": "航運類指數",
-      "close": 194.49,
-      "change_points": 2.87,
-      "change_pct": 1.5,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "油電燃氣",
-      "index_name": "油電燃氣類指數",
-      "close": 96.69,
-      "change_points": 1.39,
-      "change_pct": 1.46,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "電腦及週邊設備",
-      "index_name": "電腦及週邊設備類指數",
-      "close": 465.79,
-      "change_points": 6.31,
-      "change_pct": 1.37,
-      "stage": "復甦偏多",
+      "close": 202.27,
+      "change_points": 7.78,
+      "change_pct": 4.0,
+      "stage": "強勢擴張",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電子零組件",
       "index_name": "電子零組件類指數",
-      "close": 945.87,
-      "change_points": 12.08,
-      "change_pct": 1.29,
+      "close": 968.63,
+      "change_points": 22.76,
+      "change_pct": 2.41,
       "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "金融保險",
-      "index_name": "金融保險類指數",
-      "close": 3196.52,
-      "change_points": 29.35,
-      "change_pct": 0.93,
-      "stage": "中性整理",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "通信網路",
-      "index_name": "通信網路類指數",
-      "close": 237.45,
-      "change_points": 0.1,
-      "change_pct": 0.04,
-      "stage": "中性整理",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電機機械",
       "index_name": "電機機械類指數",
-      "close": 552.23,
-      "change_points": 3.14,
-      "change_pct": -0.57,
+      "close": 558.44,
+      "change_points": 6.21,
+      "change_pct": 1.12,
+      "stage": "復甦偏多",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "通信網路",
+      "index_name": "通信網路類指數",
+      "close": 239.44,
+      "change_points": 1.99,
+      "change_pct": 0.84,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "鋼鐵",
+      "index_name": "鋼鐵類指數",
+      "close": 120.52,
+      "change_points": 0.8,
+      "change_pct": 0.67,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "油電燃氣",
+      "index_name": "油電燃氣類指數",
+      "close": 96.92,
+      "change_points": 0.23,
+      "change_pct": 0.24,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "半導體",
+      "index_name": "半導體類指數",
+      "close": 1538.32,
+      "change_points": 0.83,
+      "change_pct": -0.05,
       "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "其他電子",
       "index_name": "其他電子類指數",
-      "close": 286.1,
-      "change_points": 1.69,
-      "change_pct": -0.59,
+      "close": 284.2,
+      "change_points": 1.9,
+      "change_pct": -0.66,
       "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     },
     {
-      "sector": "半導體",
-      "index_name": "半導體類指數",
-      "close": 1539.15,
-      "change_points": 22.6,
-      "change_pct": -1.45,
+      "sector": "金融保險",
+      "index_name": "金融保險類指數",
+      "close": 3155.65,
+      "change_points": 40.87,
+      "change_pct": -1.28,
       "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     },
     {
-      "sector": "鋼鐵",
-      "index_name": "鋼鐵類指數",
-      "close": 119.72,
-      "change_points": 2.99,
-      "change_pct": -2.44,
+      "sector": "電腦及週邊設備",
+      "index_name": "電腦及週邊設備類指數",
+      "close": 459.27,
+      "change_points": 6.52,
+      "change_pct": -1.4,
+      "stage": "整理偏弱",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "塑膠",
+      "index_name": "塑膠類指數",
+      "close": 337.46,
+      "change_points": 9.37,
+      "change_pct": -2.7,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "生技醫療",
+      "index_name": "生技醫療類指數",
+      "close": 99.22,
+      "change_points": 3.32,
+      "change_pct": -3.24,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     }
   ],
   "news_axes": [
     {
-      "theme_key": "markets",
-      "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 8 則相關訊號，重點新聞包含：以下是未來一周我們在股市中關注的兩件大事；Tesla, Inc. (TSLA) 最新股票消息和頭條新聞",
-      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
-      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 8
-    },
-    {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：Stripe 即將以超過 70 億美元收購人工智慧公司 OpenRouter；Nvidia 縮減了 OpenAI 中心的資金保證",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：Nvidia 簽署價值 1,050 億美元的 OpenAI 資料中心協議；博通將重寫人工智慧敘事（納斯達克股票代碼：AVGO）",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 6
+      "count": 5
     },
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 3 則相關訊號，重點新聞包含：摩根士丹利表示通貨緊縮已經到來，但 2027 年利率前景的風險仍然存在；比特幣誕生以來從未面臨過如此高的全球債券殖利率",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 3
+      "theme_key": "energy",
+      "title": "能源、原物料與航運",
+      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：隨著油價上漲，華爾街指數下滑，等待零售業績；為什麼布倫特石油期貨股票今天飆升？",
+      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
+      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
+      "count": 4
+    },
+    {
+      "theme_key": "markets",
+      "title": "全球股市與風險情緒",
+      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：禮來公司和強生公司因新數據而反彈，軟體股回吐上週漲幅；到山上，從三萬英尺的高度下來",
+      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
+      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
+      "count": 4
     }
   ]
 }

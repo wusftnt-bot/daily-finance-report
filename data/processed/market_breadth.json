@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-22 05:34:25 Asia/Taipei",
-  "data_date": "2026-08-22",
+  "generated_at": "2026-08-23 05:31:09 Asia/Taipei",
+  "data_date": "2026-08-23",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX / FinMind",
@@ -11,8 +11,8 @@
     "declining": 381,
     "unchanged": 112,
     "advance_decline_ratio": 1.55,
-    "new_20d_high": 197,
-    "new_20d_low": 55,
+    "new_20d_high": 162,
+    "new_20d_low": 32,
     "new_52w_high": null,
     "new_52w_low": null,
     "new_high_low_status": "partial_20d_connected_52w_pending"

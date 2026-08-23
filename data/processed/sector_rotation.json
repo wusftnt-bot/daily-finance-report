@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-23 05:31:09 Asia/Taipei",
-  "data_date": "2026-08-23",
+  "generated_at": "2026-08-24 05:31:48 Asia/Taipei",
+  "data_date": "2026-08-24",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,28 +117,28 @@
   ],
   "news_axes": [
     {
-      "theme_key": "ai",
-      "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 8 則相關訊號，重點新聞包含：國際財經新聞：Nvidia customers notified about AI-related price hikes above 15%, Bloomberg News reports；國際財經新聞：Nvidia customers reportedly warned about AI-related price hikes",
-      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
-      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 8
-    },
-    {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：國際財經新聞：Buy 4 Barron’s Better Bets (Than T-Bills) Out Of 11 ‘Safer’ August DiviDogs；國際財經新聞：Behold the Hairless He-Men of Summer",
+      "summary": "全球股市與風險情緒出現 10 則相關訊號，重點新聞包含：國際財經新聞：Bitcoin’s Rally Leans on Fears That Fiscal Strains Are Mounting；國際財經新聞：Here are the 2 big things we're watching in the stock market this week",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
+      "count": 10
+    },
+    {
+      "theme_key": "ai",
+      "title": "AI 與半導體供應鏈",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Wall Street Brunch: Nvidia And Jackson Hole Vie For Market Sway (undefined:NVDA)；國際財經新聞：CleanSpark unveils $6.6 billion AI lease, representing 214% of market value, as shares sli",
+      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
+      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
       "count": 5
     },
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 2 則相關訊號，重點新聞包含：國際財經新聞：Kevin Warsh to Make First Jackson Hole Speech as Fed Chair；國際財經新聞：Mohamed El-Erian says 30-year Treasury yield at 5.27% signals a structural shift that will",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 2
+      "theme_key": "earnings",
+      "title": "財報、營收與企業展望",
+      "summary": "財報、營收與企業展望出現 1 則相關訊號，重點新聞包含：國際財經新聞：US Long Bonds Risk Deeper Selloff Without Clear Warsh Guidance",
+      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
+      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "count": 1
     }
   ]
 }

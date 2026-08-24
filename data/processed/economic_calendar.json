@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-08-24 05:31:48 Asia/Taipei",
-  "data_date": "2026-08-24",
+  "generated_at": "2026-08-25 05:38:09 Asia/Taipei",
+  "data_date": "2026-08-25",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled",
   "records": [
     {
-      "time": "未來 72 小時",
+      "time": "08/27 20:30 台北",
       "country": "美國",
-      "event": "無重大官方總經定期公布",
-      "previous": "不以零售銷售、初領失業金或 ISM 舊值代替未來事件",
-      "forecast": "下一個已知排程：08/27 20:30 台北 Initial Jobless Claims（初領失業金）",
+      "event": "Initial Jobless Claims（初領失業金）",
+      "previous": "最近值： 197,000 人",
+      "forecast": "官方免費來源不提供一致市場共識；若第三方共識缺漏則不估算",
       "importance": "中",
-      "impact": "事件視窗內沒有高衝擊公布時，重點改看已公布數據後的美債、美元與科技股反應"
+      "impact": "就業降溫有利降息預期，但過度惡化會提高景氣風險"
     },
     {
       "time": "未來 72 小時",
@@ -27,7 +27,7 @@
       "time": "每日收盤後",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
-      "previous": "法人合計 +333.3 億; 外資台指期 -82,594 口（2026-08-21）; Put/Call 110.65%（2026-08-21）; USD/TWD 31.819",
+      "previous": "法人合計 -170.1 億; 外資台指期 -82,529 口（2026-08-24）; Put/Call 106.18%（2026-08-24）; USD/TWD 31.821",
       "forecast": "非未來事件；以每日收盤後實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀"

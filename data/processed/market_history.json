@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-27 06:21:39 Asia/Taipei",
-  "data_date": "2026-08-27",
+  "generated_at": "2026-08-29 05:27:51 Asia/Taipei",
+  "data_date": "2026-08-29",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Generated market_summary history",
@@ -219,6 +219,11 @@
       "date": "2026-08-27",
       "score": 70,
       "status": "Risk-On"
+    },
+    {
+      "date": "2026-08-29",
+      "score": 69,
+      "status": "中性偏多"
     }
   ]
 }

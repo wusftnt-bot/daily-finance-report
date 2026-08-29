@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-08-29 05:27:51 Asia/Taipei",
-  "data_date": "2026-08-29",
+  "generated_at": "2026-08-30 07:20:46 Asia/Taipei",
+  "data_date": "2026-08-30",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled",
   "records": [
     {
-      "time": "未來 72 小時",
+      "time": "09/01 22:00 台北",
       "country": "美國",
-      "event": "無重大官方總經定期公布",
-      "previous": "不以零售銷售、初領失業金或 ISM 舊值代替未來事件",
-      "forecast": "下一個已知排程：09/01 22:00 台北 ISM Manufacturing PMI / New Orders",
-      "importance": "中",
-      "impact": "事件視窗內沒有高衝擊公布時，重點改看已公布數據後的美債、美元與科技股反應"
+      "event": "ISM Manufacturing PMI / New Orders",
+      "previous": "新訂單最近值： 56.00 指數",
+      "forecast": "官方免費來源不提供一致市場共識；公布後回填實際值與 Surprise",
+      "importance": "高",
+      "impact": "製造業新訂單直接影響半導體、工業與 AI 供應鏈需求判讀"
     },
     {
       "time": "未來 72 小時",
@@ -27,7 +27,7 @@
       "time": "每日收盤後",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
-      "previous": "法人合計 +458.3 億; 外資台指期 -83,655 口（2026-08-28）; Put/Call 100.72%（2026-08-28）; USD/TWD 31.620",
+      "previous": "法人合計 +458.3 億; 外資台指期 -83,655 口（2026-08-28）; Put/Call 100.72%（2026-08-28）; USD/TWD 31.628",
       "forecast": "非未來事件；以每日收盤後實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀"

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-29 05:27:51 Asia/Taipei",
-  "data_date": "2026-08-29",
+  "generated_at": "2026-08-30 07:20:46 Asia/Taipei",
+  "data_date": "2026-08-30",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,27 +117,27 @@
   ],
   "news_axes": [
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 8 則相關訊號，重點新聞包含：國際財經新聞：Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight；國際財經新聞：S&P, Nasdaq end lower after Fed Chair Warsh reaffirms inflation fight",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 8
+      "theme_key": "markets",
+      "title": "全球股市與風險情緒",
+      "summary": "全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：國際財經新聞：OpenAI Plans To Stop Providing Its Models To Cursor – DTH；國際財經新聞：Guggenheim Stain Piles Onto Biggest Junk Laggard",
+      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
+      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
+      "count": 5
     },
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Blue Owl Leads $2.4 Billion Iren Debt Deal to Buy Nvidia’s Chips；國際財經新聞：Oppenheimer raises Marvell stock price target on AI growth outlook By Investing.com",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Market Today: Fed Rate Hike Signals, Meta Settlement, Nvidia Ear；國際財經新聞：Why I'm Still Holding Nvidia (NVDA) Stock Despite Its Sky-High P/E Ratio",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
       "count": 5
     },
     {
-      "theme_key": "markets",
-      "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：國際財經新聞：Stock traders warm up to Warsh as volatility index touches year-to-date low；國際財經新聞：The Unwelcoming States of America | August 29th 2026",
-      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
-      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
+      "theme_key": "rates",
+      "title": "利率、通膨與估值",
+      "summary": "利率、通膨與估值出現 4 則相關訊號，重點新聞包含：國際財經新聞：US Treasury’s Bessent warns yen volatility risks spillover to global markets；國際財經新聞：Warsh charts a forward-looking path for the Fed at Jackson Hole",
+      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
+      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
       "count": 4
     }
   ]

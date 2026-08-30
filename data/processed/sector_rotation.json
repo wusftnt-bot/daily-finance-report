@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-30 07:20:46 Asia/Taipei",
-  "data_date": "2026-08-30",
+  "generated_at": "2026-08-31 06:41:28 Asia/Taipei",
+  "data_date": "2026-08-31",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -119,26 +119,26 @@
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：國際財經新聞：OpenAI Plans To Stop Providing Its Models To Cursor – DTH；國際財經新聞：Guggenheim Stain Piles Onto Biggest Junk Laggard",
+      "summary": "全球股市與風險情緒出現 7 則相關訊號，重點新聞包含：國際財經新聞：Ukraine seeks U.S. investment for defence technology fund - FT By Investing.com；國際財經新聞：Steak ’n Shake: The Midwestern Burger Chain That’s Going Full MAGA",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 5
+      "count": 7
     },
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Market Today: Fed Rate Hike Signals, Meta Settlement, Nvidia Ear；國際財經新聞：Why I'm Still Holding Nvidia (NVDA) Stock Despite Its Sky-High P/E Ratio",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Not Nvidia. Not AMD. This Semiconductor Giant Will Be the Ultimate Winner of the Artificia；國際財經新聞：Big Tech profits get $160bn boost from gains on stakes in other AI companies",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
       "count": 5
     },
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 4 則相關訊號，重點新聞包含：國際財經新聞：US Treasury’s Bessent warns yen volatility risks spillover to global markets；國際財經新聞：Warsh charts a forward-looking path for the Fed at Jackson Hole",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 4
+      "theme_key": "energy",
+      "title": "能源、原物料與航運",
+      "summary": "能源、原物料與航運出現 2 則相關訊號，重點新聞包含：國際財經新聞：Venezuela’s Maduro Resurfaces on Social Media Amid US Oil Deal；國際財經新聞：Trump plans to refill U.S. emergency oil reserve with Venezuelan crude (USO:NYSEARCA)",
+      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
+      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
+      "count": 2
     }
   ]
 }

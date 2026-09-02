@@ -1,116 +1,116 @@
 {
-  "generated_at": "2026-09-02 07:14:37 Asia/Taipei",
-  "data_date": "2026-09-02",
+  "generated_at": "2026-09-03 07:19:36 Asia/Taipei",
+  "data_date": "2026-09-03",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
-  "date": "20260901",
+  "date": "20260902",
   "records": [
     {
       "sector": "油電燃氣",
       "index_name": "油電燃氣類指數",
-      "close": 103.57,
-      "change_points": 3.88,
-      "change_pct": 3.89,
-      "stage": "強勢擴張",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "通信網路",
-      "index_name": "通信網路類指數",
-      "close": 239.05,
-      "change_points": 6.89,
-      "change_pct": 2.97,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "其他電子",
-      "index_name": "其他電子類指數",
-      "close": 279.94,
-      "change_points": 7.82,
-      "change_pct": 2.87,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "電機機械",
-      "index_name": "電機機械類指數",
-      "close": 559.73,
-      "change_points": 13.91,
-      "change_pct": 2.55,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "電腦及週邊設備",
-      "index_name": "電腦及週邊設備類指數",
-      "close": 487.05,
-      "change_points": 10.65,
+      "close": 105.89,
+      "change_points": 2.32,
       "change_pct": 2.24,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "半導體",
-      "index_name": "半導體類指數",
-      "close": 1567.08,
-      "change_points": 32.41,
-      "change_pct": 2.11,
       "stage": "復甦偏多",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "金融保險",
       "index_name": "金融保險類指數",
-      "close": 3391.58,
-      "change_points": 48.46,
-      "change_pct": 1.45,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "電子零組件",
-      "index_name": "電子零組件類指數",
-      "close": 955.66,
-      "change_points": 11.4,
-      "change_pct": 1.21,
-      "stage": "復甦偏多",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "鋼鐵",
-      "index_name": "鋼鐵類指數",
-      "close": 121.23,
-      "change_points": 0.65,
-      "change_pct": 0.54,
-      "stage": "中性整理",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "航運",
-      "index_name": "航運類指數",
-      "close": 210.77,
-      "change_points": 0.92,
-      "change_pct": 0.44,
+      "close": 3406.93,
+      "change_points": 15.35,
+      "change_pct": 0.45,
       "stage": "中性整理",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "塑膠",
       "index_name": "塑膠類指數",
-      "close": 395.57,
-      "change_points": 2.37,
-      "change_pct": -0.6,
+      "close": 396.63,
+      "change_points": 1.06,
+      "change_pct": 0.27,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "鋼鐵",
+      "index_name": "鋼鐵類指數",
+      "close": 121.16,
+      "change_points": 0.07,
+      "change_pct": -0.06,
+      "stage": "整理偏弱",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "通信網路",
+      "index_name": "通信網路類指數",
+      "close": 238.91,
+      "change_points": 0.14,
+      "change_pct": -0.06,
+      "stage": "整理偏弱",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "電腦及週邊設備",
+      "index_name": "電腦及週邊設備類指數",
+      "close": 485.42,
+      "change_points": 1.63,
+      "change_pct": -0.33,
+      "stage": "整理偏弱",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "航運",
+      "index_name": "航運類指數",
+      "close": 209.18,
+      "change_points": 1.59,
+      "change_pct": -0.75,
       "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "生技醫療",
       "index_name": "生技醫療類指數",
-      "close": 97.62,
-      "change_points": 3.29,
-      "change_pct": -3.26,
+      "close": 96.84,
+      "change_points": 0.78,
+      "change_pct": -0.8,
+      "stage": "整理偏弱",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "電機機械",
+      "index_name": "電機機械類指數",
+      "close": 552.21,
+      "change_points": 7.52,
+      "change_pct": -1.34,
+      "stage": "整理偏弱",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "半導體",
+      "index_name": "半導體類指數",
+      "close": 1534.51,
+      "change_points": 32.57,
+      "change_pct": -2.08,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "其他電子",
+      "index_name": "其他電子類指數",
+      "close": 273.11,
+      "change_points": 6.83,
+      "change_pct": -2.44,
+      "stage": "降溫警戒",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "電子零組件",
+      "index_name": "電子零組件類指數",
+      "close": 918.79,
+      "change_points": 36.87,
+      "change_pct": -3.86,
       "stage": "降溫警戒",
       "source": "TWSE MI_INDEX"
     }
@@ -119,26 +119,26 @@
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 7 則相關訊號，重點新聞包含：國際財經新聞：Dell surges 10% after lifting fiscal 2027 forecast on AI server strength；國際財經新聞：Dell stock jumps after hours as soaring AI server demand prompts guidance raise By Investi",
+      "summary": "AI 與半導體供應鏈出現 10 則相關訊號，重點新聞包含：國際財經新聞：Mamdani imposes one-year ban on AI for most NYC students；國際財經新聞：Microsoft to start disclosing Azure quarterly revenue as company consolidates business uni",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 7
+      "count": 10
     },
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 4 則相關訊號，重點新聞包含：國際財經新聞：Sticky Inflation Is Roiling Bond Markets Again；國際財經新聞：Wake Me Up When September Ends: The Bond Trap (SPX)",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
+      "theme_key": "markets",
+      "title": "全球股市與風險情緒",
+      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：國際財經新聞：These 2 Cell Tower REITs Just Paid Investors—One Dividend Looks Far Better；國際財經新聞：Central banking has a forbidding future",
+      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
+      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 4
     },
     {
-      "theme_key": "energy",
-      "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：國際財經新聞：Nasdaq Closes Down 1% as Rising Oil Prices Add Pressure on Rates；國際財經新聞：Dow falls 400 points after U.S. strikes Iran, oil surges",
-      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
-      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
-      "count": 4
+      "theme_key": "earnings",
+      "title": "財報、營收與企業展望",
+      "summary": "財報、營收與企業展望出現 2 則相關訊號，重點新聞包含：國際財經新聞：Snowflake Jumps on Revenue Outlook, Uptake of AI Assistant；國際財經新聞：Broadcom's stock drops 5% as weak guidance overshadows earnings beat",
+      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
+      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "count": 2
     }
   ]
 }

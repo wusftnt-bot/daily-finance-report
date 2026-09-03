@@ -1,111 +1,111 @@
 {
-  "generated_at": "2026-09-03 07:19:36 Asia/Taipei",
-  "data_date": "2026-09-03",
+  "generated_at": "2026-09-04 05:21:22 Asia/Taipei",
+  "data_date": "2026-09-04",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE T86",
-  "date": "2026-09-02",
-  "screened_count": 1078,
-  "qualified_count": 40,
+  "date": "2026-09-03",
+  "screened_count": 1064,
+  "qualified_count": 53,
   "records": [
     {
-      "ticker": "2812",
-      "name": "台中銀",
-      "foreign_lots": 28714,
-      "investment_lots": -124,
-      "dealer_lots": 78,
-      "total_lots": 28668,
-      "dynamic_momentum": 57382,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "5880",
-      "name": "合庫金",
-      "foreign_lots": 27227,
-      "investment_lots": -230,
-      "dealer_lots": -63,
-      "total_lots": 26935,
-      "dynamic_momentum": 54162,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "2886",
-      "name": "兆豐金",
-      "foreign_lots": 17737,
-      "investment_lots": 3530,
-      "dealer_lots": -876,
-      "total_lots": 20390,
-      "dynamic_momentum": 45187,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "2892",
-      "name": "第一金",
-      "foreign_lots": 13317,
-      "investment_lots": 5072,
-      "dealer_lots": -172,
-      "total_lots": 18217,
-      "dynamic_momentum": 41678,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "2887",
-      "name": "台新新光金",
-      "foreign_lots": 4506,
-      "investment_lots": 9172,
-      "dealer_lots": 45,
-      "total_lots": 13723,
-      "dynamic_momentum": 36573,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "3231",
-      "name": "緯創",
-      "foreign_lots": 7066,
-      "investment_lots": 6583,
-      "dealer_lots": 189,
-      "total_lots": 13838,
-      "dynamic_momentum": 34070,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "2344",
-      "name": "華邦電",
-      "foreign_lots": 14894,
-      "investment_lots": -2651,
-      "dealer_lots": 3425,
-      "total_lots": 15668,
-      "dynamic_momentum": 30562,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "2884",
-      "name": "玉山金",
-      "foreign_lots": 6875,
-      "investment_lots": 5673,
-      "dealer_lots": -230,
-      "total_lots": 12318,
-      "dynamic_momentum": 30539,
-      "source": "TWSE T86"
-    },
-    {
-      "ticker": "2801",
-      "name": "彰銀",
-      "foreign_lots": 8428,
-      "investment_lots": 3306,
-      "dealer_lots": -29,
-      "total_lots": 11705,
-      "dynamic_momentum": 26745,
+      "ticker": "2409",
+      "name": "友達",
+      "foreign_lots": 55437,
+      "investment_lots": -1129,
+      "dealer_lots": 1132,
+      "total_lots": 55440,
+      "dynamic_momentum": 110877,
       "source": "TWSE T86"
     },
     {
       "ticker": "2845",
       "name": "遠東銀",
-      "foreign_lots": 13895,
-      "investment_lots": -51,
-      "dealer_lots": -1743,
-      "total_lots": 12101,
-      "dynamic_momentum": 25996,
+      "foreign_lots": 29743,
+      "investment_lots": -65,
+      "dealer_lots": 14,
+      "total_lots": 29692,
+      "dynamic_momentum": 59435,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "3231",
+      "name": "緯創",
+      "foreign_lots": 2763,
+      "investment_lots": 14547,
+      "dealer_lots": 564,
+      "total_lots": 17874,
+      "dynamic_momentum": 49731,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "2886",
+      "name": "兆豐金",
+      "foreign_lots": 23261,
+      "investment_lots": -688,
+      "dealer_lots": 226,
+      "total_lots": 22800,
+      "dynamic_momentum": 46061,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "2481",
+      "name": "強茂",
+      "foreign_lots": 16999,
+      "investment_lots": 2850,
+      "dealer_lots": -62,
+      "total_lots": 19787,
+      "dynamic_momentum": 42486,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "2889",
+      "name": "國票金",
+      "foreign_lots": 20412,
+      "investment_lots": 0,
+      "dealer_lots": 132,
+      "total_lots": 20544,
+      "dynamic_momentum": 40956,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "2885",
+      "name": "元大金",
+      "foreign_lots": 17375,
+      "investment_lots": 1505,
+      "dealer_lots": 481,
+      "total_lots": 19362,
+      "dynamic_momentum": 39747,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "2303",
+      "name": "聯電",
+      "foreign_lots": 22021,
+      "investment_lots": -8976,
+      "dealer_lots": 2779,
+      "total_lots": 15824,
+      "dynamic_momentum": 37845,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "3481",
+      "name": "群創",
+      "foreign_lots": 19022,
+      "investment_lots": -3,
+      "dealer_lots": -2357,
+      "total_lots": 16662,
+      "dynamic_momentum": 35684,
+      "source": "TWSE T86"
+    },
+    {
+      "ticker": "5880",
+      "name": "合庫金",
+      "foreign_lots": 17431,
+      "investment_lots": -3264,
+      "dealer_lots": -57,
+      "total_lots": 14110,
+      "dynamic_momentum": 31541,
       "source": "TWSE T86"
     }
   ]

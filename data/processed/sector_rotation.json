@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-05 06:46:08 Asia/Taipei",
-  "data_date": "2026-09-05",
+  "generated_at": "2026-09-06 05:31:12 Asia/Taipei",
+  "data_date": "2026-09-06",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,28 +117,28 @@
   ],
   "news_axes": [
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 9 則相關訊號，重點新聞包含：美國8月新增就業16.2萬 提高聯準會升息預期；熱門就業數據刺激聯準會升息押注，比特幣跌破 8 萬美元",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 9
-    },
-    {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：國際財經新聞：The Market Made Credo Cheap, Again (NASDAQ:CRDO)；《華爾街日報》報道後民主黨攻擊費特曼",
+      "summary": "全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：PBAM.O - |股價及最新消息；一分鐘市場報告，2026 年 9 月 5 日（NYSEARCA：VOO）",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 5
     },
     {
+      "theme_key": "rates",
+      "title": "利率、通膨與估值",
+      "summary": "利率、通膨與估值出現 5 則相關訊號，重點新聞包含：隨著聯準會升息的臨近，川普加大了對沃什的攻擊力度；聯準會主席凱文沃什一句話就將央行的全部注意力轉移到了通膨上",
+      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
+      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
+      "count": 5
+    },
+    {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 3 則相關訊號，重點新聞包含：今日市場：英偉達收購 Hugging Face，特斯拉因 Cyber​​cab 調查而下跌；國際財經新聞：The jobs apocalypse is postponed. An AI jobs boom is here",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：Nvidia合作夥伴鴻海憑藉AI伺服器勢頭，銷售額成長52%；輝達砸35億美元認購聯發科ECB，旨在深化AI晶片合作？ | 鉅亨網 - AIGC",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 3
+      "count": 5
     }
   ]
 }

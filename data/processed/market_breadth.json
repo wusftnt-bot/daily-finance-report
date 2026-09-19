@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-19 07:23:37 Asia/Taipei",
-  "data_date": "2026-09-19",
+  "generated_at": "2026-09-20 05:46:54 Asia/Taipei",
+  "data_date": "2026-09-20",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX / FinMind",
@@ -64,7 +64,7 @@
         "date": "2026-09-18",
         "transaction_count": 33,
         "lending_volume": 86634,
-        "avg_fee_rate": 0.213,
+        "avg_fee_rate": 0.194,
         "source": "FinMind TaiwanStockSecuritiesLending"
       },
       {

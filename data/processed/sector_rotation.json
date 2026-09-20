@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-20 05:46:54 Asia/Taipei",
-  "data_date": "2026-09-20",
+  "generated_at": "2026-09-21 05:27:13 Asia/Taipei",
+  "data_date": "2026-09-21",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,17 +117,9 @@
   ],
   "news_axes": [
     {
-      "theme_key": "ai",
-      "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 9 則相關訊號，重點新聞包含：國際財經新聞：Anthropic, Google, OpenAI, SpaceXAI sued for attempt to slow down AI development；國際財經新聞：Higher interest rates and AI safety fears put the stock market to the test last week",
-      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
-      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 9
-    },
-    {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：Mamdani’s Consumer Cop to Begin Tech Oversight Push Within Weeks；國際財經新聞：Warren Buffett Is No Longer Berkshire's Chairman. Here’s Why I'm Buying the Stock Anyway.",
+      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：INTU.DE；國際財經新聞：Billionaire Bill Ackman Dumps Alphabet and Loads Up On a Mega-Cap Stock Down 15% From Its",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 6
@@ -135,10 +127,18 @@
     {
       "theme_key": "rates",
       "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 2 則相關訊號，重點新聞包含：國際財經新聞：Weekend Morning Brew: Fed Rate Hike, Oil Prices, and AI Concerns Drive Market Sentiment；美債殖利率反彈，華爾街收盤漲跌互見（SP500:）",
+      "summary": "利率、通膨與估值出現 4 則相關訊號，重點新聞包含：國際財經新聞：Short-Term Treasuries Emerge as Popular Bet on Fed Inflation Win；國際財經新聞：Fed's Kashkari reportedly says inflation is still too high across the U.S. economy",
       "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
       "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 2
+      "count": 4
+    },
+    {
+      "theme_key": "ai",
+      "title": "AI 與半導體供應鏈",
+      "summary": "AI 與半導體供應鏈出現 3 則相關訊號，重點新聞包含：國際財經新聞：The AI Boom Has A New Problem: The Cost Of Capital (SPX)；國際財經新聞：Why I'm Avoiding This Popular AI Stock Despite Its Growth Story",
+      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
+      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
+      "count": 3
     }
   ]
 }

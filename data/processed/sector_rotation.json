@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-25 06:42:14 Asia/Taipei",
-  "data_date": "2026-09-25",
+  "generated_at": "2026-09-26 07:18:27 Asia/Taipei",
+  "data_date": "2026-09-26",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,27 +117,27 @@
   ],
   "news_axes": [
     {
-      "theme_key": "ai",
-      "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：國際財經新聞：Sandisk: Market Is Still Undervaluing The AI Supercycle Upside (NASDAQ:SNDK)；國際財經新聞：OpenAI’s former head of data centers joins Nvidia",
-      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
-      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 6
+      "theme_key": "rates",
+      "title": "利率、通膨與估值",
+      "summary": "利率、通膨與估值出現 4 則相關訊號，重點新聞包含：國際財經新聞：US Fed plans to raise bank oversight thresholds, sources say；國際財經新聞：10-year Treasury yield hit a 19-year high—and some investors see opportunity to buy bonds",
+      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
+      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
+      "count": 4
     },
     {
       "theme_key": "energy",
       "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：國際財經新聞：Gold Holds Drop as Higher Oil and Hot US Data Fan Rate-Hike Bets；國際財經新聞：Oil prices swing as Houthis claim strike on Saudi Arabia, US said to be negotiating Hormuz",
+      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：國際財經新聞：US Stock Futures Rise as Investors See Relief in Yields, Oil；國際財經新聞：Why stocks held up despite rising yields and $100 oil? These 2 words explain it",
       "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
       "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
       "count": 4
     },
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 3 則相關訊號，重點新聞包含：國際財經新聞：Wall Street swings for gains and misses as oil, Treasury yields climb；國際財經新聞：Surging Treasury yields pose a brand new problem for Kevin Warsh and the Fed",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
+      "theme_key": "markets",
+      "title": "全球股市與風險情緒",
+      "summary": "全球股市與風險情緒出現 3 則相關訊號，重點新聞包含：國際財經新聞：When America walks away；Palantir Technologies Inc. (PLTR) 股價、新聞、報價和記錄",
+      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
+      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 3
     }
   ]

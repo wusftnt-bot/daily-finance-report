@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-26 07:18:27 Asia/Taipei",
-  "data_date": "2026-09-26",
+  "generated_at": "2026-09-27 05:36:47 Asia/Taipei",
+  "data_date": "2026-09-27",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,28 +117,28 @@
   ],
   "news_axes": [
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 4 則相關訊號，重點新聞包含：國際財經新聞：US Fed plans to raise bank oversight thresholds, sources say；國際財經新聞：10-year Treasury yield hit a 19-year high—and some investors see opportunity to buy bonds",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
-      "count": 4
-    },
-    {
-      "theme_key": "energy",
-      "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：國際財經新聞：US Stock Futures Rise as Investors See Relief in Yields, Oil；國際財經新聞：Why stocks held up despite rising yields and $100 oil? These 2 words explain it",
-      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
-      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
-      "count": 4
-    },
-    {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 3 則相關訊號，重點新聞包含：國際財經新聞：When America walks away；Palantir Technologies Inc. (PLTR) 股價、新聞、報價和記錄",
+      "summary": "全球股市與風險情緒出現 9 則相關訊號，重點新聞包含：國際財經新聞：US Stock Market Prediction: Dow Jones Futures Rise, S&P 500 Futures Gain & Nasdaq Futures；Circle Internet Group (CRCL) 股價、新聞、報價和記錄",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 3
+      "count": 9
+    },
+    {
+      "theme_key": "ai",
+      "title": "AI 與半導體供應鏈",
+      "summary": "AI 與半導體供應鏈出現 4 則相關訊號，重點新聞包含：國際財經新聞：Meta and Microsoft led tech stocks higher last week despite soaring bond yields；全球市場面臨結構性變化：AI投資趨勢與中美經貿關係新進展分析",
+      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
+      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
+      "count": 4
+    },
+    {
+      "theme_key": "geopolitics",
+      "title": "地緣政治與政策風險",
+      "summary": "地緣政治與政策風險出現 2 則相關訊號，重點新聞包含：國際財經新聞：Trump rejects Iran deal to reopen Hormuz; Houthi attacks on Saudi Arabia continue；國際財經新聞：Trump Rejects Iran’s Seven-Day Ceasefire Proposal, WSJ Reports",
+      "impact": "政策與地緣風險容易造成短線避險與供應鏈重估，追價需更嚴格。",
+      "watch": "觀察避險資產、油價、美元與供應鏈受影響族群是否出現異常波動。",
+      "count": 2
     }
   ]
 }

@@ -1,19 +1,10 @@
 {
-  "generated_at": "2026-09-30 06:32:54 Asia/Taipei",
-  "data_date": "2026-09-30",
+  "generated_at": "2026-10-01 07:03:54 Asia/Taipei",
+  "data_date": "2026-10-01",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled",
   "records": [
-    {
-      "time": "10/01 20:30 台北",
-      "country": "美國",
-      "event": "Initial Jobless Claims（初領失業金）",
-      "previous": "最近值： 197,000 人",
-      "forecast": "官方免費來源不提供一致市場共識；若第三方共識缺漏則不估算",
-      "importance": "中",
-      "impact": "就業降溫有利降息預期，但過度惡化會提高景氣風險"
-    },
     {
       "time": "10/01 22:00 台北",
       "country": "美國",
@@ -36,7 +27,7 @@
       "time": "每日收盤後",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
-      "previous": "法人合計 -784.1 億; 外資台指期 -79,029 口（2026-09-29）; Put/Call 90.39%（2026-09-29）; USD/TWD 31.863",
+      "previous": "法人合計 +403.9 億; 外資台指期 -78,151 口（2026-09-30）; Put/Call 99.20%（2026-09-30）; USD/TWD 31.875",
       "forecast": "非未來事件；以每日收盤後實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀"

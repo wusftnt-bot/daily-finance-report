@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-10-01 07:03:54 Asia/Taipei",
-  "data_date": "2026-10-01",
+  "generated_at": "2026-10-03 06:24:41 Asia/Taipei",
+  "data_date": "2026-10-03",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
-  "date": "2026-10-01",
+  "date": "2026-10-03",
   "records": [
     {
       "ticker": "2330",

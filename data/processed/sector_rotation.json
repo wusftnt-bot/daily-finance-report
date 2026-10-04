@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-04 06:14:51 Asia/Taipei",
-  "data_date": "2026-10-04",
+  "generated_at": "2026-10-05 07:33:50 Asia/Taipei",
+  "data_date": "2026-10-05",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,28 +117,28 @@
   ],
   "news_axes": [
     {
-      "theme_key": "ai",
-      "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 7 則相關訊號，重點新聞包含：國際財經新聞：How AI investment has unusually large multiplier effects By Investing.com；國際財經新聞：Amazon’s $8B Nvidia Chip Leaseback Deal [2026]",
-      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
-      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 7
-    },
-    {
       "theme_key": "energy",
       "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 3 則相關訊號，重點新聞包含：國際財經新聞：Oil prices drop as G7 nations pledge to release diesel stocks; Saudis said planning attack；國際財經新聞：World in Brief: G7 to release oil reserves; Russia targets Kyiv’s bridges",
+      "summary": "能源、原物料與航運出現 6 則相關訊號，重點新聞包含：國際財經新聞：Iran War is One ‘TACO’ Too Far: McGeever - Energy News, Top Headlines, Commentaries, Featu；國際財經新聞：Is AI accelerating clean energy or oil and gas?",
       "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
       "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
-      "count": 3
+      "count": 6
     },
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 3 則相關訊號，重點新聞包含：國際財經新聞：OpenAI safety employee quits, says 'time for trial and error is over'；國際財經新聞：FlyDubai Attacker Used ‘Crash Ax,’ a Common Fixture on Many Jets",
+      "summary": "全球股市與風險情緒出現 5 則相關訊號，重點新聞包含：國際財經新聞：US recalls B-1 bombers from UK air base following alleged terror plot；國際財經新聞：Britain’s Greens have voted, shamefully, to say Zionism is racism",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 3
+      "count": 5
+    },
+    {
+      "theme_key": "ai",
+      "title": "AI 與半導體供應鏈",
+      "summary": "AI 與半導體供應鏈出現 4 則相關訊號，重點新聞包含：國際財經新聞：DeepSeek and Huawei Take Aim at Nvidia’s Formidable Moat；國際財經新聞：AMD’s $8.2 Billion AI Bet Comes With a $1 Trillion Valuation Problem",
+      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
+      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
+      "count": 4
     }
   ]
 }

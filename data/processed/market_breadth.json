@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-04 06:14:51 Asia/Taipei",
-  "data_date": "2026-10-04",
+  "generated_at": "2026-10-05 07:33:50 Asia/Taipei",
+  "data_date": "2026-10-05",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX / FinMind",
@@ -11,7 +11,7 @@
     "declining": 507,
     "unchanged": 94,
     "advance_decline_ratio": 0.96,
-    "new_20d_high": 182,
+    "new_20d_high": 181,
     "new_20d_low": 132,
     "new_52w_high": null,
     "new_52w_low": null,

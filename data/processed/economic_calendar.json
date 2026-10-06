@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-10-05 07:33:50 Asia/Taipei",
-  "data_date": "2026-10-05",
+  "generated_at": "2026-10-07 07:03:57 Asia/Taipei",
+  "data_date": "2026-10-07",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled",
   "records": [
     {
-      "time": "10/05 22:00 台北",
+      "time": "10/08 20:30 台北",
       "country": "美國",
-      "event": "ISM Services PMI",
-      "previous": "前值待官方公布後回填",
-      "forecast": "官方免費來源不提供一致市場共識；公布後回填實際值與 Surprise",
+      "event": "Initial Jobless Claims（初領失業金）",
+      "previous": "最近值： 197,000 人",
+      "forecast": "官方免費來源不提供一致市場共識；若第三方共識缺漏則不估算",
       "importance": "中",
-      "impact": "服務業韌性會影響通膨黏性、Fed 預期與美元利率環境"
+      "impact": "就業降溫有利降息預期，但過度惡化會提高景氣風險"
     },
     {
       "time": "未來 72 小時",
@@ -27,7 +27,7 @@
       "time": "每日收盤後",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
-      "previous": "法人合計 +104.2 億; 外資台指期 -80,304 口（2026-10-02）; Put/Call 89.16%（2026-10-02）; USD/TWD 31.800",
+      "previous": "法人合計 -192.0 億; 外資台指期 -79,517 口（2026-10-06）; Put/Call 107.91%（2026-10-06）; USD/TWD 31.780",
       "forecast": "非未來事件；以每日收盤後實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀"

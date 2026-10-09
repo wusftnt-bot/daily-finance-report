@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-10-08 05:32:46 Asia/Taipei",
-  "data_date": "2026-10-08",
+  "generated_at": "2026-10-10 07:20:34 Asia/Taipei",
+  "data_date": "2026-10-10",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
-  "date": "2026-10-08",
+  "date": "2026-10-10",
   "records": [
     {
       "ticker": "2330",
       "name": "台積電",
       "status": "ok",
       "source": "FinMind",
-      "latest_month_revenue_date": "2026-09-01",
-      "latest_month_revenue": 514805337000,
+      "latest_month_revenue_date": "2026-10-01",
+      "latest_month_revenue": 511857399000,
       "latest_quarter": "2026-06-30",
       "eps": 27.25,
       "gross_margin_pct": 67.72,

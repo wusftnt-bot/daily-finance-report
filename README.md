@@ -22,15 +22,23 @@ Decision flow:
 
 ## Publish Flow
 
-GitHub Actions polls on a short interval but only generates during the configured Taipei morning window. It refuses to publish when fewer than the minimum required news items are available. The generated page exposes machine-readable report date and news count metadata for the Telegram workflow to verify.
+GitHub Actions schedules eight staggered morning checks during the configured Taipei morning window. GitHub can delay or drop scheduled runs; these checks do not guarantee an exact delivery time. The generator refuses to publish when fewer than the minimum required news items are available. The generated page exposes machine-readable report date and news count metadata for the Telegram workflow to verify.
 
 Telegram messages use the public URL above instead of a local filesystem path.
 
 When the page is current during the Taipei morning window, this repository may dispatch
 `wusftnt-bot/JT-PM`'s `daily-telegram.yml` workflow as a cross-repo wake-up signal. That
-dispatch is optional and requires `JT_PM_ACTIONS_TOKEN` in this repository's GitHub
-Actions Secrets. The token must be fine-grained, limited to `wusftnt-bot/JT-PM`, and
-granted only the minimum Actions permission needed to dispatch workflows.
+dispatch requires `JT_PM_ACTIONS_TOKEN` in this repository's GitHub Actions Secrets.
+During the morning delivery window, a missing token is an explicit workflow failure.
+The token must be fine-grained, limited to `wusftnt-bot/JT-PM`, and granted only
+Actions read/write plus the automatically required Metadata read-only permission.
+
+Use the manual `Verify Telegram Integration` workflow between 09:00 and 21:00
+Taipei to verify authentication, workflow access, published page date, and dispatch
+write permission. It dispatches with both `force_resend` and `allow_after_hours`
+disabled. A successful dispatch test is not proof of Telegram delivery; check the
+daily delivery receipt separately. Keep credential values and personal identifiers
+out of source files, local files, public reports, screenshots, artifacts, and logs.
 
 ## Project Boundary
 

@@ -74,8 +74,9 @@ jobs:
         run: |
           if timeout 7m python scripts/publish_daily_finance_report.py; then
             exit 0
+          else
+            status=$?
           fi
-          status=$?
           {
             echo "## Daily finance report generation fallback"
             echo

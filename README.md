@@ -22,7 +22,7 @@ Decision flow:
 
 ## Publish Flow
 
-GitHub Actions schedules eight staggered morning checks during the configured Taipei morning window. GitHub can delay or drop scheduled runs; these checks do not guarantee an exact delivery time. The generator refuses to publish when fewer than the minimum required news items are available. The generated page exposes machine-readable report date and news count metadata for the Telegram workflow to verify.
+GitHub Actions schedules seven staggered morning checks during the configured Taipei morning window. GitHub can delay or drop scheduled runs; these checks do not guarantee an exact delivery time. The generator refuses to publish when fewer than the minimum required news items are available. The generated page exposes machine-readable report date and news count metadata for the Telegram workflow to verify.
 
 Telegram messages use the public URL above instead of a local filesystem path.
 
@@ -39,6 +39,26 @@ write permission. It dispatches with both `force_resend` and `allow_after_hours`
 disabled. A successful dispatch test is not proof of Telegram delivery; check the
 daily delivery receipt separately. Keep credential values and personal identifiers
 out of source files, local files, public reports, screenshots, artifacts, and logs.
+
+### External Morning Cron
+
+`telegram-morning-orchestrator.yml` is the external scheduler entry point. It checks
+the published page, triggers guarded site generation if stale, then invokes the
+JT-PM receipt watchdog when the page is current. Active runs and complete receipts
+prevent redundant dispatch. At or after 07:50 it performs verification only.
+
+- Provider: the user's private cron-job.org account, separate job from LINE.
+- Schedule: `25,55 5,6,7 * * *`, timezone `Asia/Taipei`, every day.
+- Endpoint: `POST https://api.github.com/repos/wusftnt-bot/daily-finance-report/actions/workflows/telegram-morning-orchestrator.yml/dispatches`.
+- JSON body: `{"ref":"main","inputs":{"final_check":"false","dry_run":"false"}}`.
+- Headers: `Accept: application/vnd.github+json`, `Content-Type: application/json`, and a private `Authorization: Bearer` credential.
+- Use a separate fine-grained PAT limited to daily-finance-report with Actions read/write. The user enters it only in the scheduler's private header field. Never put credentials in URL query strings, examples, response history, screenshots, or files.
+- Existing `JT_PM_ACTIONS_TOKEN` stays in this repo's Actions Secrets; external cron never receives Telegram, Gemini, or LINE secrets.
+- Run `dry_run=true` for read-only checks. A POST accepted with HTTP 204 proves dispatch only; success requires receipt JSON verification for every message, recipient, and chunk.
+- GitHub can still delay manually dispatched jobs. External cron reduces reliance on GitHub schedule but does not guarantee delivery before 08:00; missing final receipts must be investigated using failed Actions runs.
+
+Receipt parsing is defined by the identical credential-free `scripts/telegram_receipts.py`
+contract in this repo and JT-PM. Update and test both copies together when changing it.
 
 ## Project Boundary
 

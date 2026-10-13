@@ -1,0 +1,40 @@
+name: Telegram Morning Orchestrator
+
+on:
+  workflow_dispatch:
+    inputs:
+      final_check:
+        description: Verify complete receipts without sending after the morning deadline
+        type: boolean
+        default: false
+      dry_run:
+        description: Read-only integration check; do not dispatch any workflow
+        type: boolean
+        default: false
+  schedule:
+    - cron: "55 23 * * *"
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: telegram-morning-orchestrator
+  cancel-in-progress: false
+
+jobs:
+  coordinate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check reports and verify Telegram receipts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          JT_PM_ACTIONS_TOKEN: ${{ secrets.JT_PM_ACTIONS_TOKEN }}
+          FINAL_CHECK: ${{ github.event_name == 'schedule' || inputs.final_check }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+        run: python scripts/telegram_morning_orchestrator.py

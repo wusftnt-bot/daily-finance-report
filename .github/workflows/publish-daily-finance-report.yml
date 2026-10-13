@@ -11,8 +11,8 @@ on:
       - "scripts/**"
   schedule:
     # Static, staggered UTC slots avoid a single high-frequency cron being
-    # dropped during the Taipei 05:20-07:45 report window.
-    # Taipei: 05:25, 05:45, 06:05, 06:25, 06:45, 07:05, 07:25, 07:45.
+    # dropped during the Taipei 05:20-07:25 report window.
+    # Taipei: 05:25, 05:45, 06:05, 06:25, 06:45, 07:05, 07:25.
     - cron: "25 21 * * *"
     - cron: "45 21 * * *"
     - cron: "5 22 * * *"
@@ -20,15 +20,19 @@ on:
     - cron: "45 22 * * *"
     - cron: "5 23 * * *"
     - cron: "25 23 * * *"
-    - cron: "45 23 * * *"
   workflow_dispatch:
+    inputs:
+      external_trigger:
+        description: Apply the same time and date guards as scheduled generation
+        type: boolean
+        default: false
 
 permissions:
   contents: write
 
 concurrency:
   group: publish-daily-finance-report
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -52,10 +56,11 @@ jobs:
         run: |
           today="$(TZ=Asia/Taipei date +%F)"
           now_hm="$((10#$(TZ=Asia/Taipei date +%H%M)))"
-          if [[ "${{ github.event_name }}" == "schedule" ]] && { [[ "$now_hm" -lt 520 ]] || [[ "$now_hm" -gt 745 ]]; }; then
-            echo "Scheduled report check skipped outside the Taipei 05:20-07:45 window: $now_hm."
+          guarded="${{ github.event_name == 'schedule' || inputs.external_trigger == true }}"
+          if [[ "$guarded" == "true" ]] && { [[ "$now_hm" -lt 520 ]] || [[ "$now_hm" -gt 725 ]]; }; then
+            echo "Scheduled report check skipped outside the Taipei 05:20-07:25 window: $now_hm."
             echo "skip=true" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ github.event_name }}" == "schedule" ]] && grep -q "<meta name=\"report-date\" content=\"$today\">" index.html; then
+          elif [[ "$guarded" == "true" ]] && grep -q "<meta name=\"report-date\" content=\"$today\">" index.html; then
             echo "Daily finance report for $today already exists. Skipping scheduled fallback run."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
@@ -136,8 +141,8 @@ jobs:
                   summary.write("\n## Telegram dispatch after site publish\n\n")
                   summary.write(message + "\n")
 
-          if now_hm < 520 or now_hm > 815:
-              print(f"Telegram dispatch skipped outside Taipei 05:20-08:15 window: {now_hm}.")
+          if now_hm < 520 or now_hm > 740:
+              print(f"Telegram dispatch skipped outside Taipei 05:20-07:40 window: {now_hm}.")
               raise SystemExit(0)
 
           html = Path("index.html").read_text(encoding="utf-8")

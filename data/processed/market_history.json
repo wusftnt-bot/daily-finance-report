@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-13 11:49:38 Asia/Taipei",
+  "generated_at": "2026-10-13 15:18:39 Asia/Taipei",
   "data_date": "2026-10-13",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -227,7 +227,7 @@
     },
     {
       "date": "2026-10-13",
-      "score": 58,
+      "score": 60,
       "status": "中性偏多"
     }
   ]

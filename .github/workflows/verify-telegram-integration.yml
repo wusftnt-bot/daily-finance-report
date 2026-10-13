@@ -1,0 +1,107 @@
+name: Verify Telegram Integration
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: verify-telegram-integration
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify secret access, website date, and guarded dispatch
+        env:
+          JT_PM_ACTIONS_TOKEN: ${{ secrets.JT_PM_ACTIONS_TOKEN }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import re
+          import time
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          now = dt.datetime.now(dt.timezone(dt.timedelta(hours=8)))
+          today = now.date().isoformat()
+          token = os.environ.get('JT_PM_ACTIONS_TOKEN', '').strip()
+          if not token:
+              raise SystemExit('JT_PM_ACTIONS_TOKEN is missing.')
+          headers = {
+              'Accept': 'application/vnd.github+json',
+              'Authorization': f'Bearer {token}',
+              'Content-Type': 'application/json',
+              'User-Agent': 'daily-finance-integration-verification',
+              'X-GitHub-Api-Version': '2022-11-28',
+          }
+          api = 'https://api.github.com/repos/wusftnt-bot/JT-PM'
+
+          def request(path, payload=None):
+              data = json.dumps(payload).encode() if payload is not None else None
+              req = urllib.request.Request(api + path, data=data, headers=headers,
+                                           method='POST' if data is not None else 'GET')
+              try:
+                  with urllib.request.urlopen(req, timeout=25) as response:
+                      body = response.read()
+                      return response.status, json.loads(body) if body else {}
+              except urllib.error.HTTPError as exc:
+                  raise SystemExit(f'GitHub integration request failed: HTTP {exc.code}.') from None
+              except Exception as exc:
+                  raise SystemExit(f'GitHub integration request failed: {type(exc).__name__}.') from None
+
+          _, workflow = request('/actions/workflows/daily-telegram.yml')
+          if workflow.get('state') != 'active':
+              raise SystemExit('Daily Telegram workflow is not active.')
+          print('PASS: secret authenticates and Daily Telegram workflow is active.')
+
+          artifacts_name = f'daily-telegram-{today}'
+          _, artifacts = request(f'/actions/artifacts?name={artifacts_name}&per_page=10')
+          receipt_found = any(not item.get('expired') for item in artifacts.get('artifacts', []))
+          print(f'Today delivery receipt present: {receipt_found}.')
+
+          _, runs = request('/actions/workflows/daily-telegram.yml/runs?per_page=10')
+          for run in runs.get('workflow_runs', [])[:5]:
+              created = dt.datetime.fromisoformat(run['created_at'].replace('Z', '+00:00')).astimezone(now.tzinfo)
+              print(f'Recent run: {created.isoformat()} event={run.get("event")} status={run.get("status")} conclusion={run.get("conclusion")}')
+
+          url = 'https://wusftnt-bot.github.io/daily-finance-report/'
+          with urllib.request.urlopen(url + '?verify=' + today, timeout=25) as response:
+              html = response.read().decode('utf-8')
+          match = re.search(r'<meta name="report-date" content="([^"]+)">', html)
+          if not match or match.group(1) != today:
+              raise SystemExit('Published website is not dated today.')
+          print(f'PASS: published website date is {today}.')
+
+          # Prove Actions write permission outside the delivery window only.
+          # JT-PM keeps both force_resend and allow_after_hours disabled.
+          minute = now.hour * 60 + now.minute
+          if not 9 * 60 <= minute <= 21 * 60:
+              raise SystemExit('Run this dispatch-permission test between 09:00 and 21:00 Taipei.')
+          status, _ = request('/actions/workflows/daily-telegram.yml/dispatches', {
+              'ref': 'main',
+              'inputs': {'force_resend': 'false', 'allow_after_hours': 'false'},
+          })
+          if status not in (200, 201, 204):
+              raise SystemExit(f'Unexpected dispatch HTTP status: {status}.')
+          print(f'PASS: GitHub accepted the guarded dispatch (HTTP {status}).')
+          for attempt in range(8):
+              _, dispatched = request('/actions/workflows/daily-telegram.yml/runs?event=workflow_dispatch&per_page=5')
+              detected = [run for run in dispatched.get('workflow_runs', [])
+                          if dt.datetime.fromisoformat(run['created_at'].replace('Z', '+00:00')) >= now]
+              if detected:
+                  print('PASS: JT-PM created a workflow_dispatch run; after-hours sending remains disabled.')
+                  break
+              time.sleep(5)
+          else:
+              raise SystemExit('Dispatch was accepted but no new JT-PM run was observed.')
+          with Path(os.environ['GITHUB_STEP_SUMMARY']).open('a', encoding='utf-8') as summary:
+              summary.write(f'Integration verified: secret authenticates, workflow is active, website is dated {today}, and Actions dispatch permission works.\n\n')
+              summary.write(f'Today receipt artifact present: {receipt_found}. Dispatch verification is not a Telegram delivery receipt.\n')
+          PY

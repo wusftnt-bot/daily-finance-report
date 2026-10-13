@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-13 10:59:55 Asia/Taipei",
+  "generated_at": "2026-10-13 11:49:38 Asia/Taipei",
   "data_date": "2026-10-13",
   "timezone": "Asia/Taipei",
   "status": "ok",
@@ -125,20 +125,20 @@
       "count": 9
     },
     {
-      "theme_key": "energy",
-      "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 3 則相關訊號，重點新聞包含：國際財經新聞：Oil Holds Advance as Expanding Middle East War Threatens Supply；國際財經新聞：Midday Need to Know: Bitcoin signals bullish trend shift, copper rallies & more",
-      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
-      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
-      "count": 3
-    },
-    {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 3 則相關訊號，重點新聞包含：國際財經新聞：WEFC | Grow-Grow-Growth [PDF Download]；國際財經新聞：Explained - Why the Dow Jones gained 200 points, but Nasdaq fell on Monday",
+      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：國際財經新聞：Keeping It Simple Has Paid Off In 2026 - And That Should Continue；國際財經新聞：WEFC | Grow-Grow-Growth [PDF Download]",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 3
+      "count": 4
+    },
+    {
+      "theme_key": "energy",
+      "title": "能源、原物料與航運",
+      "summary": "能源、原物料與航運出現 2 則相關訊號，重點新聞包含：國際財經新聞：Oil Holds Advance as Expanding Middle East War Threatens Supply；國際財經新聞：Oil Climbs as Fighting Flares in Middle East, Ukraine",
+      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
+      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
+      "count": 2
     }
   ]
 }

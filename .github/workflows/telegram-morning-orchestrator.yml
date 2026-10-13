@@ -31,6 +31,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Validate coordination and receipt regressions without credentials
+        run: python -m unittest discover -s tests -p 'test_telegram_orchestrator.py' -v
       - name: Check reports and verify Telegram receipts
         env:
           GITHUB_TOKEN: ${{ github.token }}

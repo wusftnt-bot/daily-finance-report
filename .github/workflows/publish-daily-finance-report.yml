@@ -10,9 +10,17 @@ on:
       - "data/processed/**"
       - "scripts/**"
   schedule:
-    # GitHub schedules can be delayed. Poll frequently, then use the Taipei-time
-    # guard below so only the morning window performs report work.
-    - cron: "3/10 * * * *"
+    # Static, staggered UTC slots avoid a single high-frequency cron being
+    # dropped during the Taipei 05:20-07:45 report window.
+    # Taipei: 05:25, 05:45, 06:05, 06:25, 06:45, 07:05, 07:25, 07:45.
+    - cron: "25 21 * * *"
+    - cron: "45 21 * * *"
+    - cron: "5 22 * * *"
+    - cron: "25 22 * * *"
+    - cron: "45 22 * * *"
+    - cron: "5 23 * * *"
+    - cron: "25 23 * * *"
+    - cron: "45 23 * * *"
   workflow_dispatch:
 
 permissions:
@@ -74,7 +82,7 @@ jobs:
             echo "Generation exited with status ${status}. Keeping the previous published site files."
             echo "Telegram dispatch will run only if the local index.html has today's report-date."
           } >> "$GITHUB_STEP_SUMMARY"
-          exit 0
+          exit "$status"
 
       - name: Commit and push report site
         if: steps.existing_report.outputs.skip != 'true'
@@ -141,10 +149,12 @@ jobs:
           if not token:
               summarize(
                   "Current finance report is ready, but `JT_PM_ACTIONS_TOKEN` is not configured. "
-                  "Telegram will rely on the JT-PM schedules/watchdog only."
+                  "Cross-repository Telegram dispatch cannot run."
               )
-              print("JT_PM_ACTIONS_TOKEN is not configured; skip cross-repo Telegram dispatch.")
-              raise SystemExit(0)
+              raise SystemExit(
+                  "JT_PM_ACTIONS_TOKEN is required for the daily Telegram dispatch; "
+                  "add it only as a GitHub Actions secret in daily-finance-report."
+              )
 
           payload = {
               "ref": "main",

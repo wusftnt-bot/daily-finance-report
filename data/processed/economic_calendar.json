@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-15 05:26:22 Asia/Taipei",
-  "data_date": "2026-10-15",
+  "generated_at": "2026-10-16 05:25:57 Asia/Taipei",
+  "data_date": "2026-10-16",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Official release schedule rules plus public calendar consensus where available; stale-event fallback disabled",
@@ -15,19 +15,19 @@
       "impact": "事件視窗內沒有高衝擊公布時，重點改看已公布數據後的美債、美元與科技股反應"
     },
     {
-      "time": "未來 72 小時",
+      "time": "2026-10-16",
       "country": "台灣",
-      "event": "無固定重大總經或上市櫃月營收公布",
-      "previous": "不以過期月營收或過期法說會代替當前事件",
-      "forecast": "下一批定期重點：月營收每月 10 日前；出口、外銷訂單、工業生產、景氣燈號依官方日程更新",
-      "importance": "中",
-      "impact": "本區只顯示當前視窗內真正值得追蹤的事件；若無事件，投資判讀改看資金面與市場價格反應"
+      "event": "2330 台積電 重大公司事件追蹤",
+      "previous": "國際財經新聞：TSMC Q3 profit surges to record high on AI demand; says considering Texas fab",
+      "forecast": "事件評分 105；近72小時；優先檢查公司公告、法說會逐字稿、財報與財測/展望。",
+      "importance": "高",
+      "impact": "影響核心持股、AI/半導體供應鏈、法人資金與 Stock Radar 分層；來源：Investing.com"
     },
     {
       "time": "每日收盤後",
       "country": "台灣",
       "event": "外資 / 投信 / 台指期 / 新台幣資金面更新",
-      "previous": "法人合計 -154.8 億; 外資台指期 -86,814 口（2026-10-14）; Put/Call 103.47%（2026-10-14）; USD/TWD 32.187",
+      "previous": "法人合計 -3691.0 億; 外資台指期 -97,582 口（2026-10-15）; Put/Call 74.99%（2026-10-15）; USD/TWD 32.356",
       "forecast": "非未來事件；以每日收盤後實際資金流判讀",
       "importance": "高",
       "impact": "判斷權值股、電子股與 ETF 資金是否同向支持，與 72 小時事件分開解讀"

@@ -1,117 +1,117 @@
 {
-  "generated_at": "2026-10-16 05:25:57 Asia/Taipei",
-  "data_date": "2026-10-16",
+  "generated_at": "2026-10-17 05:26:01 Asia/Taipei",
+  "data_date": "2026-10-17",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
-  "date": "20261015",
+  "date": "20261016",
   "records": [
     {
-      "sector": "金融保險",
-      "index_name": "金融保險類指數",
-      "close": 3709.66,
-      "change_points": 26.79,
-      "change_pct": 0.73,
-      "stage": "中性整理",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "生技醫療",
-      "index_name": "生技醫療類指數",
-      "close": 90.05,
-      "change_points": 0.38,
-      "change_pct": -0.42,
-      "stage": "整理偏弱",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "通信網路",
-      "index_name": "通信網路類指數",
-      "close": 243.54,
-      "change_points": 1.25,
-      "change_pct": -0.51,
-      "stage": "整理偏弱",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "鋼鐵",
-      "index_name": "鋼鐵類指數",
-      "close": 123.55,
-      "change_points": 1.02,
-      "change_pct": -0.82,
-      "stage": "整理偏弱",
+      "sector": "油電燃氣",
+      "index_name": "油電燃氣類指數",
+      "close": 157.98,
+      "change_points": 12.92,
+      "change_pct": 8.91,
+      "stage": "強勢擴張",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "航運",
       "index_name": "航運類指數",
-      "close": 218.43,
-      "change_points": 4.8,
-      "change_pct": -2.15,
-      "stage": "降溫警戒",
+      "close": 222.76,
+      "change_points": 4.33,
+      "change_pct": 1.98,
+      "stage": "復甦偏多",
       "source": "TWSE MI_INDEX"
     },
     {
-      "sector": "半導體",
-      "index_name": "半導體類指數",
-      "close": 1560.87,
-      "change_points": 53.6,
-      "change_pct": -3.32,
-      "stage": "降溫警戒",
+      "sector": "生技醫療",
+      "index_name": "生技醫療類指數",
+      "close": 91.76,
+      "change_points": 1.71,
+      "change_pct": 1.9,
+      "stage": "復甦偏多",
       "source": "TWSE MI_INDEX"
     },
     {
-      "sector": "其他電子",
-      "index_name": "其他電子類指數",
-      "close": 265.93,
-      "change_points": 10.99,
-      "change_pct": -3.97,
-      "stage": "降溫警戒",
-      "source": "TWSE MI_INDEX"
-    },
-    {
-      "sector": "電機機械",
-      "index_name": "電機機械類指數",
-      "close": 526.12,
-      "change_points": 22.87,
-      "change_pct": -4.17,
-      "stage": "降溫警戒",
+      "sector": "鋼鐵",
+      "index_name": "鋼鐵類指數",
+      "close": 125.79,
+      "change_points": 2.24,
+      "change_pct": 1.81,
+      "stage": "復甦偏多",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電腦及週邊設備",
       "index_name": "電腦及週邊設備類指數",
-      "close": 441.5,
-      "change_points": 20.43,
-      "change_pct": -4.42,
-      "stage": "降溫警戒",
+      "close": 448.88,
+      "change_points": 7.38,
+      "change_pct": 1.67,
+      "stage": "復甦偏多",
       "source": "TWSE MI_INDEX"
     },
     {
-      "sector": "油電燃氣",
-      "index_name": "油電燃氣類指數",
-      "close": 145.06,
-      "change_points": 9.52,
-      "change_pct": -6.16,
-      "stage": "降溫警戒",
+      "sector": "金融保險",
+      "index_name": "金融保險類指數",
+      "close": 3750.52,
+      "change_points": 40.86,
+      "change_pct": 1.1,
+      "stage": "復甦偏多",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "電機機械",
+      "index_name": "電機機械類指數",
+      "close": 531.73,
+      "change_points": 5.61,
+      "change_pct": 1.07,
+      "stage": "復甦偏多",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "電子零組件",
       "index_name": "電子零組件類指數",
-      "close": 916.26,
-      "change_points": 68.89,
-      "change_pct": -6.99,
-      "stage": "降溫警戒",
+      "close": 925.36,
+      "change_points": 9.1,
+      "change_pct": 0.99,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "其他電子",
+      "index_name": "其他電子類指數",
+      "close": 268.33,
+      "change_points": 2.4,
+      "change_pct": 0.9,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "通信網路",
+      "index_name": "通信網路類指數",
+      "close": 245.63,
+      "change_points": 2.09,
+      "change_pct": 0.86,
+      "stage": "中性整理",
+      "source": "TWSE MI_INDEX"
+    },
+    {
+      "sector": "半導體",
+      "index_name": "半導體類指數",
+      "close": 1555.87,
+      "change_points": 5.0,
+      "change_pct": -0.32,
+      "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     },
     {
       "sector": "塑膠",
       "index_name": "塑膠類指數",
-      "close": 498.07,
-      "change_points": 51.73,
-      "change_pct": -9.41,
-      "stage": "降溫警戒",
+      "close": 491.59,
+      "change_points": 6.48,
+      "change_pct": -1.3,
+      "stage": "整理偏弱",
       "source": "TWSE MI_INDEX"
     }
   ],
@@ -119,26 +119,26 @@
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 13 則相關訊號，重點新聞包含：國際財經新聞：PODCAST: Ukraine oil strike, Fort Hood execution, AI stock slide (Updated)；國際財經新聞：Private Markets Are the New AI Markets",
+      "summary": "AI 與半導體供應鏈出現 9 則相關訊號，重點新聞包含：國際財經新聞：NVIDIA Corporation (NVDA) Stock Price, News, Quote & History；國際財經新聞：If AI Crumbles, Microsoft Wins (NASDAQ:MSFT)",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 13
+      "count": 9
     },
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：國際財經新聞：Equal-weight failed. Now tech stocks look shaky again. So what should you do about S&P 500；國際財經新聞：CoreWeave: Why Credit Markets See A 54% Chance Of Default (NASDAQ:CRWV)",
+      "summary": "全球股市與風險情緒出現 4 則相關訊號，重點新聞包含：國際財經新聞：Dow rises 500 points as investors shift: Full Details；國際財經新聞：Palantir, Arm among market cap stock movers on Friday",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 4
     },
     {
-      "theme_key": "fx",
-      "title": "美元、匯率與資金流",
-      "summary": "美元、匯率與資金流出現 1 則相關訊號，重點新聞包含：盤中速報 - Applovin Corp - Class A(APP-US)大漲5.42%，報276.4美元",
-      "impact": "美元與台幣走勢會影響外資動能、出口電子匯兌與原物料成本。",
-      "watch": "觀察美元/台幣、DXY、外資買賣超與電子權值股是否同步轉強或轉弱。",
-      "count": 1
+      "theme_key": "geopolitics",
+      "title": "地緣政治與政策風險",
+      "summary": "地緣政治與政策風險出現 2 則相關訊號，重點新聞包含：國際財經新聞：Wall Street ends down sharply, worries about AI trade and high oil prices weigh；國際財經新聞：Wall Street tumbles as worries about AI trade and high oil prices weigh",
+      "impact": "政策與地緣風險容易造成短線避險與供應鏈重估，追價需更嚴格。",
+      "watch": "觀察避險資產、油價、美元與供應鏈受影響族群是否出現異常波動。",
+      "count": 2
     }
   ]
 }

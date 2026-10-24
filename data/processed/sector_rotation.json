@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-24 05:25:55 Asia/Taipei",
-  "data_date": "2026-10-24",
+  "generated_at": "2026-10-25 05:25:57 Asia/Taipei",
+  "data_date": "2026-10-25",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,28 +117,28 @@
   ],
   "news_axes": [
     {
-      "theme_key": "ai",
-      "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：國際財經新聞：The AI sell-off is crushing stocks of companies leading the data center build-out；國際財經新聞：U.S. stocks' selloff persists as investors ponder AI spending, higher oil prices (DJI:)",
-      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
-      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 6
-    },
-    {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：Nasdaq ticks up as tech stocks steady; SpaceX worries hit telecoms By Reuters；國際財經新聞：Are some protein powders better than others?",
+      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：Adobe: A Fairly Priced Compounder In An Expensive Market (NASDAQ:ADBE)；國際財經新聞：Ukraine’s Military Starlink Is Working Again, Kyiv Says",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 6
     },
     {
-      "theme_key": "energy",
-      "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 4 則相關訊號，重點新聞包含：國際財經新聞：Oil Holds Biggest Gain in Week as Saudi Attacks Fan Supply Risks；國際財經新聞：Oil Prices Rise on Fears of Middle East Conflict Escalation",
-      "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
-      "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
-      "count": 4
+      "theme_key": "ai",
+      "title": "AI 與半導體供應鏈",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Swiss Stocks Are Becoming a Haven From AI Fears Roiling Markets；國際財經新聞：Nvidia's role as AI financier faces first big test as neoclouds take market hit",
+      "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
+      "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
+      "count": 5
+    },
+    {
+      "theme_key": "fx",
+      "title": "美元、匯率與資金流",
+      "summary": "美元、匯率與資金流出現 2 則相關訊號，重點新聞包含：國際財經新聞：Nasdaq, Treasury yields and dollar face a major AI sentiment test；〈美股盤後〉油價衝破100美元！道瓊挫逾650點 費半小幅收紅、周線連三黑",
+      "impact": "美元與台幣走勢會影響外資動能、出口電子匯兌與原物料成本。",
+      "watch": "觀察美元/台幣、DXY、外資買賣超與電子權值股是否同步轉強或轉弱。",
+      "count": 2
     }
   ]
 }

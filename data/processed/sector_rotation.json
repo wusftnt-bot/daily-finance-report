@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-25 05:25:57 Asia/Taipei",
-  "data_date": "2026-10-25",
+  "generated_at": "2026-10-26 05:25:52 Asia/Taipei",
+  "data_date": "2026-10-26",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -119,7 +119,7 @@
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：Adobe: A Fairly Priced Compounder In An Expensive Market (NASDAQ:ADBE)；國際財經新聞：Ukraine’s Military Starlink Is Working Again, Kyiv Says",
+      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：Ionis Pharmaceuticals: Compelling Long-Term Commercial Upside (NASDAQ:IONS)；國際財經新聞：Bon Secours nears $6bn takeover of Bain-backed Surgery Partners",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 6
@@ -127,18 +127,18 @@
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Swiss Stocks Are Becoming a Haven From AI Fears Roiling Markets；國際財經新聞：Nvidia's role as AI financier faces first big test as neoclouds take market hit",
+      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：Oppenheimer sees web, commerce software Q3 backdrop improving, AI worries linger；國際財經新聞：AI Just Put a $5 Million-a-Day Price Tag on Its Biggest Bottleneck",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
       "count": 5
     },
     {
-      "theme_key": "fx",
-      "title": "美元、匯率與資金流",
-      "summary": "美元、匯率與資金流出現 2 則相關訊號，重點新聞包含：國際財經新聞：Nasdaq, Treasury yields and dollar face a major AI sentiment test；〈美股盤後〉油價衝破100美元！道瓊挫逾650點 費半小幅收紅、周線連三黑",
-      "impact": "美元與台幣走勢會影響外資動能、出口電子匯兌與原物料成本。",
-      "watch": "觀察美元/台幣、DXY、外資買賣超與電子權值股是否同步轉強或轉弱。",
-      "count": 2
+      "theme_key": "earnings",
+      "title": "財報、營收與企業展望",
+      "summary": "財報、營收與企業展望出現 3 則相關訊號，重點新聞包含：國際財經新聞：'The world's super company': Wall Street weighs SpaceX earnings, company's likely Tesla ti；國際財經新聞：Wall Street week ahead: Big tech earnings and Fed decision to test US stock rally",
+      "impact": "企業財報與指引是題材能否轉成獲利的關鍵，優先看營收趨勢與毛利率。",
+      "watch": "觀察營收 YoY/MoM、法說指引、毛利率與 EPS 預估是否上修。",
+      "count": 3
     }
   ]
 }

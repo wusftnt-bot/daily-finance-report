@@ -1,15 +1,10 @@
 {
-  "generated_at": "2026-10-26 05:25:52 Asia/Taipei",
-  "data_date": "2026-10-26",
+  "generated_at": "2026-10-27 05:26:08 Asia/Taipei",
+  "data_date": "2026-10-27",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "Generated market_summary history",
   "records": [
-    {
-      "date": "2026-09-08",
-      "score": 62,
-      "status": "中性偏多"
-    },
     {
       "date": "2026-09-09",
       "score": 65,
@@ -228,6 +223,11 @@
     {
       "date": "2026-10-26",
       "score": 53,
+      "status": "黃燈警戒"
+    },
+    {
+      "date": "2026-10-27",
+      "score": 54,
       "status": "黃燈警戒"
     }
   ]

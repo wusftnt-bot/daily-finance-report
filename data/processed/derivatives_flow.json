@@ -1,23 +1,23 @@
 {
-  "generated_at": "2026-10-28 05:25:53 Asia/Taipei",
-  "data_date": "2026-10-28",
+  "generated_at": "2026-10-29 05:26:05 Asia/Taipei",
+  "data_date": "2026-10-29",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TAIFEX",
-  "date": "2026-10-27",
+  "date": "2026-10-28",
   "records": [
     {
       "dataset": "foreign_taiex_futures_net_position",
-      "date": "2026-10-27",
+      "date": "2026-10-28",
       "contract": "TXF",
       "investor": "foreign",
-      "trading_long_lots": 59401,
-      "trading_short_lots": 58180,
-      "trading_net_lots": 1221,
-      "open_interest_long_lots": 9755,
-      "open_interest_short_lots": 95798,
-      "open_interest_net_lots": -86043,
-      "source_url": "https://www.taifex.com.tw/cht/3/futContractsDate?queryType=1&doQuery=1&dateaddcnt=&queryDate=2026%2F10%2F27&commodityId=TXF"
+      "trading_long_lots": 40386,
+      "trading_short_lots": 39336,
+      "trading_net_lots": 1050,
+      "open_interest_long_lots": 10510,
+      "open_interest_short_lots": 95427,
+      "open_interest_net_lots": -84917,
+      "source_url": "https://www.taifex.com.tw/cht/3/futContractsDate?queryType=1&doQuery=1&dateaddcnt=&queryDate=2026%2F10%2F28&commodityId=TXF"
     },
     {
       "dataset": "txo_put_call_ratio",

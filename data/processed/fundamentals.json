@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-11-01 05:25:57 Asia/Taipei",
-  "data_date": "2026-11-01",
+  "generated_at": "2026-11-02 05:25:53 Asia/Taipei",
+  "data_date": "2026-11-02",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
-  "date": "2026-11-01",
+  "date": "2026-11-02",
   "records": [
     {
       "ticker": "2330",
@@ -45,9 +45,9 @@
       "latest_month_revenue": 65399563000,
       "latest_quarter": "2026-09-30",
       "eps": 9.04,
-      "gross_margin_pct": 34.08,
-      "operating_margin_pct": 16.55,
-      "roe_pct_annualized": 27.11,
+      "gross_margin_pct": 35.47,
+      "operating_margin_pct": 16.97,
+      "roe_pct_annualized": 80.18,
       "inventory": 168202354000.0,
       "accounts_receivable": 148561331000.0
     },

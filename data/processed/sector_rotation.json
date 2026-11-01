@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-01 05:25:57 Asia/Taipei",
-  "data_date": "2026-11-01",
+  "generated_at": "2026-11-02 05:25:53 Asia/Taipei",
+  "data_date": "2026-11-02",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -119,7 +119,7 @@
     {
       "theme_key": "markets",
       "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 10 則相關訊號，重點新聞包含：國際財經新聞：Weil Gotshal’s 95-Year History Careened to a Close in Just Days；國際財經新聞：META_TITLE_QUOTE",
+      "summary": "全球股市與風險情緒出現 10 則相關訊號，重點新聞包含：國際財經新聞：Alaska Air to eliminate 200 jobs in Washington, Hawaii, Reuters says；國際財經新聞：Wall Street Says One Election Result Gives Bitcoin Its Best Chance at $100,000",
       "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
       "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
       "count": 10
@@ -127,18 +127,18 @@
     {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 4 則相關訊號，重點新聞包含：國際財經新聞：Weekend Morning Brew: Tech Struggles Amid AI Spending and Fed Rates；國際財經新聞：AI outlook: OpenAI cuts fundraising goal while Meta gets a credit warning on cash flow and",
+      "summary": "AI 與半導體供應鏈出現 6 則相關訊號，重點新聞包含：國際財經新聞：Nvidia Q3 FY2027 Preview: The Fabless Model Just Got A $279 Billion Footnote (NASDAQ:NVDA)；國際財經新聞：A Wall Street Firm Modeled Out an AI Crash: S&P 500 Down 30%, $20 Trillion Gone. But Here'",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 4
+      "count": 6
     },
     {
       "theme_key": "energy",
       "title": "能源、原物料與航運",
-      "summary": "能源、原物料與航運出現 2 則相關訊號，重點新聞包含：國際財經新聞：OPEC+ Expected to Hold Oil Production Targets Unchanged for December；國際財經新聞：OPEC+ agrees in principle to keep oil output targets steady in December, sources say",
+      "summary": "能源、原物料與航運出現 1 則相關訊號，重點新聞包含：國際財經新聞：The Endless Cruise's Real Problem Wasn't Oil",
       "impact": "能源與原物料會影響通膨、運輸與部分製造成本，留意成本轉嫁能力。",
       "watch": "觀察油價、航運報價、原物料價格與成本敏感產業的報價能力。",
-      "count": 2
+      "count": 1
     }
   ]
 }

@@ -1,34 +1,34 @@
 {
-  "generated_at": "2026-11-02 05:25:53 Asia/Taipei",
-  "data_date": "2026-11-02",
+  "generated_at": "2026-11-03 05:25:51 Asia/Taipei",
+  "data_date": "2026-11-03",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TAIFEX",
-  "date": "2026-10-30",
+  "date": "2026-11-02",
   "records": [
     {
       "dataset": "foreign_taiex_futures_net_position",
-      "date": "2026-10-30",
+      "date": "2026-11-02",
       "contract": "TXF",
       "investor": "foreign",
-      "trading_long_lots": 61741,
-      "trading_short_lots": 63521,
-      "trading_net_lots": -1780,
-      "open_interest_long_lots": 6528,
-      "open_interest_short_lots": 98769,
-      "open_interest_net_lots": -92241,
-      "source_url": "https://www.taifex.com.tw/cht/3/futContractsDate?queryType=1&doQuery=1&dateaddcnt=&queryDate=2026%2F10%2F30&commodityId=TXF"
+      "trading_long_lots": 57787,
+      "trading_short_lots": 54986,
+      "trading_net_lots": 2801,
+      "open_interest_long_lots": 8952,
+      "open_interest_short_lots": 98331,
+      "open_interest_net_lots": -89379,
+      "source_url": "https://www.taifex.com.tw/cht/3/futContractsDate?queryType=1&doQuery=1&dateaddcnt=&queryDate=2026%2F11%2F02&commodityId=TXF"
     },
     {
       "dataset": "txo_put_call_ratio",
-      "date": "2026-10-30",
-      "put_volume": 419366,
-      "call_volume": 461304,
-      "put_call_volume_ratio": 90.91,
-      "put_open_interest": 46701,
-      "call_open_interest": 74619,
-      "put_call_open_interest_ratio": 62.59,
-      "source_url": "https://www.taifex.com.tw/cht/3/pcRatio?queryStartDate=2026%2F10%2F30&queryEndDate=2026%2F10%2F30"
+      "date": "2026-11-02",
+      "put_volume": 148092,
+      "call_volume": 157966,
+      "put_call_volume_ratio": 93.75,
+      "put_open_interest": 69770,
+      "call_open_interest": 113305,
+      "put_call_open_interest_ratio": 61.58,
+      "source_url": "https://www.taifex.com.tw/cht/3/pcRatio?queryStartDate=2026%2F11%2F02&queryEndDate=2026%2F11%2F02"
     }
   ]
 }

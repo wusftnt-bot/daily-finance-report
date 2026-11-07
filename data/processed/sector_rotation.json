@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-07 05:25:56 Asia/Taipei",
-  "data_date": "2026-11-07",
+  "generated_at": "2026-11-08 05:25:54 Asia/Taipei",
+  "data_date": "2026-11-08",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX",
@@ -117,27 +117,27 @@
   ],
   "news_axes": [
     {
-      "theme_key": "markets",
-      "title": "全球股市與風險情緒",
-      "summary": "全球股市與風險情緒出現 9 則相關訊號，重點新聞包含：國際財經新聞：Nasdaq rebounds but remains on track for fourth straight weekly decline；國際財經新聞：Stocks had their worst day in 18 months — here's what that means for your portfolio",
-      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
-      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
-      "count": 9
-    },
-    {
       "theme_key": "ai",
       "title": "AI 與半導體供應鏈",
-      "summary": "AI 與半導體供應鏈出現 5 則相關訊號，重點新聞包含：國際財經新聞：TSMC Mulls Making Advanced AI Memory Chips, Information Says；國際財經新聞：Stocks making the biggest moves midday: Nvidia, Moderna, IonQ, Airbnb, Firefly Aerospace &",
+      "summary": "AI 與半導體供應鏈出現 8 則相關訊號，重點新聞包含：國際財經新聞：TSMC Mulls Making Advanced AI Memory Chips, Information Says；〈美股盤後〉晶片股反彈！費半勁揚逾4.2% 台積電ADR升超6% 那指標普周線四連黑",
       "impact": "直接影響 AI 伺服器、晶圓代工、散熱、電源與高速傳輸供應鏈，需用月營收與法人籌碼驗證。",
       "watch": "觀察台積電、AI 伺服器、散熱、電源與 PCB 族群是否量價同步，並確認月營收是否加速。",
-      "count": 5
+      "count": 8
     },
     {
-      "theme_key": "rates",
-      "title": "利率、通膨與估值",
-      "summary": "利率、通膨與估值出現 3 則相關訊號，重點新聞包含：美國10月非農超預期！Fed下月升息機率約八成 美債殖利率為何衝高又回落？；國際財經新聞：9 of the Last 10 Nasdaq Corrections Ended Higher in 6 Months. Will the Fed Allow It?",
-      "impact": "利率變化會改變高估值成長股折現率，也影響金融、債券與美元方向。",
-      "watch": "觀察美債 10Y、FedWatch、美元指數與高估值科技股的同向或背離。",
+      "theme_key": "markets",
+      "title": "全球股市與風險情緒",
+      "summary": "全球股市與風險情緒出現 6 則相關訊號，重點新聞包含：國際財經新聞：Xtrackers S&P 500 Swap II UCITS 1C ETF (X500.DE) | Stock Price & Latest News；國際財經新聞：Why the prognosis for healthcare stocks is uncertain ahead of Congress’ new makeup",
+      "impact": "全球市場風險情緒會決定資金是否願意承接成長股與高本益比族群。",
+      "watch": "觀察 VIX、Nasdaq、SOX、S&P 500 與台股電子成交比重。",
+      "count": 6
+    },
+    {
+      "theme_key": "geopolitics",
+      "title": "地緣政治與政策風險",
+      "summary": "地緣政治與政策風險出現 3 則相關訊號，重點新聞包含：國際財經新聞：Down Isn’t Cheap: How Far Can The AI Trade Still Fall? (NASDAQ:SMH)；國際財經新聞：Ten Months of War to Gain 46 Square Miles: How Russia Is Failing on the Battlefield",
+      "impact": "政策與地緣風險容易造成短線避險與供應鏈重估，追價需更嚴格。",
+      "watch": "觀察避險資產、油價、美元與供應鏈受影響族群是否出現異常波動。",
       "count": 3
     }
   ]

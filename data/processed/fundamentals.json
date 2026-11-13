@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-11-13 05:26:04 Asia/Taipei",
-  "data_date": "2026-11-13",
+  "generated_at": "2026-11-14 05:26:02 Asia/Taipei",
+  "data_date": "2026-11-14",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "FinMind TaiwanStockMonthRevenue / FinancialStatements / BalanceSheet",
-  "date": "2026-11-13",
+  "date": "2026-11-14",
   "records": [
     {
       "ticker": "2330",
@@ -13,13 +13,13 @@
       "source": "FinMind",
       "latest_month_revenue_date": "2026-11-01",
       "latest_month_revenue": 586890319000,
-      "latest_quarter": "2026-06-30",
-      "eps": 27.25,
-      "gross_margin_pct": 67.72,
-      "operating_margin_pct": 60.34,
-      "roe_pct_annualized": 43.67,
-      "inventory": 385524542000.0,
-      "accounts_receivable": 435762477000.0
+      "latest_quarter": "2026-09-30",
+      "eps": 29.43,
+      "gross_margin_pct": 66.41,
+      "operating_margin_pct": 58.65,
+      "roe_pct_annualized": 43.35,
+      "inventory": 427753380000.0,
+      "accounts_receivable": 475311759000.0
     },
     {
       "ticker": "2317",
@@ -28,13 +28,13 @@
       "source": "FinMind",
       "latest_month_revenue_date": "2026-11-01",
       "latest_month_revenue": 1305319612000,
-      "latest_quarter": "2026-06-30",
-      "eps": 4.27,
-      "gross_margin_pct": 6.12,
-      "operating_margin_pct": 3.75,
-      "roe_pct_annualized": 13.22,
-      "inventory": 1370072780000.0,
-      "accounts_receivable": 1358223596000.0
+      "latest_quarter": "2026-09-30",
+      "eps": 5.51,
+      "gross_margin_pct": 6.02,
+      "operating_margin_pct": 3.83,
+      "roe_pct_annualized": 16.51,
+      "inventory": 1507485125000.0,
+      "accounts_receivable": 1784062451000.0
     },
     {
       "ticker": "2308",

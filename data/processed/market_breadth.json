@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-14 05:26:02 Asia/Taipei",
-  "data_date": "2026-11-14",
+  "generated_at": "2026-11-15 05:25:52 Asia/Taipei",
+  "data_date": "2026-11-15",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TWSE MI_INDEX / FinMind",
@@ -70,17 +70,17 @@
       {
         "ticker": "2317",
         "date": "2026-11-13",
-        "transaction_count": 4,
-        "lending_volume": 10929,
-        "avg_fee_rate": 0.345,
+        "transaction_count": 5,
+        "lending_volume": 11197,
+        "avg_fee_rate": 0.326,
         "source": "FinMind TaiwanStockSecuritiesLending"
       },
       {
         "ticker": "2308",
         "date": "2026-11-13",
-        "transaction_count": 4,
-        "lending_volume": 1990,
-        "avg_fee_rate": 0.417,
+        "transaction_count": 5,
+        "lending_volume": 2010,
+        "avg_fee_rate": 0.374,
         "source": "FinMind TaiwanStockSecuritiesLending"
       },
       {

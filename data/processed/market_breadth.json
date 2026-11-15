@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-15 05:25:52 Asia/Taipei",
-  "data_date": "2026-11-15",
+  "generated_at": "2026-11-16 05:26:00 Asia/Taipei",
+  "data_date": "2026-11-16",
   "timezone": "Asia/Taipei",
-  "status": "ok",
+  "status": "partial",
   "source": "TWSE MI_INDEX / FinMind",
   "date": "2026-11-13",
   "breadth": {
@@ -17,81 +17,11 @@
     "new_52w_low": null,
     "new_high_low_status": "partial_20d_connected_52w_pending"
   },
-  "margin_records": [
-    {
-      "ticker": "2330",
-      "date": "2026-11-13",
-      "margin_purchase_balance": 32376,
-      "margin_purchase_change": 120,
-      "short_sale_balance": 50,
-      "short_sale_change": -24,
-      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
-    },
-    {
-      "ticker": "2317",
-      "date": "2026-11-13",
-      "margin_purchase_balance": 50690,
-      "margin_purchase_change": -431,
-      "short_sale_balance": 506,
-      "short_sale_change": -93,
-      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
-    },
-    {
-      "ticker": "2308",
-      "date": "2026-11-13",
-      "margin_purchase_balance": 9546,
-      "margin_purchase_change": 272,
-      "short_sale_balance": 36,
-      "short_sale_change": 13,
-      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
-    },
-    {
-      "ticker": "2881",
-      "date": "2026-11-13",
-      "margin_purchase_balance": 4960,
-      "margin_purchase_change": -86,
-      "short_sale_balance": 514,
-      "short_sale_change": 14,
-      "source": "FinMind TaiwanStockMarginPurchaseShortSale"
-    }
-  ],
+  "margin_records": [],
   "securities_lending": {
-    "status": "ok",
+    "status": "failed",
     "source": "FinMind TaiwanStockSecuritiesLending",
-    "records": [
-      {
-        "ticker": "2330",
-        "date": "2026-11-13",
-        "transaction_count": 9,
-        "lending_volume": 3334,
-        "avg_fee_rate": 0.222,
-        "source": "FinMind TaiwanStockSecuritiesLending"
-      },
-      {
-        "ticker": "2317",
-        "date": "2026-11-13",
-        "transaction_count": 5,
-        "lending_volume": 11197,
-        "avg_fee_rate": 0.326,
-        "source": "FinMind TaiwanStockSecuritiesLending"
-      },
-      {
-        "ticker": "2308",
-        "date": "2026-11-13",
-        "transaction_count": 5,
-        "lending_volume": 2010,
-        "avg_fee_rate": 0.374,
-        "source": "FinMind TaiwanStockSecuritiesLending"
-      },
-      {
-        "ticker": "2881",
-        "date": "2026-11-13",
-        "transaction_count": 7,
-        "lending_volume": 12854,
-        "avg_fee_rate": 0.414,
-        "source": "FinMind TaiwanStockSecuritiesLending"
-      }
-    ]
+    "records": []
   },
   "records": [
     {

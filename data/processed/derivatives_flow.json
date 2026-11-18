@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-11-18 05:25:52 Asia/Taipei",
-  "data_date": "2026-11-18",
+  "generated_at": "2026-11-19 05:25:52 Asia/Taipei",
+  "data_date": "2026-11-19",
   "timezone": "Asia/Taipei",
   "status": "ok",
   "source": "TAIFEX",
-  "date": "2026-11-17",
+  "date": "2026-11-18",
   "records": [
     {
       "dataset": "foreign_taiex_futures_net_position",
@@ -21,14 +21,14 @@
     },
     {
       "dataset": "txo_put_call_ratio",
-      "date": "2026-11-17",
-      "put_volume": 218602,
-      "call_volume": 276899,
-      "put_call_volume_ratio": 78.95,
-      "put_open_interest": 104833,
-      "call_open_interest": 193859,
-      "put_call_open_interest_ratio": 54.08,
-      "source_url": "https://www.taifex.com.tw/cht/3/pcRatio?queryStartDate=2026%2F11%2F17&queryEndDate=2026%2F11%2F17"
+      "date": "2026-11-18",
+      "put_volume": 428932,
+      "call_volume": 466402,
+      "put_call_volume_ratio": 91.97,
+      "put_open_interest": 35515,
+      "call_open_interest": 89241,
+      "put_call_open_interest_ratio": 39.8,
+      "source_url": "https://www.taifex.com.tw/cht/3/pcRatio?queryStartDate=2026%2F11%2F18&queryEndDate=2026%2F11%2F18"
     }
   ]
 }
